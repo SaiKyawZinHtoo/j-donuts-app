@@ -172,7 +172,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md).copyWith(
+        bottom: AppSpacing.md + MediaQuery.paddingOf(context).bottom,
+      ),
       child: TweenAnimationBuilder<double>(
         tween: Tween(begin: reduce ? 1 : 0, end: 1),
         duration: reduce ? Duration.zero : MotionTokens.kDetailEntrance,

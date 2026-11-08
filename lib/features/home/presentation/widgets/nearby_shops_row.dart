@@ -33,7 +33,11 @@ class NearbyShopsRow extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          // Body bottom padding already includes the floating nav (extendBody).
+          padding: EdgeInsets.only(
+            top: AppSpacing.lg,
+            bottom: MediaQuery.paddingOf(context).bottom + AppSpacing.md,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

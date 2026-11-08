@@ -85,11 +85,11 @@ class MemberHeader extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.notifications_none, color: Colors.white),
+                          const Icon(Icons.notifications_none, color: AppColors.surface),
                           const SizedBox(width: AppSpacing.xs),
                           Container(
                             padding: const EdgeInsets.all(AppSpacing.xs),
-                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                            decoration: const BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),
                             child: Text(
                               '$notificationCount',
                               style: AppTextStyles.caption.copyWith(color: AppColors.badge),
@@ -107,7 +107,7 @@ class MemberHeader extends StatelessWidget {
               key: const Key('memberHeader_pointsChip'),
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(AppSpacing.md),
               ),
               child: Text(

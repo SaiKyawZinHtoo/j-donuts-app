@@ -98,7 +98,9 @@ class _AppButtonState extends State<AppButton> {
               ),
             ),
             child: Semantics(
-              label: widget.label,
+              label: widget.trailingLabel == null
+                  ? widget.label
+                  : '${widget.label}, ${widget.trailingLabel}',
               excludeSemantics: true,
               child: AnimatedSwitcher(
                 duration: morphDuration,

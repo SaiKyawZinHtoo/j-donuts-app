@@ -69,18 +69,7 @@
   "@memberTierCaption": { "placeholders": { "tier": { "type": "String" } } },
   "memberPointsLeft": "{points} points left to become {tier} Member",
   "@memberPointsLeft": { "placeholders": { "points": { "type": "int" }, "tier": { "type": "String" } } },
-  "memberTierStatus": "{tier} tier · {points} pts to next tier",
-  "@memberTierStatus": {
-    "placeholders": {
-      "tier": { "type": "String" },
-      "points": { "type": "int" }
-    }
-  },
   "newBadge": "New",
-  "discountBadge": "-{percent}%",
-  "@discountBadge": {
-    "placeholders": { "percent": { "type": "int" } }
-  },
   "discountOff": "{percent}% off",
   "@discountOff": {
     "placeholders": { "percent": { "type": "int" } }
@@ -90,14 +79,9 @@
     "placeholders": { "price": { "type": "String" } }
   },
 
-  "productAppBarTitle": "Product",
   "addedToCartMessage": "Added to cart",
   "whatsThis": "What's this?",
   "addToCartLabel": "Add to cart",
-  "addToCartButton": "Add to cart · {total} MMK",
-  "@addToCartButton": {
-    "placeholders": { "total": { "type": "String" } }
-  },
 
   "earnTab": "Earn",
   "giftTab": "Gift",

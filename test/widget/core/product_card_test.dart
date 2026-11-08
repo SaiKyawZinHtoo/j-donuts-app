@@ -54,6 +54,20 @@ void main() {
     });
   }
 
+  testWidgets('cutout Hero wraps only the image, not the white card', (t) async {
+    await t.pumpWidget(_host(const ProductCard(
+        imageUrl: _img,
+        title: 'a',
+        mode: ProductCardImageMode.cutout,
+        heroTag: 'h')));
+    expect(
+        find.descendant(of: find.byType(Hero), matching: find.byType(DecoratedBox)),
+        findsNothing);
+    expect(
+        find.descendant(of: find.byType(Hero), matching: find.byType(Image)),
+        findsOneWidget);
+  });
+
   testWidgets('badge shown only when label set', (t) async {
     await t.pumpWidget(_host(const ProductCard(
         imageUrl: _img,

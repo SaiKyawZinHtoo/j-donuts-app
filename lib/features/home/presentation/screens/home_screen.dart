@@ -61,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen>
             case HomeLoaded():
               _startOnce(context, state.data.sections.length + 3);
               return RefreshIndicator(
+                edgeOffset: MediaQuery.paddingOf(context).top,
                 onRefresh: () async {
                   context.read<HomeBloc>().add(const HomeRefreshRequested());
                 },
@@ -156,12 +157,6 @@ class _HomeContent extends StatelessWidget {
           const SizedBox(height: AppSpacing.sectionGap),
         ],
         _entry(i++, NearbyShopsRow(shops: bundle.shops)),
-        SizedBox(
-          height:
-              AppSpacing.navBarHeight +
-              AppSpacing.lg +
-              MediaQuery.paddingOf(context).bottom,
-        ),
       ],
     );
   }

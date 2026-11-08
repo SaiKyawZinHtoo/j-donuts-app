@@ -155,17 +155,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String memberTierStatus(String tier, int points) {
-    return '$tier tier · $points pts to next tier';
-  }
-
-  @override
   String get newBadge => 'New';
-
-  @override
-  String discountBadge(int percent) {
-    return '-$percent%';
-  }
 
   @override
   String discountOff(int percent) {
@@ -178,9 +168,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get productAppBarTitle => 'Product';
-
-  @override
   String get addedToCartMessage => 'Added to cart';
 
   @override
@@ -188,11 +175,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addToCartLabel => 'Add to cart';
-
-  @override
-  String addToCartButton(String total) {
-    return 'Add to cart · $total MMK';
-  }
 
   @override
   String get earnTab => 'Earn';

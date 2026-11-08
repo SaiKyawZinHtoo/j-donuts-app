@@ -11,7 +11,6 @@ class AppColors {
   static const Color ringPink = Color(0xFFF259A1);
   static const Color background = Color(0xFFFFFBFD);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color navInactive = Color(0xB3FFFFFF); // surface @70%
   static const Color error = Color(0xFFD64545);
   static const Color success = Color(0xFF2FAE63);
   static const Color textPrimary = Color(0xFF231A1E);

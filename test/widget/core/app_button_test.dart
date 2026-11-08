@@ -188,4 +188,12 @@ void main() {
     expect(find.text('ADD'), findsOneWidget);
     expect(find.text('1,500 MMK'), findsOneWidget);
   });
+
+  testWidgets('semantics label includes trailingLabel', (tester) async {
+    final h = tester.ensureSemantics();
+    await tester.pumpWidget(_app(
+        AppButton(label: 'Add', trailingLabel: '5 MMK', onPressed: () {})));
+    expect(find.bySemanticsLabel('Add, 5 MMK'), findsOneWidget);
+    h.dispose();
+  });
 }

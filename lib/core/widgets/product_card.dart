@@ -110,14 +110,21 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               ),
             ),
-            Padding(padding: const EdgeInsets.all(AppSpacing.md), child: img),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: widget.heroTag == null
+                  ? img
+                  : Hero(tag: widget.heroTag!, child: img),
+            ),
           ],
         ),
       );
     } else {
       area = ClipRRect(borderRadius: radius, child: img);
     }
-    if (widget.heroTag != null) area = Hero(tag: widget.heroTag!, child: area);
+    if (!cutout && widget.heroTag != null) {
+      area = Hero(tag: widget.heroTag!, child: area);
+    }
     return Stack(
       children: [
         Positioned.fill(child: area),

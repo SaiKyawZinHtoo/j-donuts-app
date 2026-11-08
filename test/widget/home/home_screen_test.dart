@@ -250,6 +250,10 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(padding: const EdgeInsets.only(bottom: 34)),
+        child: child!,
+      ),
       home: BlocProvider<HomeBloc>.value(
         value: bloc,
         child: AppShellScreen(
@@ -273,6 +277,11 @@ void main() {
     expect(find.text('Order Online'), findsOneWidget);
     final navTop = tester.getTopLeft(find.byType(AppBottomNav)).dy;
     expect(tester.getBottomLeft(find.byKey(const Key('shopCard_sh1'))).dy, lessThanOrEqualTo(navTop));
+    // No grey band: the shops block (backdrop) ends within one nav height of
+    // the viewport bottom, i.e. it runs behind the nav (old double-count left ~88pt more).
+    final viewBottom = tester.view.physicalSize.height / tester.view.devicePixelRatio;
+    final blockBottom = tester.getBottomLeft(find.byType(NearbyShopsRow)).dy;
+    expect(viewBottom - blockBottom, lessThanOrEqualTo(8));
   });
 
   testWidgets('status bar inset: banner paints from top, header not double-inset', (tester) async {

@@ -350,23 +350,11 @@ abstract class AppLocalizations {
   /// **'{points} points left to become {tier} Member'**
   String memberPointsLeft(int points, String tier);
 
-  /// No description provided for @memberTierStatus.
-  ///
-  /// In en, this message translates to:
-  /// **'{tier} tier · {points} pts to next tier'**
-  String memberTierStatus(String tier, int points);
-
   /// No description provided for @newBadge.
   ///
   /// In en, this message translates to:
   /// **'New'**
   String get newBadge;
-
-  /// No description provided for @discountBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'-{percent}%'**
-  String discountBadge(int percent);
 
   /// No description provided for @discountOff.
   ///
@@ -379,12 +367,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{price} MMK'**
   String priceMmk(String price);
-
-  /// No description provided for @productAppBarTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Product'**
-  String get productAppBarTitle;
 
   /// No description provided for @addedToCartMessage.
   ///
@@ -403,12 +385,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add to cart'**
   String get addToCartLabel;
-
-  /// No description provided for @addToCartButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Add to cart · {total} MMK'**
-  String addToCartButton(String total);
 
   /// No description provided for @earnTab.
   ///

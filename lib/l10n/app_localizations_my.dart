@@ -157,17 +157,7 @@ class AppLocalizationsMy extends AppLocalizations {
   }
 
   @override
-  String memberTierStatus(String tier, int points) {
-    return '$tier အဆင့် · နောက်အဆင့်အတွက် $points အမှတ်လိုသည်';
-  }
-
-  @override
   String get newBadge => 'အသစ်';
-
-  @override
-  String discountBadge(int percent) {
-    return '-$percent%';
-  }
 
   @override
   String discountOff(int percent) {
@@ -180,9 +170,6 @@ class AppLocalizationsMy extends AppLocalizations {
   }
 
   @override
-  String get productAppBarTitle => 'ကုန်ပစ္စည်း';
-
-  @override
   String get addedToCartMessage => 'စျေးခြင်းထဲထည့်ပြီးပါပြီ';
 
   @override
@@ -190,11 +177,6 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get addToCartLabel => 'စျေးခြင်းထဲထည့်မည်';
-
-  @override
-  String addToCartButton(String total) {
-    return 'စျေးခြင်းထဲထည့်မည် · $total ကျပ်';
-  }
 
   @override
   String get earnTab => 'ရယူရန်';
