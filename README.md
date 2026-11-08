@@ -68,6 +68,8 @@ no-op hook since no mock server is in scope (see Known gaps).
 
 **Animations**: every duration/curve is a named constant in `lib/core/theme/motion_tokens.dart`, and
 every animation honors Reduce Motion (`MediaQuery.disableAnimationsOf`) by jumping to its end state.
+Exception: the `/product/:id` push/pop and its Hero flight use the platform-default `CupertinoPage`
+timing, to keep iOS edge-swipe back.
 Built:
 
 - Splash: logo scale/fade in, hold, fade-out exit, then route to onboarding or Home.
