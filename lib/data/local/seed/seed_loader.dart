@@ -15,10 +15,17 @@ class SeedLoader {
   final AppDatabase _db;
 
   Future<void> seedIfNeeded() async {
-    final alreadySeeded = await _isSeeded();
-    if (alreadySeeded) return;
+    if (await _isSeeded()) return;
 
     await _db.transaction(() async {
+      // Version bump on an existing install: wipe seed tables, then reseed.
+      await _db.delete(_db.challenges).go();
+      await _db.delete(_db.member).go();
+      await _db.delete(_db.sectionsProducts).go();
+      await _db.delete(_db.sections).go();
+      await _db.delete(_db.banners).go();
+      await _db.delete(_db.shops).go();
+      await _db.delete(_db.products).go();
       await _seedProducts();
       await _seedBanners();
       await _seedSections();
@@ -32,14 +39,14 @@ class SeedLoader {
     final row = await (_db.select(_db.meta)
           ..where((m) => m.key.equals(SeedKeys.seededFlagKey)))
         .getSingleOrNull();
-    return row?.value == 'true';
+    return row?.value == SeedKeys.seedVersion;
   }
 
   Future<void> _markSeeded() async {
     await _db.into(_db.meta).insertOnConflictUpdate(
           MetaCompanion.insert(
             key: SeedKeys.seededFlagKey,
-            value: 'true',
+            value: SeedKeys.seedVersion,
           ),
         );
   }

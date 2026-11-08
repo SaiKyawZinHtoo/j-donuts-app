@@ -5,6 +5,8 @@ library;
 class SeedKeys {
   // meta
   static const seededFlagKey = 'seeded';
+  // Bump when assets/seed/*.json change so existing installs reseed.
+  static const seedVersion = '2';
 
   // products.json
   static const id = 'id';

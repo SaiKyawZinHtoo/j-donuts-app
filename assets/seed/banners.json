@@ -1,13 +1,13 @@
 [
   {
     "id": "b_seasonal",
-    "imageUrl": "assets/images/seed/banner_seasonal.png",
+    "imageUrl": "assets/images/seed/banner_new_shop.png",
     "title": "Seasonal Specials are here",
     "deepLinkTarget": "section:seasonal_specials"
   },
   {
     "id": "b_rewards",
-    "imageUrl": "assets/images/seed/banner_rewards.png",
+    "imageUrl": "assets/images/seed/banner_hot.png",
     "title": "Earn points on every order",
     "deepLinkTarget": "rewards"
   }

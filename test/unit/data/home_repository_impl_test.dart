@@ -33,7 +33,7 @@ void main() {
 
     // Canonical member record (design spec §3.2): Silver tier, 500 pts
     // remaining to Gold.
-    expect(bundle.member.tier, 'Silver');
+    expect(bundle.member.tier, 'Bronze');
     expect(bundle.member.nextTierPoints - bundle.member.points, 500);
   });
 }

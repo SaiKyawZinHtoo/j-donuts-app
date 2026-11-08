@@ -126,7 +126,7 @@ void main() {
     expect(find.byType(MemberHeader), findsOneWidget);
 
     // Home -> Product detail.
-    await tester.tap(find.byKey(const Key('productTile_p_coconut')).first);
+    await tester.tap(find.byKey(const Key('productTile_p_box_romance')).first);
     await _settleAfterFakeNetwork(tester);
 
     expect(find.byType(ProductDetailScreen), findsOneWidget);

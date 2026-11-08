@@ -58,5 +58,25 @@
     "discountPercent": 0,
     "imageUrl": "assets/images/seed/coffee_latte.png",
     "description": "Espresso with steamed milk."
+  },
+  {
+    "id": "p_box_romance",
+    "code": "JD044001",
+    "name": "Mistletoe Romance box",
+    "priceMmk": 12000,
+    "isNew": false,
+    "discountPercent": 50,
+    "imageUrl": "assets/images/seed/seasonal_1.png",
+    "description": "Limited-time festive box."
+  },
+  {
+    "id": "p_box_family",
+    "code": "JD044002",
+    "name": "Christmas Mix Family box",
+    "priceMmk": 12000,
+    "isNew": false,
+    "discountPercent": 50,
+    "imageUrl": "assets/images/seed/seasonal_2.png",
+    "description": "Limited-time festive box."
   }
 ]

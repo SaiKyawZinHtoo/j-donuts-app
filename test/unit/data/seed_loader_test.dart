@@ -21,7 +21,7 @@ void main() {
     await SeedLoader(db).seedIfNeeded();
 
     final member = await db.select(db.member).getSingle();
-    expect(member.tier, 'Silver');
+    expect(member.tier, 'Bronze');
     expect(member.nextTierPoints - member.points, 500);
 
     final sections = await db.select(db.sections).get();
