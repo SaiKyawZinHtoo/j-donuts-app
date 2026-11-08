@@ -88,6 +88,7 @@ void main() {
 
   testWidgets('WelcomeScreen: no back button, no legal footer', (tester) async {
     await pump(tester, const WelcomeScreen());
+    expect(tester.widget<AuthScaffold>(find.byType(AuthScaffold)).titleGap, isFalse);
     expect(find.byType(AuthScaffold), findsOneWidget);
     expect(find.byType(AppBackButton), findsNothing);
     expect(find.byType(AppLegalFooter), findsNothing);

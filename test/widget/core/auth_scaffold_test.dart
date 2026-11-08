@@ -197,6 +197,28 @@ void main() {
     );
     expect(find.byType(AppLegalFooter), findsNothing);
     expect(find.byKey(const Key('bot')), findsOneWidget);
-    expect(tester.getRect(find.byKey(const Key('bot'))).bottom, lessThan(667));
+    expect(
+      tester.getRect(find.byKey(const Key('bot'))).bottom,
+      lessThanOrEqualTo(667 - 300),
+    );
+  });
+
+  testWidgets('titleGap:false removes the header-to-body gap', (tester) async {
+    _phone(tester);
+    Future<double> top(bool gap) async {
+      await tester.pumpWidget(
+        _app(
+          AuthScaffold(
+            titleGap: gap,
+            child: const Text('x', key: Key('c')),
+          ),
+        ),
+      );
+      return tester.getTopLeft(find.byKey(const Key('c'))).dy;
+    }
+
+    final on = await top(true);
+    final off = await top(false);
+    expect(on - off, AppSpacing.authTitleTopGap);
   });
 }

@@ -136,4 +136,24 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('tile clip extends below the lowest tile (no flat cut)', (
+    tester,
+  ) async {
+    await pumpAt(tester, const Size(375, 667), 1.0);
+    var lowest = 0.0;
+    for (var i = 0; i < 4; i++) {
+      final r = tester.getRect(find.byType(DonutTile).at(i));
+      if (r.bottom > lowest) lowest = r.bottom;
+    }
+    final clip = tester.getRect(
+      find
+          .ancestor(
+            of: find.byType(DonutTile).first,
+            matching: find.byType(ClipRect),
+          )
+          .first,
+    );
+    expect(clip.bottom, greaterThanOrEqualTo(lowest));
+  });
 }

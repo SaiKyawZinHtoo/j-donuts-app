@@ -13,6 +13,7 @@ class AuthScaffold extends StatelessWidget {
     this.showFooter = true,
     this.onBack,
     this.bottom,
+    this.titleGap = true,
   });
 
   final Widget child;
@@ -25,6 +26,9 @@ class AuthScaffold extends StatelessWidget {
 
   /// Primary action pinned under the scrolling body; stays above the keyboard.
   final Widget? bottom;
+
+  /// Adds [AppSpacing.authTitleTopGap] between the header row and the body.
+  final bool titleGap;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +69,7 @@ class AuthScaffold extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: hPad.copyWith(
-                              top: AppSpacing.authTitleTopGap,
+                              top: titleGap ? AppSpacing.authTitleTopGap : 0,
                             ),
                             child: child,
                           ),

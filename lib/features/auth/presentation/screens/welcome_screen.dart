@@ -58,6 +58,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     return AuthScaffold(
       showBack: false,
       showFooter: false,
+      titleGap: false,
       // spaceBetween inside the scaffold's minHeight: group centered, button
       // at the bottom, no Spacer (unbounded max height).
       child: Column(

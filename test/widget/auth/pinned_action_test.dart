@@ -46,4 +46,34 @@ void main() {
     expect(AppColors.hint.a, lessThan(1));
     expect(f.style!.color, AppColors.textPrimary);
   });
+
+  for (final e in {
+    'phone': (const PhoneScreen(), ['phoneNumberField']),
+    'name': (const NameScreen(), ['firstNameField', 'lastNameField']),
+    'dob': (const DobScreen(), ['dobMonthField', 'dobYearField']),
+  }.entries) {
+    testWidgets('${e.key}: fields visible above action with keyboard open', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(375, 667);
+      tester.view.devicePixelRatio = 1;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      addTearDown(tester.view.reset);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpWidget(makeTestableWidget(e.value.$1));
+      await tester.pumpAndSettle();
+      final headerBottom = tester.getRect(find.byType(AppBackButton)).bottom;
+      final action = tester.getRect(find.byKey(const Key('continueButton')));
+      final first = tester.getRect(find.byKey(Key(e.value.$2.first)));
+      expect(first.top, greaterThanOrEqualTo(headerBottom));
+      expect(first.bottom, lessThanOrEqualTo(action.top));
+      final last = find.byKey(Key(e.value.$2.last));
+      await tester.ensureVisible(last);
+      await tester.pumpAndSettle();
+      expect(tester.getRect(last).bottom, lessThanOrEqualTo(action.top));
+      await tester.enterText(last, '12');
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
