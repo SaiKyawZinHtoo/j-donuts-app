@@ -86,4 +86,98 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('GO'), findsOneWidget);
   });
+
+  Color material(WidgetTester t) => t
+      .widget<Material>(
+        find
+            .descendant(
+              of: find.byType(ElevatedButton),
+              matching: find.byType(Material),
+            )
+            .first,
+      )
+      .color!;
+  double scale(WidgetTester t) =>
+      t.widget<AnimatedScale>(find.byType(AnimatedScale)).scale;
+
+  testWidgets('rendered colors: loading primary, disabled primaryDisabled', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      _app(AppButton(label: 'go', onPressed: () {}, loading: true)),
+    );
+    await t.pump(MotionTokens.kButtonMorphDuration * 2);
+    expect(material(t), AppColors.primary);
+    await t.pumpWidget(_app(const AppButton(label: 'go', onPressed: null)));
+    await t.pump(MotionTokens.kButtonMorphDuration * 2);
+    expect(material(t), AppColors.primaryDisabled);
+  });
+
+  testWidgets('tap on loading button does not call onPressed', (t) async {
+    var n = 0;
+    await t.pumpWidget(
+      _app(AppButton(label: 'go', onPressed: () => n++, loading: true)),
+    );
+    await t.tap(find.byType(AppButton));
+    expect(n, 0);
+  });
+
+  testWidgets('label exposed to semantics in both states', (t) async {
+    for (final loading in [false, true]) {
+      await t.pumpWidget(
+        _app(AppButton(label: 'go', onPressed: () {}, loading: loading)),
+      );
+      await t.pump(MotionTokens.kButtonMorphDuration * 2);
+      expect(t.getSemantics(find.byType(ElevatedButton)).label, 'go');
+    }
+  });
+
+  testWidgets('reduce motion: instant scale and zero morph', (t) async {
+    await t.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: Scaffold(
+            body: AppButton(label: 'go', onPressed: () {}),
+          ),
+        ),
+      ),
+    );
+    expect(
+      t.widget<AnimatedSwitcher>(find.byType(AnimatedSwitcher)).duration,
+      Duration.zero,
+    );
+    expect(
+      t.widget<AnimatedScale>(find.byType(AnimatedScale)).duration,
+      Duration.zero,
+    );
+    final g = await t.startGesture(t.getCenter(find.byType(AppButton)));
+    await t.pump();
+    expect(scale(t), 0.97);
+    await g.up();
+  });
+
+  testWidgets('disabled and loading do not scale', (t) async {
+    for (final b in [
+      const AppButton(label: 'go', onPressed: null),
+      AppButton(label: 'go', onPressed: () {}, loading: true),
+    ]) {
+      await t.pumpWidget(_app(b));
+      final g = await t.startGesture(t.getCenter(find.byType(AppButton)));
+      await t.pump();
+      expect(scale(t), 1.0);
+      await g.up();
+    }
+  });
+
+  testWidgets('pointer cancel resets scale', (t) async {
+    await t.pumpWidget(_app(AppButton(label: 'go', onPressed: () {})));
+    final g = await t.startGesture(t.getCenter(find.byType(AppButton)));
+    await t.pump();
+    expect(scale(t), 0.97);
+    await g.cancel();
+    await t.pump();
+    expect(scale(t), 1.0);
+  });
 }

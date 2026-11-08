@@ -30,7 +30,7 @@ class _AppButtonState extends State<AppButton> {
   @override
   Widget build(BuildContext context) {
     final enabled = !widget.loading && widget.onPressed != null;
-    final reduce = MediaQuery.of(context).disableAnimations;
+    final reduce = MediaQuery.disableAnimationsOf(context);
     final scaleDuration = reduce
         ? Duration.zero
         : MotionTokens.kPressScaleDuration;
@@ -50,7 +50,8 @@ class _AppButtonState extends State<AppButton> {
         child: SizedBox(
           height: AppSpacing.buttonHeight,
           child: ElevatedButton(
-            onPressed: widget.loading ? null : widget.onPressed,
+            // No-op while loading keeps the enabled (primary) look but ignores taps.
+            onPressed: widget.loading ? () {} : widget.onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: AppColors.surface,
@@ -61,25 +62,29 @@ class _AppButtonState extends State<AppButton> {
                 borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
               ),
             ),
-            child: AnimatedSwitcher(
-              duration: morphDuration,
-              child: widget.loading
-                  ? const SizedBox(
-                      key: ValueKey('loading'),
-                      height: _spinnerSize,
-                      width: _spinnerSize,
-                      child: CircularProgressIndicator(
-                        strokeWidth: _spinnerStroke,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.surface,
+            child: Semantics(
+              label: widget.label,
+              excludeSemantics: true,
+              child: AnimatedSwitcher(
+                duration: morphDuration,
+                child: widget.loading
+                    ? const SizedBox(
+                        key: ValueKey('loading'),
+                        height: _spinnerSize,
+                        width: _spinnerSize,
+                        child: CircularProgressIndicator(
+                          strokeWidth: _spinnerStroke,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.surface,
+                          ),
                         ),
+                      )
+                    : Text(
+                        widget.label.toUpperCase(),
+                        key: const ValueKey('label'),
+                        style: AppTextStyles.button,
                       ),
-                    )
-                  : Text(
-                      widget.label.toUpperCase(),
-                      key: const ValueKey('label'),
-                      style: AppTextStyles.button,
-                    ),
+              ),
             ),
           ),
         ),

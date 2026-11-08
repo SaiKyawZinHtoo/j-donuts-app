@@ -24,27 +24,34 @@ class AppTheme {
       border: _fieldBorder(AppColors.border),
       enabledBorder: _fieldBorder(AppColors.border),
       focusedBorder: _fieldBorder(AppColors.accent),
+      errorBorder: _fieldBorder(AppColors.error),
+      focusedErrorBorder: _fieldBorder(AppColors.error),
     ),
-    textSelectionTheme:
-        const TextSelectionThemeData(cursorColor: AppColors.accent),
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: AppColors.accent,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
-        )),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+          ),
+        ),
         minimumSize: const WidgetStatePropertyAll(
-            Size(0, AppSpacing.buttonHeight)),
-        backgroundColor: WidgetStateProperty.resolveWith((states) =>
-            states.contains(WidgetState.disabled)
-                ? AppColors.primaryDisabled
-                : AppColors.primary),
+          Size(0, AppSpacing.buttonHeight),
+        ),
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.disabled)
+              ? AppColors.primaryDisabled
+              : AppColors.primary,
+        ),
         textStyle: const WidgetStatePropertyAll(AppTextStyles.button),
       ),
     ),
   );
 
   static OutlineInputBorder _fieldBorder(Color color) => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.fieldRadius),
-        borderSide: BorderSide(color: color),
-      );
+    borderRadius: BorderRadius.circular(AppSpacing.fieldRadius),
+    borderSide: BorderSide(color: color),
+  );
 }
