@@ -1,6 +1,20 @@
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/auth_import.dart';
 import '../../features/shell/shell_import.dart';
+import '../result/result.dart';
+
+/// Routes reachable before/while a user authenticates.
+const _authRoutes = {
+  '/',
+  '/onboarding',
+  '/phone',
+  '/otp',
+  '/name',
+  '/dob',
+  '/welcome',
+};
 
 /// Generic placeholder for a route whose real screen is built in a later
 /// feature task. Routes are infrastructure; screens arrive feature by feature.
@@ -18,10 +32,13 @@ AppShellScreen _buildShell({required int initialIndex}) => AppShellScreen(
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
-  redirect: (context, state) {
-    // STUB: the real session check depends on AuthRepository/GetSessionUseCase,
-    // built in Tasks 3-4. Task 4 Step 7 wires this guard for real. For now,
-    // never redirect.
+  redirect: (context, state) async {
+    final result = await GetIt.instance<GetSessionUseCase>().call();
+    final hasSession = result is Ok<AuthUser?> && result.value != null;
+    final isAuthRoute = _authRoutes.contains(state.matchedLocation);
+
+    if (!hasSession && !isAuthRoute) return '/onboarding';
+    if (hasSession && isAuthRoute) return '/home';
     return null;
   },
   routes: [
