@@ -25,7 +25,12 @@ class MemberHeader extends StatelessWidget {
                 isLoading: true,
                 child: SizedBox(width: AppSpacing.iconSizeMd, height: AppSpacing.iconSizeMd),
               ),
-              errorWidget: (context, url, error) => const Icon(Icons.person, size: AppSpacing.iconSizeMd),
+              errorWidget: (context, url, error) => Image.asset(
+                'assets/images/seed/member_avatar.png',
+                width: AppSpacing.iconSizeMd,
+                height: AppSpacing.iconSizeMd,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),

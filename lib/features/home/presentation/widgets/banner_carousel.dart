@@ -60,8 +60,11 @@ class _BannerCarouselState extends State<BannerCarousel> {
                 width: double.infinity,
                 placeholder: (context, url) =>
                     const AppSkeleton(isLoading: true, child: SizedBox.expand()),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.image_not_supported_outlined),
+                errorWidget: (context, url, error) => Image.asset(
+                  'assets/images/seed/banner_seasonal.png',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
               ),
             ),
           );
