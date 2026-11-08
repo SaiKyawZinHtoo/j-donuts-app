@@ -14,4 +14,6 @@ class MotionTokens {
   static const double kShimmerOpacityRange = 0.3;
 
   static const Duration kShakeDuration = Duration(milliseconds: 400);
+
+  static const Duration kBannerAutoplayInterval = Duration(seconds: 4);
 }
