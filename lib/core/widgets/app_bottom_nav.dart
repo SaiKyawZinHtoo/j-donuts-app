@@ -4,9 +4,9 @@ part of '../core_import.dart';
 /// Rewards (center), Wallet, Settings. Pass [items] to override.
 const List<BottomNavigationBarItem> kDefaultBottomNavItems = [
   BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-  BottomNavigationBarItem(icon: Icon(Icons.explore_outlined), label: 'Explore'),
+  BottomNavigationBarItem(icon: Icon(Icons.workspace_premium_outlined), label: 'Explore'),
   BottomNavigationBarItem(
-    icon: Icon(Icons.local_offer_outlined),
+    icon: Icon(Icons.radio_button_checked),
     label: 'Rewards',
   ),
   BottomNavigationBarItem(
@@ -49,6 +49,14 @@ class AppBottomNav extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+            border: const Border(top: BorderSide(color: AppColors.surface)),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.35),
+                blurRadius: AppSpacing.sm,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -93,7 +101,7 @@ class AppBottomNav extends StatelessWidget {
   Widget _item(int i) {
     final selected = i == currentIndex;
     final label = items[i].label;
-    final color = selected ? AppColors.surface : AppColors.navInactive;
+    final color = AppColors.surface;
     return Semantics(
       button: true,
       selected: selected,

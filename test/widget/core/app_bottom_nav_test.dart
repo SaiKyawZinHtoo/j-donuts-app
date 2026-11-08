@@ -20,8 +20,14 @@ void main() {
   testWidgets('tap item 2 calls onTap(2)', (t) async {
     int? tapped;
     await t.pumpWidget(_host(0, (i) => tapped = i));
-    await t.tap(find.byIcon(Icons.local_offer_outlined));
+    await t.tap(find.byIcon(Icons.radio_button_checked));
     expect(tapped, 2);
+  });
+
+  testWidgets('slot icons: home first, crown second', (t) async {
+    await t.pumpWidget(_host(0, (_) {}));
+    expect(find.byIcon(Icons.home_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.workspace_premium_outlined), findsOneWidget);
   });
 
   testWidgets('pill slides monotonically between slots', (t) async {

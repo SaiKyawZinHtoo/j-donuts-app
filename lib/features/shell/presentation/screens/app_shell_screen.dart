@@ -46,9 +46,9 @@ class _AppShellScreenState extends State<AppShellScreen> {
           BottomNavigationBarItem(
               icon: const Icon(Icons.home_outlined), label: l10n.homeTabLabel),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.explore_outlined), label: l10n.exploreTabLabel),
+              icon: const Icon(Icons.workspace_premium_outlined), label: l10n.exploreTabLabel),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.local_offer_outlined), label: l10n.rewardsTabLabel),
+              icon: const Icon(Icons.radio_button_checked), label: l10n.rewardsTabLabel),
           BottomNavigationBarItem(
               icon: const Icon(Icons.account_balance_wallet_outlined),
               label: l10n.walletTabLabel),
