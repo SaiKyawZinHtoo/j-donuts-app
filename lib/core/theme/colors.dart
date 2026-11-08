@@ -16,6 +16,10 @@ class AppColors {
   static const Color textPrimary = Color(0xFF231A1E);
   static const Color textSecondary = Color(0xFF8A7A80);
   static const Color border = Color(0xFFEBD9DF);
+  static const Color tileCyan = Color(0xFF35C4E8);
+  static const Color tileBeige = Color(0xFFF9DCCB);
+  static const Color tileBlue = Color(0xFFBFD8F2);
+  static const Color tilePurple = Color(0xFFCBB8EE);
 
   static const List<Color> gradientColors = [
     Color(0xFFFDD6E5),

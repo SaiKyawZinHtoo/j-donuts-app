@@ -31,6 +31,7 @@ part 'presentation/bloc/auth_event.dart';
 part 'presentation/bloc/auth_state.dart';
 part 'presentation/bloc/auth_bloc.dart';
 part 'presentation/widgets/registration_progress_ring.dart';
+part 'presentation/widgets/donut_tile.dart';
 part 'presentation/screens/onboarding_screen.dart';
 part 'presentation/screens/phone_screen.dart';
 part 'presentation/screens/otp_screen.dart';
