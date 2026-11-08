@@ -67,13 +67,18 @@ online/offline for the Home offline banner; "refresh from network when back onli
 no-op hook since no mock server is in scope (see Known gaps).
 
 **Animations** (spec §6.2), all durations/curves as named constants in
-`core/theme/motion_tokens.dart`: the Rewards points ring sweep + synced number counter, tier-ladder
-highlight with a staggered connecting-line fill, staggered challenge-card entrance with per-card
-CustomPainter progress art, an animated pill under the active Earn/Gift tab, OTP shake-on-error,
-button press/loading morphs, Welcome screen's staggered donut-tile slide-in, Home's skeleton shimmer,
-and the shared bottom-nav pill slide. Every `AnimationController` checks
-`MediaQuery.of(context).disableAnimations` and jumps to its end state instead of faking a reduced
-animation.
+`core/theme/motion_tokens.dart`: the Rewards points ring sweep + synced number counter (now started
+only when the Rewards tab actually becomes active, not merely built — the shell's `IndexedStack`
+builds every tab up front), tier-ladder highlight with a staggered connecting-line fill, staggered
+challenge-card entrance with per-card CustomPainter progress art, an animated pill under the active
+Earn/Gift tab, OTP shake-on-error, a button press-scale (`AppButton`'s `AnimatedScale`) plus its
+loading-spinner swap, and Welcome screen's staggered donut-tile slide-in, Home's skeleton shimmer.
+Every `AnimationController` checks `MediaQuery.of(context).disableAnimations` and jumps to its end
+state instead of faking a reduced animation.
+
+Not built (see Known gaps for the full list): a sliding pill indicator on the bottom nav (it's a
+plain `BottomNavigationBar`), a shared-axis transition between registration steps, and a
+progress-ring-morphs-to-check on the DOB step.
 
 ## Testing
 
@@ -97,7 +102,7 @@ As part of this task, the bundled seed PNGs (`assets/images/seed/*.png`) were re
 test-environment artifact); they're now valid, decodable 1×1 placeholder PNGs. This would have failed
 to render on a real device too, not only under `flutter test`.
 
-Full suite: 68 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
+Full suite: 69 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
 (`prefer_initializing_formals`, `unnecessary_library_name`) from earlier tasks, no errors or warnings.
 
 ## Known gaps
@@ -116,6 +121,23 @@ none of which block the flows above:
   `unnecessary_library_name` style lints. None are required by the brief's test lists.
 - `AppBottomNav`'s item list and `AppShellScreen`'s tab list aren't structurally linked (a length
   mismatch wouldn't be caught at compile time) — no current caller hits this.
+- No product tile → detail Hero transition: the same product can appear in more than one Home
+  section (e.g. "Popular" and "Order again"), so a single Hero tag per product id would collide when
+  both tiles are on screen at once; not worth the per-section-unique-tag plumbing for this pass.
+- Translation is incomplete beyond tier names and the strings added in this pass — most user-facing
+  copy only has an English/Myanmar pair for what earlier tasks and this review explicitly touched,
+  not a full audit of every string in the app.
+- The Home offline banner's `connectivity_plus` check is a coarse "any connection" reachability
+  signal (no actual ping/HTTP check that the backend, if one existed, is reachable).
+- `talker`/`talker_dio_logger` are dependencies but unused — no logging call sites exist yet.
+- `BlocProvider` placement is inconsistent across features: `AuthBloc` is provided once for the whole
+  auth `ShellRoute`, while `HomeBloc`/`RewardsBloc` are each created per-route in `app_router.dart`.
+  Both work for the app's current navigation shape, but it's not a single consistent convention.
+- Domain purity (no Flutter/Drift imports in `domain/`) is convention-only, not enforced by linting
+  or a layer-boundary tool.
+- Test coverage: the OTP lockout/resend and phone-normalization bloc paths added in this pass have
+  unit tests; broader coverage (e.g. every `RegistrationStepInvalid` branch, `AppOtpBox`'s paste-fill
+  edge cases) is not exhaustive.
 
 ## Manual deliverables not done here
 

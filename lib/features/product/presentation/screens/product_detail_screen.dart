@@ -58,14 +58,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppSpacing.sm),
-            child: CachedNetworkImage(
-              imageUrl: product.imageUrl,
+            child: AppSmartImage(
+              url: product.imageUrl,
               fit: BoxFit.cover,
               height: 200,
               width: double.infinity,
-              placeholder: (context, url) =>
+              placeholder: (context) =>
                   const AppSkeleton(isLoading: true, child: SizedBox.expand()),
-              errorWidget: (context, url, error) => Image.asset(
+              errorWidget: (context) => Image.asset(
                 'assets/images/seed/product_placeholder.png',
                 fit: BoxFit.cover,
                 height: 200,

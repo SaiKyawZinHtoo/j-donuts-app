@@ -71,7 +71,8 @@ class FakeAuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Result<AuthUser?>> getSession() async {
-    await Future.delayed(kFakeNetworkDelay);
+    // No artificial delay: session reads are local (SecureStorage/Drift),
+    // not a network call, and the router calls this on every navigation.
     final user = await _sessionDataSource.readSession();
     return Result.ok(user);
   }

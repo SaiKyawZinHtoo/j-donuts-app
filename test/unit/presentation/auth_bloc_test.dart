@@ -59,6 +59,25 @@ void main() {
 
   group('OTP resend', () {
     blocTest<AuthBloc, AuthState>(
+      'resend works immediately after lockout',
+      setUp: () {
+        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));
+      },
+      build: build,
+      act: (bloc) => bloc
+        ..add(const PhoneSubmitted('09123456789'))
+        ..add(const OtpDigitEntered('000000'))
+        ..add(const OtpDigitEntered('000000'))
+        ..add(const OtpDigitEntered('000000'))
+        ..add(const OtpResendRequested()),
+      skip: 5, // AuthLoading, OtpAwaiting, OtpInvalid x2, OtpLocked
+      expect: () => [isA<OtpAwaiting>()],
+      verify: (bloc) {
+        verify(() => mockAuthRepo.resendOtp(any())).called(1);
+      },
+    );
+
+    blocTest<AuthBloc, AuthState>(
       'OtpResendRequested before countdown reaches 0:00 is a no-op',
       setUp: () {
         when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));

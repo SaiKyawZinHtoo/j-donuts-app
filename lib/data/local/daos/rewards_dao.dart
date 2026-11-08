@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/challenges_table.dart';
+import 'package:j_donuts_app/data/local/database.dart';
+import 'package:j_donuts_app/data/local/tables/challenges_table.dart';
 
 part 'rewards_dao.g.dart';
 

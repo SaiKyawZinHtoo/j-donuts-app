@@ -12,6 +12,7 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMixin {
   late final AnimationController _shakeController;
   late final Animation<double> _shakeAnimation;
+  int _clearSignal = 0;
 
   @override
   void initState() {
@@ -50,10 +51,14 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is OtpInvalid) {
+            setState(() => _clearSignal++);
             if (!MediaQuery.of(context).disableAnimations) {
               _shakeController.forward(from: 0);
             }
-          } else if (state is AwaitingName) {
+            return;
+          }
+          if (ModalRoute.of(context)?.isCurrent != true) return;
+          if (state is AwaitingName) {
             context.push('/name');
           } else if (state is AuthSuccess) {
             context.go('/home');
@@ -93,6 +98,7 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
                         key: const Key('otpInput'),
                         length: 6,
                         errorText: errorText,
+                        clearSignal: _clearSignal,
                         onCompleted: (code) =>
                             context.read<AuthBloc>().add(OtpDigitEntered(code)),
                       ),

@@ -28,8 +28,13 @@ class _DobScreenState extends State<DobScreen> {
     final day = int.tryParse(_dayController.text);
     final year = int.tryParse(_yearController.text);
     if (month == null || day == null || year == null) return null;
+    if (_yearController.text.length != 4) return null;
     if (month < 1 || month > 12 || day < 1 || day > 31) return null;
-    return DateTime(year, month, day);
+    final dt = DateTime(year, month, day);
+    // DateTime silently normalizes an out-of-range day (e.g. Feb 30 ->
+    // Mar 2); reject anything that didn't round-trip exactly.
+    if (dt.month != month || dt.day != day || dt.year != year) return null;
+    return dt;
   }
 
   void _revalidate() {
@@ -68,6 +73,7 @@ class _DobScreenState extends State<DobScreen> {
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
           if (state is AuthSuccess) {
             context.go('/welcome');
           } else if (state is AwaitingName && context.canPop()) {

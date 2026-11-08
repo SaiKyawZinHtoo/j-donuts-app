@@ -56,5 +56,6 @@
   "rewardsTabLabel": "ဆုလာဘ်များ",
   "walletTabLabel": "ပိုက်ဆံအိတ်",
   "settingsTabLabel": "ဆက်တင်များ",
-  "comingSoon": "{label} မကြာမီလာမည်"
+  "comingSoon": "{label} မကြာမီလာမည်",
+  "logOut": "ထွက်ရန်"
 }

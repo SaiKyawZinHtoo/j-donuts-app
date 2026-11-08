@@ -171,4 +171,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String comingSoon(String label) {
     return '$label coming soon';
   }
+
+  @override
+  String get logOut => 'Log out';
 }

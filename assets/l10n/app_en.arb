@@ -89,5 +89,6 @@
   "comingSoon": "{label} coming soon",
   "@comingSoon": {
     "placeholders": { "label": { "type": "String" } }
-  }
+  },
+  "logOut": "Log out"
 }

@@ -61,13 +61,13 @@ class _BannerCarouselState extends State<BannerCarousel> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppSpacing.sm),
-              child: CachedNetworkImage(
-                imageUrl: banner.imageUrl,
+              child: AppSmartImage(
+                url: banner.imageUrl,
                 fit: BoxFit.cover,
                 width: double.infinity,
-                placeholder: (context, url) =>
+                placeholder: (context) =>
                     const AppSkeleton(isLoading: true, child: SizedBox.expand()),
-                errorWidget: (context, url, error) => Image.asset(
+                errorWidget: (context) => Image.asset(
                   'assets/images/seed/banner_seasonal.png',
                   fit: BoxFit.cover,
                   width: double.infinity,

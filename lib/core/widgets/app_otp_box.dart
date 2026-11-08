@@ -4,12 +4,16 @@ class AppOtpBox extends StatefulWidget {
   final int length;
   final ValueChanged<String> onCompleted;
   final String? errorText;
+  /// Bump this value (e.g. from a parent's error-state listener) to clear
+  /// all boxes and refocus the first one.
+  final int clearSignal;
 
   const AppOtpBox({
     super.key,
     required this.length,
     required this.onCompleted,
     this.errorText,
+    this.clearSignal = 0,
   });
 
   @override
@@ -20,6 +24,7 @@ class _AppOtpBoxState extends State<AppOtpBox> {
   late final List<TextEditingController> _controllers;
   late final List<FocusNode> _focusNodes;
   late final List<FocusNode> _keyListenerNodes;
+  late List<String> _prevValues;
 
   @override
   void initState() {
@@ -31,6 +36,19 @@ class _AppOtpBoxState extends State<AppOtpBox> {
       widget.length,
       (_) => FocusNode(skipTraversal: true),
     );
+    _prevValues = List.generate(widget.length, (_) => '');
+  }
+
+  @override
+  void didUpdateWidget(AppOtpBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.clearSignal != oldWidget.clearSignal) {
+      for (final c in _controllers) {
+        c.clear();
+      }
+      _prevValues = List.generate(widget.length, (_) => '');
+      _focusNodes.first.requestFocus();
+    }
   }
 
   @override
@@ -55,16 +73,28 @@ class _AppOtpBoxState extends State<AppOtpBox> {
   }
 
   void _onChanged(int index, String value) {
-    // Paste fill: a multi-char value lands in one box.
-    if (value.length > 1) {
+    final wasEmpty = _prevValues[index].isEmpty;
+    _prevValues[index] = value;
+    // Paste fill: a multi-char value landing in an EMPTY box. A box that
+    // already held a digit and received another keystroke also reports a
+    // multi-char value (old char + new one appended) -- that's not a
+    // paste, so only keep the newly typed last character.
+    if (value.length > 1 && wasEmpty) {
       final digits = value.split('').take(widget.length).toList();
       for (var i = 0; i < digits.length; i++) {
         _controllers[i].text = digits[i];
+        _prevValues[i] = digits[i];
       }
       final nextIndex = digits.length.clamp(0, widget.length - 1);
       _focusNodes[nextIndex].requestFocus();
       _emitIfComplete();
       return;
+    }
+    if (value.length > 1) {
+      final last = value[value.length - 1];
+      _controllers[index].text = last;
+      _prevValues[index] = last;
+      value = last;
     }
     if (value.isNotEmpty && index < widget.length - 1) {
       _focusNodes[index + 1].requestFocus();

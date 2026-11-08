@@ -52,13 +52,13 @@ class ProductSectionList extends StatelessWidget {
                       Expanded(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(AppSpacing.sm),
-                          child: CachedNetworkImage(
-                            imageUrl: product.imageUrl,
+                          child: AppSmartImage(
+                            url: product.imageUrl,
                             fit: BoxFit.cover,
                             width: double.infinity,
-                            placeholder: (context, url) => const AppSkeleton(
+                            placeholder: (context) => const AppSkeleton(
                                 isLoading: true, child: SizedBox.expand()),
-                            errorWidget: (context, url, error) => Image.asset(
+                            errorWidget: (context) => Image.asset(
                               'assets/images/seed/product_placeholder.png',
                               fit: BoxFit.cover,
                               width: double.infinity,
@@ -76,7 +76,7 @@ class ProductSectionList extends StatelessWidget {
                           Flexible(
                             child: Text(
                                 AppLocalizations.of(context)!
-                                    .priceMmk(product.priceMmk.toString()),
+                                    .priceMmk(NumberFormat.decimalPattern().format(product.priceMmk)),
                                 style: AppTextStyles.caption,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis),

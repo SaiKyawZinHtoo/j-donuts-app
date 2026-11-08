@@ -3,7 +3,14 @@ part of '../../rewards_import.dart';
 /// Rewards tab (design spec §6): animated points ring, tier ladder,
 /// staggered challenge cards, earn/gift tab switcher.
 class RewardsScreen extends StatefulWidget {
-  const RewardsScreen({super.key});
+  /// Whether this tab is the one currently visible in the shell. The
+  /// entrance animation starts the first time this turns true, not merely
+  /// on first build -- an `IndexedStack` builds every tab up front, so
+  /// "first build" alone would run the animation to completion before the
+  /// user ever taps the Rewards tab.
+  final bool isActive;
+
+  const RewardsScreen({super.key, this.isActive = true});
 
   @override
   State<RewardsScreen> createState() => _RewardsScreenState();
@@ -25,6 +32,16 @@ class _RewardsScreenState extends State<RewardsScreen> with SingleTickerProvider
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (widget.isActive) _maybeStartEntrance();
+  }
+
+  @override
+  void didUpdateWidget(RewardsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !oldWidget.isActive) _maybeStartEntrance();
+  }
+
+  void _maybeStartEntrance() {
     if (_entranceStarted) return;
     _entranceStarted = true;
     if (MediaQuery.of(context).disableAnimations) {

@@ -23,15 +23,7 @@ class RewardsRepositoryImpl implements RewardsRepository {
 
       return Result.ok(
         RewardsBundle(
-          member: Member(
-            id: memberRow.id,
-            name: memberRow.name,
-            photoUrl: memberRow.photoUrl,
-            tier: memberRow.tier,
-            points: memberRow.points,
-            nextTierPoints: memberRow.nextTierPoints,
-            totalPoints: memberRow.totalPoints,
-          ),
+          member: mapMemberRow(memberRow),
           challenges: challengeRows.map(_mapChallenge).toList(),
         ),
       );

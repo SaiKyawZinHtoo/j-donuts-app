@@ -16,4 +16,5 @@ class MotionTokens {
   static const Duration kShakeDuration = Duration(milliseconds: 400);
 
   static const Duration kBannerAutoplayInterval = Duration(seconds: 4);
+  static const Duration kPressScaleDuration = Duration(milliseconds: 100);
 }

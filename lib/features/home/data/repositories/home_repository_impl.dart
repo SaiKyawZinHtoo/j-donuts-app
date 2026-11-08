@@ -23,7 +23,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       return Result.ok(
         HomeBundle(
-          member: _mapMember(memberRow),
+          member: mapMemberRow(memberRow),
           banners: bundle.banners.map(_mapBanner).toList(),
           sections: bundle.sections.map(_mapSection).toList(),
           shops: bundle.shops.map(_mapShop).toList(),
@@ -33,16 +33,6 @@ class HomeRepositoryImpl implements HomeRepository {
       return Result.err('Failed to load home data: $e');
     }
   }
-
-  Member _mapMember(drift.MemberData row) => Member(
-        id: row.id,
-        name: row.name,
-        photoUrl: row.photoUrl,
-        tier: row.tier,
-        points: row.points,
-        nextTierPoints: row.nextTierPoints,
-        totalPoints: row.totalPoints,
-      );
 
   BannerItem _mapBanner(drift.Banner row) => BannerItem(
         id: row.id,
@@ -64,3 +54,14 @@ class HomeRepositoryImpl implements HomeRepository {
         distanceLabel: row.distanceLabel,
       );
 }
+
+/// Shared with [RewardsRepositoryImpl], which also reads [MemberDao] rows.
+Member mapMemberRow(drift.MemberData row) => Member(
+      id: row.id,
+      name: row.name,
+      photoUrl: row.photoUrl,
+      tier: row.tier,
+      points: row.points,
+      nextTierPoints: row.nextTierPoints,
+      totalPoints: row.totalPoints,
+    );

@@ -2,12 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/auth/auth_import.dart';
-import '../../features/home/home_import.dart';
-import '../../features/product/product_import.dart';
-import '../../features/rewards/rewards_import.dart';
-import '../../features/shell/shell_import.dart';
-import '../result/result.dart';
+import 'package:j_donuts_app/features/auth/auth_import.dart';
+import 'package:j_donuts_app/features/home/home_import.dart';
+import 'package:j_donuts_app/features/product/product_import.dart';
+import 'package:j_donuts_app/features/rewards/rewards_import.dart';
+import 'package:j_donuts_app/features/shell/shell_import.dart';
+import 'package:j_donuts_app/core/result/result.dart';
 
 /// Routes reachable before/while a user authenticates.
 const _authRoutes = {
@@ -26,9 +26,9 @@ AppShellScreen _buildShell({required int initialIndex}) => AppShellScreen(
     create: (_) => GetIt.instance<HomeBloc>()..add(const HomeRequested()),
     child: const HomeScreen(),
   ),
-  rewardsTab: BlocProvider<RewardsBloc>(
+  rewardsTab: (isActive) => BlocProvider<RewardsBloc>(
     create: (_) => GetIt.instance<RewardsBloc>()..add(const RewardsRequested()),
-    child: const RewardsScreen(),
+    child: RewardsScreen(isActive: isActive),
   ),
   initialIndex: initialIndex,
 );

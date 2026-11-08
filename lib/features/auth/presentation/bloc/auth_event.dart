@@ -7,7 +7,8 @@ sealed class AuthEvent {
 
 final class PhoneSubmitted extends AuthEvent {
   final String raw;
-  const PhoneSubmitted(this.raw);
+  final bool isLogin;
+  const PhoneSubmitted(this.raw, {this.isLogin = false});
 }
 
 final class OtpDigitEntered extends AuthEvent {

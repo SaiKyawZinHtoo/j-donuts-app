@@ -53,6 +53,7 @@ class _NameScreenState extends State<NameScreen> {
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
           if (state is AwaitingDob) {
             context.push('/dob');
           } else if (state is OtpAwaiting && context.canPop()) {

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,4 +23,5 @@ part 'widgets/app_dialog.dart';
 part 'widgets/app_snackbar.dart';
 part 'widgets/app_app_bar.dart';
 part 'widgets/app_bottom_nav.dart';
+part 'widgets/app_smart_image.dart';
 part 'services/connectivity_service.dart';

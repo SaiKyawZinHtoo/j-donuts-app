@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/auth_users_table.dart';
+import 'package:j_donuts_app/data/local/database.dart';
+import 'package:j_donuts_app/data/local/tables/auth_users_table.dart';
 
 part 'auth_dao.g.dart';
 

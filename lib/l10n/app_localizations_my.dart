@@ -172,4 +172,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String comingSoon(String label) {
     return '$label မကြာမီလာမည်';
   }
+
+  @override
+  String get logOut => 'ထွက်ရန်';
 }

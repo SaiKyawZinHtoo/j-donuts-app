@@ -5,7 +5,7 @@ part of '../../shell_import.dart';
 /// are generic placeholders.
 class AppShellScreen extends StatefulWidget {
   final Widget homeTab;
-  final Widget rewardsTab;
+  final Widget Function(bool isActive) rewardsTab;
   final int initialIndex;
 
   static const int homeIndex = 0;
@@ -31,9 +31,9 @@ class _AppShellScreenState extends State<AppShellScreen> {
     final tabs = [
       widget.homeTab,
       PlaceholderTabScreen(label: l10n.exploreTabLabel),
-      widget.rewardsTab,
+      widget.rewardsTab(_currentIndex == AppShellScreen.rewardsIndex),
       PlaceholderTabScreen(label: l10n.walletTabLabel),
-      PlaceholderTabScreen(label: l10n.settingsTabLabel),
+      const SettingsTabScreen(),
     ];
 
     return Scaffold(

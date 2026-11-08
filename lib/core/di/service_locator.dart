@@ -1,17 +1,17 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../data/local/daos/auth_dao.dart';
-import '../../data/local/daos/home_dao.dart';
-import '../../data/local/daos/member_dao.dart';
-import '../../data/local/daos/product_dao.dart';
-import '../../data/local/daos/rewards_dao.dart';
-import '../../data/local/database.dart';
-import '../../features/auth/auth_import.dart';
-import '../../features/home/home_import.dart';
-import '../../features/product/product_import.dart';
-import '../../features/rewards/rewards_import.dart';
-import '../core_import.dart';
+import 'package:j_donuts_app/data/local/daos/auth_dao.dart';
+import 'package:j_donuts_app/data/local/daos/home_dao.dart';
+import 'package:j_donuts_app/data/local/daos/member_dao.dart';
+import 'package:j_donuts_app/data/local/daos/product_dao.dart';
+import 'package:j_donuts_app/data/local/daos/rewards_dao.dart';
+import 'package:j_donuts_app/data/local/database.dart';
+import 'package:j_donuts_app/features/auth/auth_import.dart';
+import 'package:j_donuts_app/features/home/home_import.dart';
+import 'package:j_donuts_app/features/product/product_import.dart';
+import 'package:j_donuts_app/features/rewards/rewards_import.dart';
+import 'package:j_donuts_app/core/core_import.dart';
 
 /// Registers app-wide singletons. Each later feature task adds its own
 /// repository/use-case registrations in its own file -- not here.

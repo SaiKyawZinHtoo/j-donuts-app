@@ -14,6 +14,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   bool _otpRequestInFlight = false;
   bool _dobRequestInFlight = false;
   Timer? _timer;
+  DateTime? _lastInvalidAt;
   RegistrationDraft _draft = const RegistrationDraft();
   RegistrationStep _currentStep = RegistrationStep.phone;
 
@@ -64,10 +65,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
+    final normalized = normalizePhone(event.raw);
     try {
-      _draft = _draft.copyWith(phone: event.raw);
+      _draft = _draft.copyWith(phone: normalized);
       emit(AuthLoading(draft: _draft));
-      final checkResult = await authRepository.checkPhone(event.raw);
+      final checkResult = await authRepository.checkPhone(normalized);
       if (checkResult is Err<bool>) {
         emit(AuthFailure(checkResult.message, draft: _draft));
         return;
@@ -75,6 +77,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       _phoneKnown = (checkResult as Ok<bool>).value;
       if (!_phoneKnown) {
         emit(PhoneNeedsRegistration(draft: _draft));
+        // Login mode + unknown number: stay on the Phone screen (spec §4.2)
+        // instead of starting OTP for a number that isn't registered.
+        if (event.isLogin) return;
       }
       _startOtpTimer(emit);
     } finally {
@@ -84,6 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _startOtpTimer(Emitter<AuthState> emit) {
     _attempts = 0;
+    _lastInvalidAt = null;
     _secondsLeft = kOtpResendSeconds;
     _currentStep = RegistrationStep.otp;
     emit(OtpAwaiting(_secondsLeft, draft: _draft));
@@ -98,6 +104,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (_secondsLeft <= 0) {
       _secondsLeft = 0;
       _timer?.cancel();
+    }
+    // Don't let the tick's OtpAwaiting overwrite a just-shown OtpInvalid
+    // within the same attempt -- give the error a visible window first.
+    final lastInvalid = _lastInvalidAt;
+    if (lastInvalid != null &&
+        DateTime.now().difference(lastInvalid) < const Duration(milliseconds: 1500)) {
+      return;
     }
     emit(OtpAwaiting(_secondsLeft, draft: _draft));
   }
@@ -127,14 +140,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _attempts += 1;
     if (_attempts >= kOtpMaxAttempts) {
       _timer?.cancel();
+      _secondsLeft = 0;
       emit(OtpLocked(draft: _draft));
     } else {
+      _lastInvalidAt = DateTime.now();
       emit(OtpInvalid(kOtpMaxAttempts - _attempts, draft: _draft));
     }
   }
 
   Future<void> _onOtpResendRequested(OtpResendRequested event, Emitter<AuthState> emit) async {
-    if (_secondsLeft > 0) return;
+    if (_secondsLeft > 0 && _attempts < kOtpMaxAttempts) return;
     _attempts = 0;
     await authRepository.resendOtp(_draft.phone ?? '');
     _startOtpTimer(emit);

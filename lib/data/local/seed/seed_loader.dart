@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-import '../database.dart';
+import 'package:j_donuts_app/data/local/database.dart';
 import 'seed_keys.dart';
 
 /// Populates [AppDatabase] from the bundled `assets/seed/*.json` fixtures on

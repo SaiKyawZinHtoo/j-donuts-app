@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/member_table.dart';
+import 'package:j_donuts_app/data/local/database.dart';
+import 'package:j_donuts_app/data/local/tables/member_table.dart';
 
 part 'member_dao.g.dart';
 

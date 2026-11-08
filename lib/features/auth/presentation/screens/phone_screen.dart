@@ -57,7 +57,10 @@ class _PhoneScreenState extends State<PhoneScreen> {
         listener: (context, state) {
           if (state is PhoneInvalid) {
             setState(() => _serverError = state.message);
-          } else if (state is OtpAwaiting) {
+            return;
+          }
+          if (ModalRoute.of(context)?.isCurrent != true) return;
+          if (state is OtpAwaiting) {
             context.push('/otp');
           } else if (state is AuthFailure) {
             AppSnackbar.showError(context, state.message);
@@ -83,9 +86,16 @@ class _PhoneScreenState extends State<PhoneScreen> {
                 ),
                 if (state is PhoneNeedsRegistration && widget.isLogin) ...[
                   const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    l10n.phoneNotFoundRegister,
-                    style: AppTextStyles.caption.copyWith(color: AppColors.error),
+                  GestureDetector(
+                    key: const Key('registerInsteadLink'),
+                    onTap: () => context.push('/phone'),
+                    child: Text(
+                      l10n.phoneNotFoundRegister,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.error,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
                   ),
                 ],
                 const SizedBox(height: AppSpacing.xl),
@@ -94,7 +104,9 @@ class _PhoneScreenState extends State<PhoneScreen> {
                   label: l10n.continueButton,
                   loading: loading,
                   onPressed: _isValid
-                      ? () => context.read<AuthBloc>().add(PhoneSubmitted(_controller.text))
+                      ? () => context.read<AuthBloc>().add(
+                          PhoneSubmitted(_controller.text, isLogin: widget.isLogin),
+                        )
                       : null,
                 ),
               ],

@@ -1,11 +1,11 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/banners_table.dart';
-import '../tables/member_table.dart';
-import '../tables/sections_table.dart';
-import '../tables/shops_table.dart';
-import '../tables/products_table.dart';
+import 'package:j_donuts_app/data/local/database.dart';
+import 'package:j_donuts_app/data/local/tables/banners_table.dart';
+import 'package:j_donuts_app/data/local/tables/member_table.dart';
+import 'package:j_donuts_app/data/local/tables/sections_table.dart';
+import 'package:j_donuts_app/data/local/tables/shops_table.dart';
+import 'package:j_donuts_app/data/local/tables/products_table.dart';
 
 part 'home_dao.g.dart';
 
