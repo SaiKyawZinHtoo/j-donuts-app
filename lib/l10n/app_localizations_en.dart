@@ -134,6 +134,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noBannersRightNow => 'No banners right now.';
 
   @override
+  String get exploreNow => 'Explore now';
+
+  @override
+  String get orderOnline => 'Order Online';
+
+  @override
   String nearbyShopsTitle(int count) {
     return 'There are $count J\'Donut shops';
   }

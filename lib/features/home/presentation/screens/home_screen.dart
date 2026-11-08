@@ -43,37 +43,35 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       key: const Key('homeScreen'),
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            switch (state) {
-              case HomeLoading():
-                return const AppSkeleton(
-                  isLoading: true,
-                  child: _HomeSkeletonShape(),
-                );
-              case HomeError(message: final message):
-                return AppErrorState(
-                  message: message,
-                  onRetry: () =>
-                      context.read<HomeBloc>().add(const HomeRequested()),
-                );
-              case HomeLoaded():
-                _startOnce(context, state.data.sections.length + 3);
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<HomeBloc>().add(const HomeRefreshRequested());
-                  },
-                  child: _HomeContent(
-                    state: state,
-                    entrance: _entrance,
-                    total: _total,
-                  ),
-                );
-            }
-          },
-        ),
+      backgroundColor: AppColors.pageGrey,
+      body: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          switch (state) {
+            case HomeLoading():
+              return const AppSkeleton(
+                isLoading: true,
+                child: _HomeSkeletonShape(),
+              );
+            case HomeError(message: final message):
+              return AppErrorState(
+                message: message,
+                onRetry: () =>
+                    context.read<HomeBloc>().add(const HomeRequested()),
+              );
+            case HomeLoaded():
+              _startOnce(context, state.data.sections.length + 3);
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<HomeBloc>().add(const HomeRefreshRequested());
+                },
+                child: _HomeContent(
+                  state: state,
+                  entrance: _entrance,
+                  total: _total,
+                ),
+              );
+          }
+        },
       ),
     );
   }
@@ -128,8 +126,12 @@ class _HomeContent extends StatelessWidget {
             ),
           ),
         _entry(i++, MemberHeader(member: bundle.member)),
-        _entry(i++, BannerCarousel(banners: bundle.banners)),
-        const SizedBox(height: AppSpacing.md),
+        // Banners overlap the header's bottom edge.
+        Transform.translate(
+          offset: const Offset(0, -AppSpacing.lg),
+          child: _entry(i++, BannerCarousel(banners: bundle.banners)),
+        ),
+        const SizedBox(height: AppSpacing.sectionGap - AppSpacing.lg),
         for (final section in bundle.sections) ...[
           _entry(
             i++,
@@ -138,10 +140,15 @@ class _HomeContent extends StatelessWidget {
               errorMessage: state.sectionErrors[section.id],
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.sectionGap),
         ],
         _entry(i++, NearbyShopsRow(shops: bundle.shops)),
-        const SizedBox(height: AppSpacing.lg),
+        SizedBox(
+          height:
+              AppSpacing.navBarHeight +
+              AppSpacing.lg +
+              MediaQuery.paddingOf(context).bottom,
+        ),
       ],
     );
   }

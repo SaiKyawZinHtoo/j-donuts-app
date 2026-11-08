@@ -59,6 +59,8 @@
   "nothingHereYet": "Nothing here yet.",
   "noNearbyShopsFound": "No nearby shops found.",
   "noBannersRightNow": "No banners right now.",
+  "exploreNow": "Explore now",
+  "orderOnline": "Order Online",
   "nearbyShopsTitle": "There are {count} J'Donut shops",
   "@nearbyShopsTitle": {
     "placeholders": { "count": { "type": "int" } }

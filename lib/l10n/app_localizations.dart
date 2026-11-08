@@ -320,6 +320,18 @@ abstract class AppLocalizations {
   /// **'No banners right now.'**
   String get noBannersRightNow;
 
+  /// No description provided for @exploreNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore now'**
+  String get exploreNow;
+
+  /// No description provided for @orderOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Online'**
+  String get orderOnline;
+
   /// No description provided for @nearbyShopsTitle.
   ///
   /// In en, this message translates to:

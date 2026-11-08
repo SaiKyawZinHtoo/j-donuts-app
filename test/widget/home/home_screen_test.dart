@@ -7,6 +7,7 @@ import 'package:j_donuts_app/core/core_import.dart';
 import 'package:j_donuts_app/core/result/result.dart';
 import 'package:j_donuts_app/features/home/home_import.dart';
 import 'package:j_donuts_app/features/product/product_import.dart';
+import 'package:j_donuts_app/features/shell/shell_import.dart';
 
 class MockGetHomeUseCase extends Mock implements GetHomeUseCase {}
 
@@ -236,5 +237,41 @@ void main() {
     ));
     expect(find.byKey(const Key('bannerCarousel')), findsOneWidget);
     await tester.pump(const Duration(minutes: 1));
+  });
+
+  testWidgets('shops block clears floating nav; grey page; explore + order texts', (tester) async {
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
+    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
+    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
+      ..add(const HomeRequested());
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: BlocProvider<HomeBloc>.value(
+        value: bloc,
+        child: AppShellScreen(
+          homeTab: const HomeScreen(),
+          rewardsTab: (_) => const SizedBox(),
+        ),
+      ),
+    ));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+
+    final scaffold = tester.widget<Scaffold>(find.byKey(const Key('homeScreen')));
+    expect(scaffold.backgroundColor, AppColors.pageGrey);
+
+    for (var k = 0; k < 4; k++) {
+      await tester.drag(find.byType(ListView).first, const Offset(0, -2000));
+      await tester.pumpAndSettle();
+    }
+    expect(find.byKey(const Key('nearbyShopsRow')), findsOneWidget);
+    expect(find.text('EXPLORE NOW'), findsOneWidget);
+    expect(find.text('Order Online'), findsOneWidget);
+    final navTop = tester.getTopLeft(find.byType(AppBottomNav)).dy;
+    expect(tester.getBottomLeft(find.byKey(const Key('shopCard_sh1'))).dy, lessThanOrEqualTo(navTop));
   });
 }

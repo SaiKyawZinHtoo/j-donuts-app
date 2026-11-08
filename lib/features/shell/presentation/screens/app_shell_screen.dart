@@ -37,6 +37,7 @@ class _AppShellScreenState extends State<AppShellScreen> {
     ];
 
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(index: _currentIndex, children: tabs),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,

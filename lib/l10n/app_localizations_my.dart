@@ -136,6 +136,12 @@ class AppLocalizationsMy extends AppLocalizations {
   String get noBannersRightNow => 'ယခု ကြော်ငြာများ မရှိပါ။';
 
   @override
+  String get exploreNow => 'စတင်ရှာဖွေမည်';
+
+  @override
+  String get orderOnline => 'အွန်လိုင်းမှ မှာမည်';
+
+  @override
   String nearbyShopsTitle(int count) {
     return 'ဂျေဒိုနပ် ဆိုင် $count ခု ရှိပါသည်';
   }
