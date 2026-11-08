@@ -191,7 +191,7 @@ and keeps spec's "no hard-coded colours in widgets" requirement satisfied by con
 
 | Validator | Rule |
 |---|---|
-| `validatePhone` | Strip spaces/dashes and one leading 0 after the +95 prefix; valid = +95 followed by 7–9 digits |
+| `validatePhone` | Strip spaces/dashes and one leading 0 after the +95 prefix; valid = +95 followed by a leading `9` then 7–9 more digits (8–10 digits total after +95), per the PDF's exact wording and worked example (`09254135592` → `+959254135592`) |
 | `validateOtp` | Exactly 6 digits, equals `kFakeOtpCode` ("123456") |
 | `validateFirstName` | Required, 1–50 trimmed chars, letters + spaces (Myanmar script included), no digits |
 | `validateLastName` | Optional, same character rules as first name |
