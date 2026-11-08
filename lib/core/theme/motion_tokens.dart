@@ -8,4 +8,8 @@ class MotionTokens {
   static const Duration kTabSwitchDuration = Duration(milliseconds: 250);
   static const Duration kStaggerStep = Duration(milliseconds: 60);
   static const Curve kEmphasizedCurve = Curves.easeInOutCubicEmphasized;
+
+  static const Duration kShimmerDuration = Duration(milliseconds: 1200);
+  static const double kShimmerOpacityBase = 0.4;
+  static const double kShimmerOpacityRange = 0.3;
 }

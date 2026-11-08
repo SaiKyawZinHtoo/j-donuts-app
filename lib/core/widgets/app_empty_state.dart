@@ -14,7 +14,7 @@ class AppEmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.inbox_outlined,
-                size: 48, color: AppColors.textSecondary),
+                size: AppSpacing.iconSizeMd, color: AppColors.textSecondary),
             const SizedBox(height: AppSpacing.sm),
             Text(
               message,

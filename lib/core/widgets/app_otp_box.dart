@@ -19,6 +19,7 @@ class AppOtpBox extends StatefulWidget {
 class _AppOtpBoxState extends State<AppOtpBox> {
   late final List<TextEditingController> _controllers;
   late final List<FocusNode> _focusNodes;
+  late final List<FocusNode> _keyListenerNodes;
 
   @override
   void initState() {
@@ -26,6 +27,10 @@ class _AppOtpBoxState extends State<AppOtpBox> {
     _controllers =
         List.generate(widget.length, (_) => TextEditingController());
     _focusNodes = List.generate(widget.length, (_) => FocusNode());
+    _keyListenerNodes = List.generate(
+      widget.length,
+      (_) => FocusNode(skipTraversal: true),
+    );
   }
 
   @override
@@ -34,6 +39,9 @@ class _AppOtpBoxState extends State<AppOtpBox> {
       c.dispose();
     }
     for (final f in _focusNodes) {
+      f.dispose();
+    }
+    for (final f in _keyListenerNodes) {
       f.dispose();
     }
     super.dispose();
@@ -73,10 +81,10 @@ class _AppOtpBoxState extends State<AppOtpBox> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(widget.length, (index) {
             return SizedBox(
-              width: 44,
-              height: 52,
+              width: AppSpacing.otpBoxWidth,
+              height: AppSpacing.otpBoxHeight,
               child: KeyboardListener(
-                focusNode: FocusNode(skipTraversal: true),
+                focusNode: _keyListenerNodes[index],
                 onKeyEvent: (event) {
                   if (event is KeyDownEvent &&
                       event.logicalKey == LogicalKeyboardKey.backspace &&

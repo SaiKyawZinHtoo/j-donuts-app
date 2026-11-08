@@ -25,7 +25,7 @@ class _AppSkeletonState extends State<AppSkeleton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: MotionTokens.kShimmerDuration,
     )..repeat(reverse: true);
   }
 
@@ -42,7 +42,8 @@ class _AppSkeletonState extends State<AppSkeleton>
       animation: _controller,
       builder: (context, _) {
         return Opacity(
-          opacity: 0.4 + 0.3 * _controller.value,
+          opacity: MotionTokens.kShimmerOpacityBase +
+              MotionTokens.kShimmerOpacityRange * _controller.value,
           child: ColoredBox(
             color: AppColors.border,
             child: Opacity(opacity: 0, child: widget.child),
