@@ -1,4 +1,5 @@
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 import 'package:get_it/get_it.dart';
@@ -55,7 +56,9 @@ void main() {
     await GetIt.instance.reset();
   });
 
-  testWidgets('MyApp builds and shows the initial route', (tester) async {
+  testWidgets('MyApp opens onboarding and continues to phone entry', (
+    tester,
+  ) async {
     FlutterSecureStoragePlatform.instance = _FakeSecureStorage();
     setupServiceLocator();
     // Swap the real (file-backed) database for an in-memory one so the
@@ -70,6 +73,15 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('getStartedButton')), findsOneWidget);
+    expect(find.text('Onboarding coming soon'), findsNothing);
+
+    await tester.tap(find.byKey(const Key('getStartedButton')));
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('phoneNumberField')), findsOneWidget);
+    expect(find.text('Phone coming soon'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

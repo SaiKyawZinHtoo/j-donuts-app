@@ -11,7 +11,6 @@ import '../result/result.dart';
 
 /// Routes reachable before/while a user authenticates.
 const _authRoutes = {
-  '/',
   '/onboarding',
   '/phone',
   '/otp',
@@ -19,12 +18,6 @@ const _authRoutes = {
   '/dob',
   '/welcome',
 };
-
-/// Generic placeholder for a route whose real screen is built in a later
-/// feature task. Routes are infrastructure; screens arrive feature by feature.
-class _RoutePlaceholderScreen extends PlaceholderTabScreen {
-  const _RoutePlaceholderScreen({required super.label});
-}
 
 /// Shared by the `/home` and `/rewards` routes: same shell, different
 /// starting tab.
@@ -47,43 +40,40 @@ final GoRouter appRouter = GoRouter(
     final hasSession = result is Ok<AuthUser?> && result.value != null;
     final isAuthRoute = _authRoutes.contains(state.matchedLocation);
 
+    if (state.matchedLocation == '/') {
+      return hasSession ? '/home' : '/onboarding';
+    }
     if (!hasSession && !isAuthRoute) return '/onboarding';
-    if (hasSession && isAuthRoute) return '/home';
+    if (hasSession && isAuthRoute && state.matchedLocation != '/welcome') {
+      return '/home';
+    }
     return null;
   },
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) =>
-          const _RoutePlaceholderScreen(label: 'Splash'),
-    ),
-    GoRoute(
-      path: '/onboarding',
-      builder: (context, state) =>
-          const _RoutePlaceholderScreen(label: 'Onboarding'),
-    ),
-    GoRoute(
-      path: '/phone',
-      builder: (context, state) =>
-          const _RoutePlaceholderScreen(label: 'Phone'),
-    ),
-    GoRoute(
-      path: '/otp',
-      builder: (context, state) => const _RoutePlaceholderScreen(label: 'OTP'),
-    ),
-    GoRoute(
-      path: '/name',
-      builder: (context, state) => const _RoutePlaceholderScreen(label: 'Name'),
-    ),
-    GoRoute(
-      path: '/dob',
-      builder: (context, state) =>
-          const _RoutePlaceholderScreen(label: 'Date of birth'),
-    ),
-    GoRoute(
-      path: '/welcome',
-      builder: (context, state) =>
-          const _RoutePlaceholderScreen(label: 'Welcome'),
+    GoRoute(path: '/', redirect: (context, state) => '/onboarding'),
+    ShellRoute(
+      builder: (context, state, child) => BlocProvider<AuthBloc>(
+        create: (_) => GetIt.instance<AuthBloc>(),
+        child: child,
+      ),
+      routes: [
+        GoRoute(
+          path: '/onboarding',
+          builder: (context, state) => const OnboardingScreen(),
+        ),
+        GoRoute(
+          path: '/phone',
+          builder: (context, state) =>
+              PhoneScreen(isLogin: state.extra == 'login'),
+        ),
+        GoRoute(path: '/otp', builder: (context, state) => const OtpScreen()),
+        GoRoute(path: '/name', builder: (context, state) => const NameScreen()),
+        GoRoute(path: '/dob', builder: (context, state) => const DobScreen()),
+        GoRoute(
+          path: '/welcome',
+          builder: (context, state) => const WelcomeScreen(),
+        ),
+      ],
     ),
     GoRoute(
       path: '/home',
