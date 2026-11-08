@@ -1,58 +1,160 @@
 part of '../../home_import.dart';
 
-/// Member name/photo/tier/points-to-next-tier plus a notification bell
-/// (design spec §5.2).
+/// Peach member header: avatar with arc ring, name, tier caption, points chip,
+/// hexagon badge and an orange notification bell.
 class MemberHeader extends StatelessWidget {
   final Member member;
   final VoidCallback? onBellTap;
+  final int notificationCount;
 
-  const MemberHeader({super.key, required this.member, this.onBellTap});
+  const MemberHeader({
+    super.key,
+    required this.member,
+    this.onBellTap,
+    this.notificationCount = 2,
+  });
+
+  static String _nextTier(String tier) => switch (tier) {
+        'Bronze' => 'Gold',
+        _ => 'Platinum',
+      };
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final pointsToNext = (member.nextTierPoints - member.points).clamp(0, member.nextTierPoints);
-    return Padding(
+    const avatar = AppSpacing.iconSizeMd;
+    return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
-      child: Row(
-        children: [
-          ClipOval(
-            child: CachedNetworkImage(
-              imageUrl: member.photoUrl,
-              width: AppSpacing.iconSizeMd,
-              height: AppSpacing.iconSizeMd,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => const AppSkeleton(
-                isLoading: true,
-                child: SizedBox(width: AppSpacing.iconSizeMd, height: AppSpacing.iconSizeMd),
-              ),
-              errorWidget: (context, url, error) => Image.asset(
-                'assets/images/seed/member_avatar.png',
-                width: AppSpacing.iconSizeMd,
-                height: AppSpacing.iconSizeMd,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      decoration: const BoxDecoration(
+        color: AppColors.headerPeach,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(AppSpacing.headerRadius)),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Text(member.name, style: AppTextStyles.h2),
-                Text(
-                  AppLocalizations.of(context)!.memberTierStatus(member.tier, pointsToNext),
-                  style: AppTextStyles.caption,
+                CustomPaint(
+                  painter: const _ArcRingPainter(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xs),
+                    child: ClipOval(
+                      child: AppSmartImage(
+                        url: member.photoUrl,
+                        width: avatar,
+                        height: avatar,
+                        fit: BoxFit.cover,
+                        errorWidget: (context) => const SizedBox(width: avatar, height: avatar),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(member.name, style: AppTextStyles.h1, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(l10n.memberTierCaption(member.tier), style: AppTextStyles.caption),
+                    ],
+                  ),
+                ),
+                ClipPath(
+                  clipper: const _HexClipper(),
+                  child: Container(
+                    width: AppSpacing.iconSizeMd,
+                    height: AppSpacing.iconSizeMd,
+                    color: AppColors.pageGrey,
+                    child: const Icon(Icons.star, color: AppColors.textSecondary),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Material(
+                  color: AppColors.badge,
+                  borderRadius: BorderRadius.circular(AppSpacing.md),
+                  child: InkWell(
+                    key: const Key('memberHeader_bellButton'),
+                    borderRadius: BorderRadius.circular(AppSpacing.md),
+                    onTap: onBellTap,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.notifications_none, color: Colors.white),
+                          const SizedBox(width: AppSpacing.xs),
+                          Container(
+                            padding: const EdgeInsets.all(AppSpacing.xs),
+                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                            child: Text(
+                              '$notificationCount',
+                              style: AppTextStyles.caption.copyWith(color: AppColors.badge),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-          ),
-          IconButton(
-            key: const Key('memberHeader_bellButton'),
-            icon: const Icon(Icons.notifications_outlined, color: AppColors.textPrimary),
-            onPressed: onBellTap,
-          ),
-        ],
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              key: const Key('memberHeader_pointsChip'),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+              ),
+              child: Text(
+                l10n.memberPointsLeft(pointsToNext, _nextTier(member.tier)),
+                style: AppTextStyles.caption,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+
+class _ArcRingPainter extends CustomPainter {
+  const _ArcRingPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppColors.badge
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+    canvas.drawArc(Offset.zero & size, -math.pi / 2, math.pi * 1.5, false, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _HexClipper extends CustomClipper<Path> {
+  const _HexClipper();
+
+  @override
+  Path getClip(Size size) {
+    final c = size.center(Offset.zero);
+    final r = size.shortestSide / 2;
+    final path = Path();
+    for (var i = 0; i < 6; i++) {
+      final a = math.pi / 3 * i - math.pi / 2;
+      final p = c + Offset(r * math.cos(a), r * math.sin(a));
+      i == 0 ? path.moveTo(p.dx, p.dy) : path.lineTo(p.dx, p.dy);
+    }
+    return path..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }

@@ -141,6 +141,16 @@ class AppLocalizationsMy extends AppLocalizations {
   }
 
   @override
+  String memberTierCaption(String tier) {
+    return '$tier အဆင့်အဖွဲ့ဝင်';
+  }
+
+  @override
+  String memberPointsLeft(int points, String tier) {
+    return '$tier အဖွဲ့ဝင်ဖြစ်ရန် $points အမှတ်လိုသည်';
+  }
+
+  @override
   String memberTierStatus(String tier, int points) {
     return '$tier အဆင့် · နောက်အဆင့်အတွက် $points အမှတ်လိုသည်';
   }

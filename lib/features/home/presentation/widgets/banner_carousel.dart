@@ -60,7 +60,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
               child: AppSmartImage(
                 url: banner.imageUrl,
                 fit: BoxFit.cover,

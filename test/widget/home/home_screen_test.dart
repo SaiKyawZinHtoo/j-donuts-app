@@ -188,4 +188,53 @@ void main() {
     await tester.ensureVisible(seasonal);
     expect(tester.getSize(seasonal).width, AppSpacing.cardPhotoWidth);
   });
+
+  testWidgets('MemberHeader shows name, tier, points chip and bell badge at 1.3x text', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: MediaQuery(
+        data: const MediaQueryData(size: Size(375, 812), textScaler: TextScaler.linear(1.3)),
+        child: const Scaffold(
+          body: MemberHeader(
+            member: Member(
+              id: 'm1',
+              name: 'Hania',
+              photoUrl: 'assets/images/seed/member_avatar.png',
+              tier: 'Bronze',
+              points: 710,
+              nextTierPoints: 2000,
+              totalPoints: 710,
+            ),
+          ),
+        ),
+      ),
+    ));
+    expect(find.text('Hania'), findsOneWidget);
+    expect(find.text('Bronze member'), findsOneWidget);
+    expect(find.descendant(
+        of: find.byKey(const Key('memberHeader_pointsChip')),
+        matching: find.text('1290 points left to become Gold Member')), findsOneWidget);
+    expect(find.descendant(
+        of: find.byKey(const Key('memberHeader_bellButton')), matching: find.text('2')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('BannerCarousel exposes key and no autoplay timer under Reduce Motion', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const MediaQuery(
+        data: MediaQueryData(disableAnimations: true),
+        child: Scaffold(
+          body: BannerCarousel(banners: [
+            BannerItem(id: 'b1', imageUrl: 'assets/images/seed/banner_seasonal.png', title: 't', deepLinkTarget: ''),
+            BannerItem(id: 'b2', imageUrl: 'assets/images/seed/banner_seasonal.png', title: 't', deepLinkTarget: ''),
+          ]),
+        ),
+      ),
+    ));
+    expect(find.byKey(const Key('bannerCarousel')), findsOneWidget);
+    await tester.pump(const Duration(minutes: 1));
+  });
 }

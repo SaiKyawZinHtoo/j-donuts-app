@@ -139,6 +139,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String memberTierCaption(String tier) {
+    return '$tier member';
+  }
+
+  @override
+  String memberPointsLeft(int points, String tier) {
+    return '$points points left to become $tier Member';
+  }
+
+  @override
   String memberTierStatus(String tier, int points) {
     return '$tier tier · $points pts to next tier';
   }

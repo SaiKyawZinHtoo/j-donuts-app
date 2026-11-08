@@ -63,6 +63,10 @@
   "@nearbyShopsTitle": {
     "placeholders": { "count": { "type": "int" } }
   },
+  "memberTierCaption": "{tier} member",
+  "@memberTierCaption": { "placeholders": { "tier": { "type": "String" } } },
+  "memberPointsLeft": "{points} points left to become {tier} Member",
+  "@memberPointsLeft": { "placeholders": { "points": { "type": "int" }, "tier": { "type": "String" } } },
   "memberTierStatus": "{tier} tier · {points} pts to next tier",
   "@memberTierStatus": {
     "placeholders": {

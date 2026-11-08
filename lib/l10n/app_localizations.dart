@@ -326,6 +326,18 @@ abstract class AppLocalizations {
   /// **'There are {count} J\'Donut shops'**
   String nearbyShopsTitle(int count);
 
+  /// No description provided for @memberTierCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'{tier} member'**
+  String memberTierCaption(String tier);
+
+  /// No description provided for @memberPointsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{points} points left to become {tier} Member'**
+  String memberPointsLeft(int points, String tier);
+
   /// No description provided for @memberTierStatus.
   ///
   /// In en, this message translates to:

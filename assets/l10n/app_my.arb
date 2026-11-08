@@ -45,6 +45,8 @@
   "noNearbyShopsFound": "အနီးအနားဆိုင်များ မတွေ့ပါ။",
   "noBannersRightNow": "ယခု ကြော်ငြာများ မရှိပါ။",
   "nearbyShopsTitle": "ဂျေဒိုနပ် ဆိုင် {count} ခု ရှိပါသည်",
+  "memberTierCaption": "{tier} အဆင့်အဖွဲ့ဝင်",
+  "memberPointsLeft": "{tier} အဖွဲ့ဝင်ဖြစ်ရန် {points} အမှတ်လိုသည်",
   "memberTierStatus": "{tier} အဆင့် · နောက်အဆင့်အတွက် {points} အမှတ်လိုသည်",
   "newBadge": "အသစ်",
   "discountBadge": "-{percent}%",
