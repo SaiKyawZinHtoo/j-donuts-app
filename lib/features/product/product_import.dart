@@ -16,6 +16,7 @@ part 'domain/entities/product.dart';
 part 'domain/repositories/product_repository.dart';
 part 'domain/usecases/get_product_usecase.dart';
 part 'data/repositories/product_repository_impl.dart';
+part 'presentation/hero_tag.dart';
 part 'presentation/bloc/product_detail_event.dart';
 part 'presentation/bloc/product_detail_state.dart';
 part 'presentation/bloc/product_detail_bloc.dart';

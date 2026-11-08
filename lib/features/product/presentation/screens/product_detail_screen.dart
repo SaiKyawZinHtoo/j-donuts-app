@@ -5,8 +5,9 @@ part of '../../product_import.dart';
 /// total.
 class ProductDetailScreen extends StatefulWidget {
   final String productId;
+  final String? heroTag;
 
-  const ProductDetailScreen({super.key, required this.productId});
+  const ProductDetailScreen({super.key, required this.productId, this.heroTag});
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -46,6 +47,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
+  Widget _maybeHero(Widget child) =>
+      widget.heroTag == null ? child : Hero(tag: widget.heroTag!, child: child);
+
   Widget _buildLoaded(BuildContext context, ProductLoaded state) {
     final product = state.product;
     final bloc = context.read<ProductDetailBloc>();
@@ -56,22 +60,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppSpacing.sm),
-            child: AppSmartImage(
-              url: product.imageUrl,
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.infinity,
-              placeholder: (context) =>
-                  const AppSkeleton(isLoading: true, child: SizedBox.expand()),
-              errorWidget: (context) => Image.asset(
-                'assets/images/seed/product_placeholder.png',
+          _maybeHero(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              child: AppSmartImage(
+                url: product.imageUrl,
                 fit: BoxFit.cover,
                 height: 200,
                 width: double.infinity,
+                placeholder: (context) =>
+                    const AppSkeleton(isLoading: true, child: SizedBox.expand()),
+                errorWidget: (context) => Image.asset(
+                  'assets/images/seed/product_placeholder.png',
+                  fit: BoxFit.cover,
+                  height: 200,
+                  width: double.infinity,
+                ),
               ),
-            ),
+            )
           ),
           const SizedBox(height: AppSpacing.sm),
           Row(

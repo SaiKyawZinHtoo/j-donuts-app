@@ -42,4 +42,18 @@ class AppPageTransitions {
       );
     },
   );
+
+  /// Fade page whose duration matches the Hero flight (spec §10).
+  static CustomTransitionPage<T> heroFade<T>(
+    GoRouterState state,
+    Widget child, {
+    bool reduceMotion = false,
+  }) => CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: reduceMotion ? Duration.zero : MotionTokens.kHeroDuration,
+    reverseTransitionDuration: reduceMotion ? Duration.zero : MotionTokens.kHeroDuration,
+    transitionsBuilder: (context, animation, secondary, child) =>
+        FadeTransition(opacity: animation, child: child),
+  );
 }

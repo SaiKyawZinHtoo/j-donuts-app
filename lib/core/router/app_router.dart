@@ -115,9 +115,14 @@ GoRouter createAppRouter() => GoRouter(
     ),
     GoRoute(
       path: '/product/:id',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final id = state.pathParameters['id']!;
-        return ProductDetailScreen(productId: id);
+        final extra = state.extra;
+        return AppPageTransitions.heroFade(
+          state,
+          ProductDetailScreen(productId: id, heroTag: extra is String ? extra : null),
+          reduceMotion: MediaQuery.disableAnimationsOf(context),
+        );
       },
     ),
     GoRoute(

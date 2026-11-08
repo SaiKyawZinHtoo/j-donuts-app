@@ -37,7 +37,8 @@ class ProductSectionList extends StatelessWidget {
               final product = section.products[index];
               return GestureDetector(
                 key: Key('productTile_${product.id}'),
-                onTap: () => context.push('/product/${product.id}'),
+                onTap: () => context.push('/product/${product.id}',
+                    extra: heroTagFor(section.id, product.id)),
                 child: Container(
                   width: 100,
                   decoration: BoxDecoration(
@@ -50,18 +51,21 @@ class ProductSectionList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(AppSpacing.sm),
-                          child: AppSmartImage(
-                            url: product.imageUrl,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            placeholder: (context) => const AppSkeleton(
-                                isLoading: true, child: SizedBox.expand()),
-                            errorWidget: (context) => Image.asset(
-                              'assets/images/seed/product_placeholder.png',
+                        child: Hero(
+                          tag: heroTagFor(section.id, product.id),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(AppSpacing.sm),
+                            child: AppSmartImage(
+                              url: product.imageUrl,
                               fit: BoxFit.cover,
                               width: double.infinity,
+                              placeholder: (context) => const AppSkeleton(
+                                  isLoading: true, child: SizedBox.expand()),
+                              errorWidget: (context) => Image.asset(
+                                'assets/images/seed/product_placeholder.png',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
                             ),
                           ),
                         ),
