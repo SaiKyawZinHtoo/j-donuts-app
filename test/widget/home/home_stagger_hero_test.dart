@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -47,6 +49,11 @@ final _bundle = HomeBundle(
 class _StubRepo implements ProductRepository {
   @override
   Future<Result<Product>> getProduct(String id) async => const Result.ok(_p1);
+}
+
+class _PendingRepo implements ProductRepository {
+  @override
+  Future<Result<Product>> getProduct(String id) => Completer<Result<Product>>().future;
 }
 
 void main() {
@@ -172,5 +179,67 @@ void main() {
   testWidgets('detail with heroTag has exactly one Hero with that tag', (tester) async {
     await pumpDetail(tester, 'product-popular-p1');
     expect(tester.widget<Hero>(find.byType(Hero)).tag, 'product-popular-p1');
+  });
+
+  testWidgets('stagger: later section lags earlier one mid-animation', (tester) async {
+    await tester.pumpWidget(app(makeBloc()));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(MotionTokens.kHomeSectionStagger * 3);
+    double op(String t) => tester
+        .widget<FadeTransition>(
+            find.ancestor(of: find.text(t), matching: find.byType(FadeTransition)).first)
+        .opacity
+        .value;
+    expect(op('Popular'), lessThan(op('Seasonal')));
+    expect(op('Seasonal'), greaterThan(0));
+  });
+
+  testWidgets('refresh with more sections than first load: no exception, all visible',
+      (tester) async {
+    final bloc = makeBloc();
+    await tester.pumpWidget(app(bloc));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    final more = HomeBundle(
+      member: _bundle.member,
+      banners: const [],
+      sections: [
+        for (var i = 0; i < 5; i++)
+          ProductSection(id: 's$i', title: 'Sec$i', products: const [_p1]),
+      ],
+      shops: _bundle.shops,
+    );
+    when(() => getHome.call()).thenAnswer((_) async => Result.ok(more));
+    bloc.add(const HomeRefreshRequested());
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(tester.takeException(), isNull);
+    final f = tester.widget<FadeTransition>(
+        find.ancestor(of: find.text('Sec0'), matching: find.byType(FadeTransition)).first);
+    expect(f.opacity.value, 1);
+    expect(find.text('Sec0'), findsOneWidget);
+  });
+
+  testWidgets('detail in loading state has exactly one Hero when tagged', (tester) async {
+    GetIt.instance.unregister<ProductDetailBloc>();
+    GetIt.instance.registerFactory<ProductDetailBloc>(
+      () => ProductDetailBloc(getProductUseCase: GetProductUseCase(_PendingRepo())),
+    );
+    for (final tag in <String?>['t', null]) {
+      await tester.pumpWidget(MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: ProductDetailScreen(productId: 'p1', heroTag: tag),
+      ));
+      await tester.pump();
+      expect(find.byType(ProductDetailScreen), findsOneWidget);
+      if (tag == null) {
+        expect(find.byType(Hero), findsNothing);
+      } else {
+        expect(tester.widget<Hero>(find.byType(Hero)).tag, 't');
+      }
+    }
   });
 }

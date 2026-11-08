@@ -166,24 +166,29 @@ class _SectionEntrance extends StatelessWidget {
   Widget build(BuildContext context) {
     // total is zero under Reduce Motion (controller already at 1).
     final totalMs = total.inMilliseconds;
-    final curve = totalMs == 0
-        ? const Interval(0, 1)
-        : Interval(
-            (MotionTokens.kHomeSectionStagger * index).inMilliseconds / totalMs,
-            ((MotionTokens.kHomeSectionStagger * index) +
-                        MotionTokens.kStepTransitionDuration)
-                    .inMilliseconds /
-                totalMs,
-            curve: MotionTokens.kEmphasizedCurve,
+    final delay = MotionTokens.kHomeSectionStagger * index;
+    // Clamped: a refresh may bring more sections than `total` was sized for.
+    final t = totalMs == 0
+        ? controller
+        : controller.drive(
+            CurveTween(
+              curve: Interval(
+                (delay.inMilliseconds / totalMs).clamp(0.0, 1.0),
+                ((delay + MotionTokens.kStepTransitionDuration).inMilliseconds /
+                        totalMs)
+                    .clamp(0.0, 1.0),
+                curve: MotionTokens.kEmphasizedCurve,
+              ),
+            ),
           );
-    final t = CurvedAnimation(parent: controller, curve: curve);
     return FadeTransition(
       opacity: t,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, AppSpacing.entranceRise / 100),
-          end: Offset.zero,
-        ).animate(t),
+      child: AnimatedBuilder(
+        animation: t,
+        builder: (context, child) => Transform.translate(
+          offset: Offset(0, AppSpacing.entranceRise * (1 - t.value)),
+          child: child,
+        ),
         child: child,
       ),
     );

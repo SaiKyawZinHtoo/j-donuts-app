@@ -35,7 +35,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           builder: (context, state) {
             switch (state) {
               case ProductLoading():
-                return const AppSkeleton(isLoading: true, child: SizedBox.expand());
+                // Hero destination must exist on the first frame, at the same tree
+                // position as in _buildLoaded so it stays one continuous Hero.
+                if (widget.heroTag == null) {
+                  return const AppSkeleton(isLoading: true, child: SizedBox.expand());
+                }
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _maybeHero(
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(AppSpacing.sm),
+                          child: const AppSkeleton(
+                            isLoading: true,
+                            child: SizedBox(height: 200, width: double.infinity),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               case ProductError(message: final message):
                 return AppErrorState(message: message);
               case ProductLoaded():
