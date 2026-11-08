@@ -3,6 +3,7 @@ library auth;
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -27,3 +28,10 @@ part 'data/repositories/auth_repository_impl.dart';
 part 'presentation/bloc/auth_event.dart';
 part 'presentation/bloc/auth_state.dart';
 part 'presentation/bloc/auth_bloc.dart';
+part 'presentation/widgets/registration_progress_ring.dart';
+part 'presentation/screens/onboarding_screen.dart';
+part 'presentation/screens/phone_screen.dart';
+part 'presentation/screens/otp_screen.dart';
+part 'presentation/screens/name_screen.dart';
+part 'presentation/screens/dob_screen.dart';
+part 'presentation/screens/welcome_screen.dart';

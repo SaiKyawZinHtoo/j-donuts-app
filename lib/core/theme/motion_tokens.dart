@@ -12,4 +12,6 @@ class MotionTokens {
   static const Duration kShimmerDuration = Duration(milliseconds: 1200);
   static const double kShimmerOpacityBase = 0.4;
   static const double kShimmerOpacityRange = 0.3;
+
+  static const Duration kShakeDuration = Duration(milliseconds: 400);
 }
