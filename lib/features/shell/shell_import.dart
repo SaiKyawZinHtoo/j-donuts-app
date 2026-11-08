@@ -8,3 +8,4 @@ import 'package:j_donuts_app/features/auth/auth_import.dart';
 part 'presentation/screens/app_shell_screen.dart';
 part 'presentation/screens/placeholder_tab_screen.dart';
 part 'presentation/screens/settings_tab_screen.dart';
+part 'presentation/screens/splash_screen.dart';

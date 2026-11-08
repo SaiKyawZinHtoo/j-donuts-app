@@ -84,6 +84,7 @@ void main() {
 
   testWidgets('Register -> Home -> Product detail -> Rewards flow', (tester) async {
     await app.main();
+    await tester.pump(const Duration(seconds: 3)); // past splash
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle(const Duration(seconds: 1));
     await tester.pumpAndSettle(const Duration(seconds: 1));

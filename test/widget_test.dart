@@ -68,6 +68,8 @@ void main() {
       () => AppDatabase.forTesting(NativeDatabase.memory()),
     );
     await tester.pumpWidget(const MyApp());
+    // Advance past the splash (logo + hold + exit).
+    await tester.pump(const Duration(seconds: 3));
     // The router's redirect awaits GetSessionUseCase, which includes a fake
     // ~1s network delay -- advance the fake clock past it before settling.
     await tester.pump(const Duration(seconds: 2));

@@ -25,4 +25,6 @@ class AppSpacing {
   static const double progressRingSize = 64;
   static const double progressRingInset = 4;
   static const double progressRingStrokeWidth = 6;
+  static const double splashLogoSize = 160;
+  static const double stepSlideOffset = 30;
 }

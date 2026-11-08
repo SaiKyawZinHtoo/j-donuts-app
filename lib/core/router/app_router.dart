@@ -8,6 +8,7 @@ import 'package:j_donuts_app/features/product/product_import.dart';
 import 'package:j_donuts_app/features/rewards/rewards_import.dart';
 import 'package:j_donuts_app/features/shell/shell_import.dart';
 import 'package:j_donuts_app/core/result/result.dart';
+import 'package:j_donuts_app/core/router/app_page_transitions.dart';
 
 /// Routes reachable before/while a user authenticates.
 const _authRoutes = {
@@ -33,9 +34,12 @@ AppShellScreen _buildShell({required int initialIndex}) => AppShellScreen(
   initialIndex: initialIndex,
 );
 
-final GoRouter appRouter = GoRouter(
-  initialLocation: '/',
+final GoRouter appRouter = createAppRouter();
+
+GoRouter createAppRouter() => GoRouter(
+  initialLocation: '/splash',
   redirect: (context, state) async {
+    if (state.matchedLocation == '/splash') return null;
     final result = await GetIt.instance<GetSessionUseCase>().call();
     final hasSession = result is Ok<AuthUser?> && result.value != null;
     final isAuthRoute = _authRoutes.contains(state.matchedLocation);
@@ -50,7 +54,7 @@ final GoRouter appRouter = GoRouter(
     return null;
   },
   routes: [
-    GoRoute(path: '/', redirect: (context, state) => '/onboarding'),
+    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
     ShellRoute(
       builder: (context, state, child) => BlocProvider<AuthBloc>(
         create: (_) => GetIt.instance<AuthBloc>(),
@@ -63,15 +67,30 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/phone',
-          builder: (context, state) =>
-              PhoneScreen(isLogin: state.extra == 'login'),
+          pageBuilder: (context, state) => AppPageTransitions.sharedAxisX(
+            state,
+            PhoneScreen(isLogin: state.extra == 'login'),
+          ),
         ),
-        GoRoute(path: '/otp', builder: (context, state) => const OtpScreen()),
-        GoRoute(path: '/name', builder: (context, state) => const NameScreen()),
-        GoRoute(path: '/dob', builder: (context, state) => const DobScreen()),
+        GoRoute(
+          path: '/otp',
+          pageBuilder: (context, state) =>
+              AppPageTransitions.sharedAxisX(state, const OtpScreen()),
+        ),
+        GoRoute(
+          path: '/name',
+          pageBuilder: (context, state) =>
+              AppPageTransitions.sharedAxisX(state, const NameScreen()),
+        ),
+        GoRoute(
+          path: '/dob',
+          pageBuilder: (context, state) =>
+              AppPageTransitions.sharedAxisX(state, const DobScreen()),
+        ),
         GoRoute(
           path: '/welcome',
-          builder: (context, state) => const WelcomeScreen(),
+          pageBuilder: (context, state) =>
+              AppPageTransitions.sharedAxisX(state, const WelcomeScreen()),
         ),
       ],
     ),
