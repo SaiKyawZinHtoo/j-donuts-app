@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:j_donuts_app/l10n/app_localizations.dart';
 
@@ -29,4 +30,7 @@ part 'widgets/app_app_bar.dart';
 part 'widgets/app_bottom_nav.dart';
 part 'widgets/app_smart_image.dart';
 part 'widgets/app_legal_footer.dart';
+part 'widgets/app_gradient_background.dart';
+part 'widgets/app_back_button.dart';
+part 'widgets/auth_scaffold.dart';
 part 'services/connectivity_service.dart';
