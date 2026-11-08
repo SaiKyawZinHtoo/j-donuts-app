@@ -138,6 +138,8 @@ class _DobScreenState extends State<DobScreen> {
                       ? () => context.read<AuthBloc>().add(DobSubmitted(_dob!))
                       : null,
                 ),
+                const Spacer(),
+                AppLegalFooter(onTapTerms: () {}, onTapPrivacy: () {}),
               ],
             ),
           );

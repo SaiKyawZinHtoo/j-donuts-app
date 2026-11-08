@@ -53,7 +53,7 @@ class _AppButtonState extends State<AppButton> {
                       valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface),
                     ),
                   )
-                : Text(widget.label, style: AppTextStyles.button),
+                : Text(widget.label.toUpperCase(), style: AppTextStyles.button),
           ),
         ),
       ),

@@ -13,16 +13,26 @@ class AppLocalizationsMy extends AppLocalizations {
   String get appTitle => 'ဂျေ ဒိုနပ်';
 
   @override
-  String get onboardingTitle => 'ဂျေ ဒိုနပ်မှ ကြိုဆိုပါတယ်';
+  String get onboardingTitle => 'မည်သည့်စိတ်ခံစားချက်အတွက်မဆို ဝိုင်းပုံစားစရာ';
 
   @override
   String get getStartedButton => 'စတင်မည်';
 
   @override
+  String get alreadyHaveAccount => 'အကောင့်ရှိပြီးသားလား? ';
+
+  @override
   String get loginLink => 'လော့ဂ်အင်';
 
   @override
-  String get termsPrivacy => 'စည်းမျဉ်းနှင့် ကိုယ်ရေးကိုယ်တာမူဝါဒ';
+  String get termsPrivacyNotice =>
+      'ဆက်လက်လုပ်ဆောင်ခြင်းဖြင့် သင်သည် ကျွန်ုပ်တို့၏ Terms of Use နှင့် Privacy Policy တို့ကို ဖတ်ရှုပြီး သဘောတူကြောင်း အသိအမှတ်ပြုရာရောက်ပါသည်။';
+
+  @override
+  String get termsOfUse => 'Terms of Use';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
 
   @override
   String socialSignInUnavailableMessage(String provider) {
@@ -51,7 +61,12 @@ class AppLocalizationsMy extends AppLocalizations {
   String get continueButton => 'ရှေ့ဆက်မည်';
 
   @override
-  String get otpScreenTitle => 'ဂဏန်း ၆ လုံးကို ရိုက်ထည့်ပါ';
+  String get otpScreenTitle => 'သင့်နံပါတ်ကို အတည်ပြုပါ';
+
+  @override
+  String otpSubtitle(String phone) {
+    return 'ဂဏန်း ၆ လုံးပါ OTP ကို $phone သို့ ပို့ထားပါသည်';
+  }
 
   @override
   String otpIncorrectCode(int attemptsLeft) {
@@ -63,6 +78,9 @@ class AppLocalizationsMy extends AppLocalizations {
       'ကြိုးစားမှု အကြိမ်များလွန်းပါပြီ။ ကုဒ်ကို ထပ်မံပေးပို့ပါ။';
 
   @override
+  String get didntReceiveCode => 'ကုဒ်မရရှိသေးဘူးလား?';
+
+  @override
   String get resendCode => 'ကုဒ်ပြန်ပို့မည်';
 
   @override
@@ -71,7 +89,7 @@ class AppLocalizationsMy extends AppLocalizations {
   }
 
   @override
-  String get nameScreenTitle => 'သင့်နာမည်ကား?';
+  String get nameScreenTitle => 'သင့်နာမည်ကဘာလဲ?';
 
   @override
   String get firstNameLabel => 'နာမည်';
@@ -80,7 +98,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get lastNameLabel => 'မျိုးနွယ်အမည်';
 
   @override
-  String get dobScreenTitle => 'သင်မည်သည့်နေ့က မွေးသနည်း?';
+  String get dobScreenTitle => 'သင့်မွေးနေ့ ဘယ်တုန်းကလဲ?';
 
   @override
   String get dobMonthLabel => 'လ';

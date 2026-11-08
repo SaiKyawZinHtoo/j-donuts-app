@@ -109,6 +109,11 @@ class _PhoneScreenState extends State<PhoneScreen> {
                         )
                       : null,
                 ),
+                const Spacer(),
+                AppLegalFooter(
+                  onTapTerms: () {},
+                  onTapPrivacy: () {},
+                ),
               ],
             ),
           );

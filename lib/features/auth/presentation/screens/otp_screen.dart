@@ -83,6 +83,11 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(l10n.otpScreenTitle, style: AppTextStyles.h2),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  l10n.otpSubtitle(state.draft.phone ?? ''),
+                  style: AppTextStyles.caption,
+                ),
                 const SizedBox(height: AppSpacing.lg),
                 AnimatedBuilder(
                   animation: _shakeAnimation,
@@ -106,6 +111,7 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
+                Text(l10n.didntReceiveCode, style: AppTextStyles.caption),
                 GestureDetector(
                   key: const Key('resendCodeButton'),
                   onTap: secondsLeft == 0
@@ -118,6 +124,8 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
                     ),
                   ),
                 ),
+                const Spacer(),
+                AppLegalFooter(onTapTerms: () {}, onTapPrivacy: () {}),
               ],
             ),
           );

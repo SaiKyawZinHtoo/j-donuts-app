@@ -47,11 +47,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(find.byKey(const Key('productDetailScreen')), findsOneWidget);
-    expect(find.text('Add to cart · 1,500 MMK'), findsOneWidget);
+    expect(find.text('ADD TO CART · 1,500 MMK'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('quantityIncrement')));
     await tester.pump();
 
-    expect(find.text('Add to cart · 3,000 MMK'), findsOneWidget);
+    expect(find.text('ADD TO CART · 3,000 MMK'), findsOneWidget);
   });
 }

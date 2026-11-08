@@ -2,10 +2,13 @@
   "@@locale": "en",
   "appTitle": "J Donuts",
 
-  "onboardingTitle": "Welcome to J Donuts",
+  "onboardingTitle": "Round food for every mood",
   "getStartedButton": "Let's get started",
-  "loginLink": "Log in",
-  "termsPrivacy": "Terms of Service & Privacy Policy",
+  "alreadyHaveAccount": "Already have an account? ",
+  "loginLink": "Log In",
+  "termsPrivacyNotice": "By continuing, you acknowledge that you have read and agree to our Terms of Use and Privacy Policy.",
+  "termsOfUse": "Terms of Use",
+  "privacyPolicy": "Privacy Policy",
   "socialSignInUnavailableMessage": "{provider} sign-in is not implemented yet.",
   "@socialSignInUnavailableMessage": {
     "placeholders": { "provider": { "type": "String" } }
@@ -21,26 +24,31 @@
   "phoneNotFoundRegister": "We couldn't find this number. Register instead?",
   "continueButton": "Continue",
 
-  "otpScreenTitle": "Enter the 6-digit code",
+  "otpScreenTitle": "Verify your number",
+  "otpSubtitle": "We've sent 6 digit OTP to {phone}",
+  "@otpSubtitle": {
+    "placeholders": { "phone": { "type": "String" } }
+  },
   "otpIncorrectCode": "Incorrect code, {attemptsLeft} attempt(s) left.",
   "@otpIncorrectCode": {
     "placeholders": { "attemptsLeft": { "type": "int" } }
   },
   "otpLocked": "Too many attempts. Please resend the code.",
+  "didntReceiveCode": "Didn't receive the code?",
   "resendCode": "Resend code",
-  "resendIn": "Resend in {time}",
+  "resendIn": "resend in {time}",
   "@resendIn": {
     "placeholders": { "time": { "type": "String" } }
   },
 
-  "nameScreenTitle": "What is your name?",
-  "firstNameLabel": "First name",
-  "lastNameLabel": "Last name",
+  "nameScreenTitle": "What's your name?",
+  "firstNameLabel": "First Name",
+  "lastNameLabel": "Last Name",
 
-  "dobScreenTitle": "When were you born?",
-  "dobMonthLabel": "MM",
-  "dobDayLabel": "DD",
-  "dobYearLabel": "YYYY",
+  "dobScreenTitle": "What's your date of birth?",
+  "dobMonthLabel": "Month",
+  "dobDayLabel": "Day",
+  "dobYearLabel": "Year",
 
   "welcomeTitle": "Welcome!",
   "letsExploreButton": "Let's explore",

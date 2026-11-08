@@ -13,16 +13,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'J Donuts';
 
   @override
-  String get onboardingTitle => 'Welcome to J Donuts';
+  String get onboardingTitle => 'Round food for every mood';
 
   @override
   String get getStartedButton => 'Let\'s get started';
 
   @override
-  String get loginLink => 'Log in';
+  String get alreadyHaveAccount => 'Already have an account? ';
 
   @override
-  String get termsPrivacy => 'Terms of Service & Privacy Policy';
+  String get loginLink => 'Log In';
+
+  @override
+  String get termsPrivacyNotice =>
+      'By continuing, you acknowledge that you have read and agree to our Terms of Use and Privacy Policy.';
+
+  @override
+  String get termsOfUse => 'Terms of Use';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
 
   @override
   String socialSignInUnavailableMessage(String provider) {
@@ -51,7 +61,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
-  String get otpScreenTitle => 'Enter the 6-digit code';
+  String get otpScreenTitle => 'Verify your number';
+
+  @override
+  String otpSubtitle(String phone) {
+    return 'We\'ve sent 6 digit OTP to $phone';
+  }
 
   @override
   String otpIncorrectCode(int attemptsLeft) {
@@ -62,33 +77,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otpLocked => 'Too many attempts. Please resend the code.';
 
   @override
+  String get didntReceiveCode => 'Didn\'t receive the code?';
+
+  @override
   String get resendCode => 'Resend code';
 
   @override
   String resendIn(String time) {
-    return 'Resend in $time';
+    return 'resend in $time';
   }
 
   @override
-  String get nameScreenTitle => 'What is your name?';
+  String get nameScreenTitle => 'What\'s your name?';
 
   @override
-  String get firstNameLabel => 'First name';
+  String get firstNameLabel => 'First Name';
 
   @override
-  String get lastNameLabel => 'Last name';
+  String get lastNameLabel => 'Last Name';
 
   @override
-  String get dobScreenTitle => 'When were you born?';
+  String get dobScreenTitle => 'What\'s your date of birth?';
 
   @override
-  String get dobMonthLabel => 'MM';
+  String get dobMonthLabel => 'Month';
 
   @override
-  String get dobDayLabel => 'DD';
+  String get dobDayLabel => 'Day';
 
   @override
-  String get dobYearLabel => 'YYYY';
+  String get dobYearLabel => 'Year';
 
   @override
   String get welcomeTitle => 'Welcome!';

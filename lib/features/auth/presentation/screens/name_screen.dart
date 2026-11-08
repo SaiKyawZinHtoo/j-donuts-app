@@ -107,6 +107,8 @@ class _NameScreenState extends State<NameScreen> {
                         )
                       : null,
                 ),
+                const Spacer(),
+                AppLegalFooter(onTapTerms: () {}, onTapPrivacy: () {}),
               ],
             ),
           );

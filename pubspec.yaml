@@ -68,6 +68,7 @@ dev_dependencies:
   mocktail: ^1.0.4
   flutter_secure_storage_platform_interface: ^1.1.2
   bloc_test: ^10.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -84,6 +85,13 @@ flutter:
   assets:
     - assets/seed/
     - assets/images/seed/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
 
   # To add assets to your application, add an assets section, like this:
   # assets:

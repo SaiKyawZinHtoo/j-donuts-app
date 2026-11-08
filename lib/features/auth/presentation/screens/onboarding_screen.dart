@@ -38,10 +38,19 @@ class OnboardingScreen extends StatelessWidget {
                 onPressed: () => context.push('/phone'),
               ),
               const SizedBox(height: AppSpacing.md),
-              TextButton(
-                key: const Key('loginLinkButton'),
-                onPressed: () => context.push('/phone', extra: 'login'),
-                child: Text(l10n.loginLink, style: AppTextStyles.body),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(l10n.alreadyHaveAccount, style: AppTextStyles.body),
+                  GestureDetector(
+                    key: const Key('loginLinkButton'),
+                    onTap: () => context.push('/phone', extra: 'login'),
+                    child: Text(
+                      l10n.loginLink,
+                      style: AppTextStyles.body.copyWith(color: AppColors.primary),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: AppSpacing.lg),
               Row(
@@ -49,8 +58,15 @@ class OnboardingScreen extends StatelessWidget {
                 children: [
                   IconButton(
                     key: const Key('googleSignInButton'),
-                    icon: const Icon(Icons.g_mobiledata),
                     onPressed: () => _socialPlaceholder(context, 'Google'),
+                    icon: const Text(
+                      'G',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
                   ),
                   IconButton(
                     key: const Key('appleSignInButton'),
@@ -65,9 +81,9 @@ class OnboardingScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
-              GestureDetector(
-                onTap: () => _legalPlaceholder(context, 'Terms & Privacy'),
-                child: Text(l10n.termsPrivacy, style: AppTextStyles.caption),
+              AppLegalFooter(
+                onTapTerms: () => _legalPlaceholder(context, 'Terms of Use'),
+                onTapPrivacy: () => _legalPlaceholder(context, 'Privacy Policy'),
               ),
             ],
           ),

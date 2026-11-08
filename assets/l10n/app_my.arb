@@ -2,10 +2,13 @@
   "@@locale": "my",
   "appTitle": "ဂျေ ဒိုနပ်",
 
-  "onboardingTitle": "ဂျေ ဒိုနပ်မှ ကြိုဆိုပါတယ်",
+  "onboardingTitle": "မည်သည့်စိတ်ခံစားချက်အတွက်မဆို ဝိုင်းပုံစားစရာ",
   "getStartedButton": "စတင်မည်",
+  "alreadyHaveAccount": "အကောင့်ရှိပြီးသားလား? ",
   "loginLink": "လော့ဂ်အင်",
-  "termsPrivacy": "စည်းမျဉ်းနှင့် ကိုယ်ရေးကိုယ်တာမူဝါဒ",
+  "termsPrivacyNotice": "ဆက်လက်လုပ်ဆောင်ခြင်းဖြင့် သင်သည် ကျွန်ုပ်တို့၏ Terms of Use နှင့် Privacy Policy တို့ကို ဖတ်ရှုပြီး သဘောတူကြောင်း အသိအမှတ်ပြုရာရောက်ပါသည်။",
+  "termsOfUse": "Terms of Use",
+  "privacyPolicy": "Privacy Policy",
   "socialSignInUnavailableMessage": "{provider} ဖြင့် လော့ဂ်အင်ဝင်ခြင်းကို မထည့်သွင်းရသေးပါ။",
   "legalPlaceholderSuffix": "{doc} နမူနာ",
 
@@ -15,17 +18,19 @@
   "phoneNotFoundRegister": "ဤနံပါတ်ကို ရှာမတွေ့ပါ။ အကောင့်သစ်ဖွင့်မလား?",
   "continueButton": "ရှေ့ဆက်မည်",
 
-  "otpScreenTitle": "ဂဏန်း ၆ လုံးကို ရိုက်ထည့်ပါ",
+  "otpScreenTitle": "သင့်နံပါတ်ကို အတည်ပြုပါ",
+  "otpSubtitle": "ဂဏန်း ၆ လုံးပါ OTP ကို {phone} သို့ ပို့ထားပါသည်",
   "otpIncorrectCode": "ကုဒ်မှားနေပါသည်၊ ကြိုးစားခွင့် {attemptsLeft} ကြိမ် ကျန်ပါသည်။",
   "otpLocked": "ကြိုးစားမှု အကြိမ်များလွန်းပါပြီ။ ကုဒ်ကို ထပ်မံပေးပို့ပါ။",
+  "didntReceiveCode": "ကုဒ်မရရှိသေးဘူးလား?",
   "resendCode": "ကုဒ်ပြန်ပို့မည်",
   "resendIn": "{time} အတွင်း ပြန်ပို့ပါမည်",
 
-  "nameScreenTitle": "သင့်နာမည်ကား?",
+  "nameScreenTitle": "သင့်နာမည်ကဘာလဲ?",
   "firstNameLabel": "နာမည်",
   "lastNameLabel": "မျိုးနွယ်အမည်",
 
-  "dobScreenTitle": "သင်မည်သည့်နေ့က မွေးသနည်း?",
+  "dobScreenTitle": "သင့်မွေးနေ့ ဘယ်တုန်းကလဲ?",
   "dobMonthLabel": "လ",
   "dobDayLabel": "ရက်",
   "dobYearLabel": "နှစ်",

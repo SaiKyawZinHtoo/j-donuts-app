@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to J Donuts'**
+  /// **'Round food for every mood'**
   String get onboardingTitle;
 
   /// No description provided for @getStartedButton.
@@ -116,17 +116,35 @@ abstract class AppLocalizations {
   /// **'Let\'s get started'**
   String get getStartedButton;
 
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get alreadyHaveAccount;
+
   /// No description provided for @loginLink.
   ///
   /// In en, this message translates to:
-  /// **'Log in'**
+  /// **'Log In'**
   String get loginLink;
 
-  /// No description provided for @termsPrivacy.
+  /// No description provided for @termsPrivacyNotice.
   ///
   /// In en, this message translates to:
-  /// **'Terms of Service & Privacy Policy'**
-  String get termsPrivacy;
+  /// **'By continuing, you acknowledge that you have read and agree to our Terms of Use and Privacy Policy.'**
+  String get termsPrivacyNotice;
+
+  /// No description provided for @termsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get termsOfUse;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
 
   /// No description provided for @socialSignInUnavailableMessage.
   ///
@@ -173,8 +191,14 @@ abstract class AppLocalizations {
   /// No description provided for @otpScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter the 6-digit code'**
+  /// **'Verify your number'**
   String get otpScreenTitle;
+
+  /// No description provided for @otpSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve sent 6 digit OTP to {phone}'**
+  String otpSubtitle(String phone);
 
   /// No description provided for @otpIncorrectCode.
   ///
@@ -188,6 +212,12 @@ abstract class AppLocalizations {
   /// **'Too many attempts. Please resend the code.'**
   String get otpLocked;
 
+  /// No description provided for @didntReceiveCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn\'t receive the code?'**
+  String get didntReceiveCode;
+
   /// No description provided for @resendCode.
   ///
   /// In en, this message translates to:
@@ -197,49 +227,49 @@ abstract class AppLocalizations {
   /// No description provided for @resendIn.
   ///
   /// In en, this message translates to:
-  /// **'Resend in {time}'**
+  /// **'resend in {time}'**
   String resendIn(String time);
 
   /// No description provided for @nameScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'What is your name?'**
+  /// **'What\'s your name?'**
   String get nameScreenTitle;
 
   /// No description provided for @firstNameLabel.
   ///
   /// In en, this message translates to:
-  /// **'First name'**
+  /// **'First Name'**
   String get firstNameLabel;
 
   /// No description provided for @lastNameLabel.
   ///
   /// In en, this message translates to:
-  /// **'Last name'**
+  /// **'Last Name'**
   String get lastNameLabel;
 
   /// No description provided for @dobScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'When were you born?'**
+  /// **'What\'s your date of birth?'**
   String get dobScreenTitle;
 
   /// No description provided for @dobMonthLabel.
   ///
   /// In en, this message translates to:
-  /// **'MM'**
+  /// **'Month'**
   String get dobMonthLabel;
 
   /// No description provided for @dobDayLabel.
   ///
   /// In en, this message translates to:
-  /// **'DD'**
+  /// **'Day'**
   String get dobDayLabel;
 
   /// No description provided for @dobYearLabel.
   ///
   /// In en, this message translates to:
-  /// **'YYYY'**
+  /// **'Year'**
   String get dobYearLabel;
 
   /// No description provided for @welcomeTitle.
