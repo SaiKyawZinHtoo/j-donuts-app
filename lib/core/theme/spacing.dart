@@ -29,6 +29,10 @@ class AppSpacing {
   static const double stepSlideOffset = 30;
   static const double entranceRise = 16;
   static const double logoCircleSize = 72;
+  // Welcome tile grid: right column drop, tile radius, stack height fraction.
+  static const double welcomeTileOffset = 90;
+  static const double welcomeTileRadius = 28;
+  static const double welcomeStackFraction = 0.52;
   static const double logoCirclePadding = 12;
   static const double onboardingTilesFraction = 0.55;
   static const double onboardingTilesMinFraction = 0.45;

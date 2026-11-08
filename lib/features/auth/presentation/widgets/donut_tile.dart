@@ -10,6 +10,9 @@ class DonutTile extends StatelessWidget {
     required this.size,
     required this.animation,
     required this.slideFrom,
+    this.shape = BoxShape.circle,
+    this.width,
+    this.radius,
   });
 
   final String asset;
@@ -17,6 +20,11 @@ class DonutTile extends StatelessWidget {
   final double size;
   final Animation<double> animation;
   final Offset slideFrom;
+  final BoxShape shape;
+
+  /// Optional width for rectangles ([size] is then the height).
+  final double? width;
+  final double? radius;
 
   @override
   Widget build(BuildContext context) => FadeTransition(
@@ -27,9 +35,15 @@ class DonutTile extends StatelessWidget {
         end: Offset.zero,
       ).animate(animation),
       child: Container(
-        width: size,
+        width: width ?? size,
         height: size,
-        decoration: BoxDecoration(color: circleColor, shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: circleColor,
+          shape: shape,
+          borderRadius: shape == BoxShape.rectangle && radius != null
+              ? BorderRadius.circular(radius!)
+              : null,
+        ),
         clipBehavior: Clip.antiAlias,
         child: Image.asset(asset, fit: BoxFit.cover),
       ),

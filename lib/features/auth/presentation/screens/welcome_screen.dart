@@ -9,6 +9,13 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
+const _welcomeTiles = [
+  ('assets/images/seed/tile_1.png', AppColors.tileBlue),
+  ('assets/images/seed/tile_2.png', AppColors.tileBeige),
+  ('assets/images/seed/tile_3.png', AppColors.tilePurple),
+  ('assets/images/seed/donut_chocolate.png', AppColors.tileCyan),
+];
+
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
@@ -28,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.didChangeDependencies();
     if (_started) return;
     _started = true;
-    if (MediaQuery.of(context).disableAnimations) {
+    if (MediaQuery.disableAnimationsOf(context)) {
       _controller.value = 1.0;
     } else {
       _controller.forward();
@@ -68,29 +75,62 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (index) {
-                  final animation = _tileAnimation(index);
-                  return AnimatedBuilder(
-                    animation: animation,
-                    builder: (context, child) => Opacity(
-                      opacity: animation.value,
-                      child: Transform.translate(
-                        offset: Offset(0, (1 - animation.value) * 24),
-                        child: child,
-                      ),
+              LayoutBuilder(
+                builder: (context, c) {
+                  final stackH =
+                      MediaQuery.sizeOf(context).height *
+                      AppSpacing.welcomeStackFraction;
+                  final tileW = c.maxWidth * 0.52;
+                  final tileH = stackH * 0.46;
+                  Widget tile(int i, double left, double top) => Positioned(
+                    left: left,
+                    top: top,
+                    child: DonutTile(
+                      asset: _welcomeTiles[i].$1,
+                      circleColor: _welcomeTiles[i].$2,
+                      size: tileH,
+                      width: tileW,
+                      shape: BoxShape.rectangle,
+                      radius: AppSpacing.welcomeTileRadius,
+                      animation: _tileAnimation(i),
+                      slideFrom: const Offset(0, 0.15),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                      child: Icon(
-                        Icons.circle,
-                        size: AppSpacing.iconSizeMd,
-                        color: AppColors.accent,
+                  );
+                  const off = AppSpacing.welcomeTileOffset;
+                  final rx = c.maxWidth * 0.6;
+                  return SizedBox(
+                    height: stackH,
+                    child: ClipRect(
+                      child: Stack(
+                        children: [
+                          tile(0, -tileW * 0.05, 0),
+                          tile(1, rx, off * 0.5),
+                          tile(2, -tileW * 0.05, tileH + AppSpacing.md),
+                          tile(3, rx, off * 0.5 + tileH + AppSpacing.md),
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    stops: const [0.6, 1],
+                                    colors: [
+                                      AppColors.gradientColors.first.withValues(
+                                        alpha: 0,
+                                      ),
+                                      AppColors.gradientColors.first,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
-                }),
+                },
               ),
               const SizedBox(height: AppSpacing.lg),
               FadeTransition(
