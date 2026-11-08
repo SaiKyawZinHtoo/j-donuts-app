@@ -6,8 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:j_donuts_app/core/core_import.dart';
 import 'package:j_donuts_app/core/result/result.dart';
+import 'package:j_donuts_app/features/auth/auth_import.dart';
 import 'package:j_donuts_app/features/home/home_import.dart';
 import 'package:j_donuts_app/features/product/product_import.dart';
+
+class _MockAuthRepository extends Mock implements AuthRepository {}
 
 class _MockGetHomeUseCase extends Mock implements GetHomeUseCase {}
 
@@ -140,4 +143,46 @@ void main() {
 
     await GetIt.instance.reset();
   });
+
+  for (final entry in <String, Widget>{
+    'Phone': const PhoneScreen(),
+    'OTP': const OtpScreen(),
+    'Name': const NameScreen(),
+    'DOB': const DobScreen(),
+  }.entries) {
+    testWidgets('${entry.key} screen: no overflow at 1.3x with keyboard open',
+        (tester) async {
+      tester.view.physicalSize = const Size(375, 667);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      final bloc = AuthBloc(
+        loginUseCase: LoginUseCase(_MockAuthRepository()),
+        registerUseCase: RegisterUseCase(_MockAuthRepository()),
+        getSessionUseCase: GetSessionUseCase(_MockAuthRepository()),
+        authRepository: _MockAuthRepository(),
+      );
+      addTearDown(bloc.close);
+      final router = GoRouter(
+        initialLocation: '/__test__',
+        routes: [GoRoute(path: '/__test__', builder: (_, _) => entry.value)],
+      );
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routerConfig: router,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: const TextScaler.linear(1.3),
+              viewInsets: const EdgeInsets.only(bottom: 300),
+            ),
+            child: BlocProvider<AuthBloc>.value(value: bloc, child: child!),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

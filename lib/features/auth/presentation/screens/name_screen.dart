@@ -22,7 +22,8 @@ class _NameScreenState extends State<NameScreen> {
   }
 
   void _revalidate() {
-    final valid = validateFirstName(_firstController.text) is ValidationValid &&
+    final valid =
+        validateFirstName(_firstController.text) is ValidationValid &&
         validateLastName(_lastController.text) is ValidationValid;
     if (valid != _isValid) setState(() => _isValid = valid);
   }
@@ -36,84 +37,70 @@ class _NameScreenState extends State<NameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.read<AuthBloc>().add(const BackRequested()),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: AppSpacing.md),
-            child: RegistrationProgressRing(step: RegistrationStep.name),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (ModalRoute.of(context)?.isCurrent != true) return;
+        if (state is AwaitingDob) {
+          context.push('/dob');
+        } else if (state is OtpAwaiting && context.canPop()) {
+          context.pop();
+        }
+      },
+      builder: (context, state) {
+        // RegistrationStepInvalid carries one message with no field-level
+        // detail, so attribute it by re-running the same validators the
+        // bloc used: whichever field they flag is where the message shows.
+        String? firstError;
+        String? lastError;
+        if (state is RegistrationStepInvalid &&
+            state.step == RegistrationStep.name) {
+          if (validateFirstName(_firstController.text) is ValidationInvalid) {
+            firstError = state.message;
+          } else {
+            lastError = state.message;
+          }
+        }
+        final l10n = AppLocalizations.of(context)!;
+        return AuthScaffold(
+          onBack: () => context.read<AuthBloc>().add(const BackRequested()),
+          trailing: const RegistrationProgressRing(step: RegistrationStep.name),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.nameScreenTitle, style: AppTextStyles.h1),
+              const SizedBox(height: AppSpacing.lg),
+              AppTextField(
+                key: const Key('firstNameField'),
+                controller: _firstController,
+                labelText: l10n.firstNameLabel,
+                errorText: firstError,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AppTextField(
+                key: const Key('lastNameField'),
+                controller: _lastController,
+                labelText: l10n.lastNameLabel,
+                errorText: lastError,
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              AppButton(
+                key: const Key('continueButton'),
+                label: l10n.continueButton,
+                onPressed: _isValid
+                    ? () => context.read<AuthBloc>().add(
+                        NameSubmitted(
+                          _firstController.text,
+                          _lastController.text.isEmpty
+                              ? null
+                              : _lastController.text,
+                        ),
+                      )
+                    : null,
+              ),
+            ],
           ),
-        ],
-      ),
-      body: BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (ModalRoute.of(context)?.isCurrent != true) return;
-          if (state is AwaitingDob) {
-            context.push('/dob');
-          } else if (state is OtpAwaiting && context.canPop()) {
-            context.pop();
-          }
-        },
-        builder: (context, state) {
-          // RegistrationStepInvalid carries one message with no field-level
-          // detail, so attribute it by re-running the same validators the
-          // bloc used: whichever field they flag is where the message shows.
-          String? firstError;
-          String? lastError;
-          if (state is RegistrationStepInvalid && state.step == RegistrationStep.name) {
-            if (validateFirstName(_firstController.text) is ValidationInvalid) {
-              firstError = state.message;
-            } else {
-              lastError = state.message;
-            }
-          }
-          final l10n = AppLocalizations.of(context)!;
-          return Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.nameScreenTitle, style: AppTextStyles.h2),
-                const SizedBox(height: AppSpacing.lg),
-                AppTextField(
-                  key: const Key('firstNameField'),
-                  controller: _firstController,
-                  labelText: l10n.firstNameLabel,
-                  errorText: firstError,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                AppTextField(
-                  key: const Key('lastNameField'),
-                  controller: _lastController,
-                  labelText: l10n.lastNameLabel,
-                  errorText: lastError,
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                AppButton(
-                  key: const Key('continueButton'),
-                  label: l10n.continueButton,
-                  onPressed: _isValid
-                      ? () => context.read<AuthBloc>().add(
-                          NameSubmitted(
-                            _firstController.text,
-                            _lastController.text.isEmpty ? null : _lastController.text,
-                          ),
-                        )
-                      : null,
-                ),
-                const Spacer(),
-                AppLegalFooter(onTapTerms: () {}, onTapPrivacy: () {}),
-              ],
-            ),
-          );
-        },
-      ),
+        );
+      },
     );
   }
 }

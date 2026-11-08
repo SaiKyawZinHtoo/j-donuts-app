@@ -11,6 +11,7 @@ class AuthScaffold extends StatelessWidget {
     this.onTapTerms,
     this.onTapPrivacy,
     this.showFooter = true,
+    this.onBack,
   });
 
   final Widget child;
@@ -19,6 +20,7 @@ class AuthScaffold extends StatelessWidget {
   final VoidCallback? onTapTerms;
   final VoidCallback? onTapPrivacy;
   final bool showFooter;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class AuthScaffold extends StatelessWidget {
                   height: AppSpacing.backButtonSize,
                   child: Row(
                     children: [
-                      if (showBack) const AppBackButton(),
+                      if (showBack) AppBackButton(onPressed: onBack),
                       const Spacer(),
                       ?trailing,
                     ],

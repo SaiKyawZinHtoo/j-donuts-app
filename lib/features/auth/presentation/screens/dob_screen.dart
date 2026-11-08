@@ -53,98 +53,86 @@ class _DobScreenState extends State<DobScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.read<AuthBloc>().add(const BackRequested()),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.md),
-            child: RegistrationProgressRing(
-              step: RegistrationStep.dob,
-              completed: _isValid,
-            ),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (ModalRoute.of(context)?.isCurrent != true) return;
+        if (state is AuthSuccess) {
+          context.go('/welcome');
+        } else if (state is AwaitingName && context.canPop()) {
+          context.pop();
+        } else if (state is AuthFailure) {
+          AppSnackbar.showError(context, state.message);
+        }
+      },
+      builder: (context, state) {
+        final loading = state is AuthLoading;
+        final errorText =
+            state is RegistrationStepInvalid &&
+                state.step == RegistrationStep.dob
+            ? state.message
+            : null;
+        final l10n = AppLocalizations.of(context)!;
+        return AuthScaffold(
+          onBack: () => context.read<AuthBloc>().add(const BackRequested()),
+          trailing: RegistrationProgressRing(
+            step: RegistrationStep.dob,
+            completed: _isValid,
           ),
-        ],
-      ),
-      body: BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (ModalRoute.of(context)?.isCurrent != true) return;
-          if (state is AuthSuccess) {
-            context.go('/welcome');
-          } else if (state is AwaitingName && context.canPop()) {
-            context.pop();
-          } else if (state is AuthFailure) {
-            AppSnackbar.showError(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          final loading = state is AuthLoading;
-          final errorText = state is RegistrationStepInvalid && state.step == RegistrationStep.dob
-              ? state.message
-              : null;
-          final l10n = AppLocalizations.of(context)!;
-          return Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.dobScreenTitle, style: AppTextStyles.h2),
-                const SizedBox(height: AppSpacing.lg),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppTextField(
-                        key: const Key('dobMonthField'),
-                        controller: _monthController,
-                        labelText: l10n.dobMonthLabel,
-                        keyboardType: TextInputType.number,
-                      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.dobScreenTitle, style: AppTextStyles.h1),
+              const SizedBox(height: AppSpacing.lg),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextField(
+                      key: const Key('dobMonthField'),
+                      controller: _monthController,
+                      labelText: l10n.dobMonthLabel,
+                      keyboardType: TextInputType.number,
                     ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: AppTextField(
-                        key: const Key('dobDayField'),
-                        controller: _dayController,
-                        labelText: l10n.dobDayLabel,
-                        keyboardType: TextInputType.number,
-                      ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: AppTextField(
+                      key: const Key('dobDayField'),
+                      controller: _dayController,
+                      labelText: l10n.dobDayLabel,
+                      keyboardType: TextInputType.number,
                     ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: AppTextField(
-                        key: const Key('dobYearField'),
-                        controller: _yearController,
-                        labelText: l10n.dobYearLabel,
-                        keyboardType: TextInputType.number,
-                      ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: AppTextField(
+                      key: const Key('dobYearField'),
+                      controller: _yearController,
+                      labelText: l10n.dobYearLabel,
+                      keyboardType: TextInputType.number,
                     ),
-                  ],
-                ),
-                if (errorText != null) ...[
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(errorText, style: AppTextStyles.caption.copyWith(color: AppColors.error)),
+                  ),
                 ],
-                const SizedBox(height: AppSpacing.xl),
-                AppButton(
-                  key: const Key('continueButton'),
-                  label: l10n.continueButton,
-                  loading: loading,
-                  onPressed: _isValid
-                      ? () => context.read<AuthBloc>().add(DobSubmitted(_dob!))
-                      : null,
+              ),
+              if (errorText != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  errorText,
+                  style: AppTextStyles.caption.copyWith(color: AppColors.error),
                 ),
-                const Spacer(),
-                AppLegalFooter(onTapTerms: () {}, onTapPrivacy: () {}),
               ],
-            ),
-          );
-        },
-      ),
+              const SizedBox(height: AppSpacing.xl),
+              AppButton(
+                key: const Key('continueButton'),
+                label: l10n.continueButton,
+                loading: loading,
+                onPressed: _isValid
+                    ? () => context.read<AuthBloc>().add(DobSubmitted(_dob!))
+                    : null,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

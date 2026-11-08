@@ -9,7 +9,8 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   bool _started = false;
 
@@ -41,7 +42,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
   }
 
   Animation<double> _tileAnimation(int index) {
-    final start = (index * MotionTokens.kStaggerStep.inMilliseconds) /
+    final start =
+        (index * MotionTokens.kStaggerStep.inMilliseconds) /
         _controller.duration!.inMilliseconds;
     final end = (start + 0.4).clamp(0.0, 1.0);
     return CurvedAnimation(
@@ -53,48 +55,48 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            children: [
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(4, (index) {
-                  final animation = _tileAnimation(index);
-                  return AnimatedBuilder(
-                    animation: animation,
-                    builder: (context, child) => Opacity(
-                      opacity: animation.value,
-                      child: Transform.translate(
-                        offset: Offset(0, (1 - animation.value) * 24),
-                        child: child,
-                      ),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                      child: Icon(Icons.circle, size: AppSpacing.iconSizeMd, color: AppColors.accent),
-                    ),
-                  );
-                }),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              FadeTransition(
-                opacity: _controller,
-                child: Text(l10n.welcomeTitle, style: AppTextStyles.h1),
-              ),
-              const Spacer(),
-              AppButton(
-                key: const Key('letsExploreButton'),
-                label: l10n.letsExploreButton,
-                onPressed: () => context.go('/home'),
-              ),
-            ],
+    return AuthScaffold(
+      showBack: false,
+      showFooter: false,
+      child: Column(
+        children: [
+          const SizedBox(height: AppSpacing.xl * 2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(4, (index) {
+              final animation = _tileAnimation(index);
+              return AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) => Opacity(
+                  opacity: animation.value,
+                  child: Transform.translate(
+                    offset: Offset(0, (1 - animation.value) * 24),
+                    child: child,
+                  ),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                  child: Icon(
+                    Icons.circle,
+                    size: AppSpacing.iconSizeMd,
+                    color: AppColors.accent,
+                  ),
+                ),
+              );
+            }),
           ),
-        ),
+          const SizedBox(height: AppSpacing.lg),
+          FadeTransition(
+            opacity: _controller,
+            child: Text(l10n.welcomeTitle, style: AppTextStyles.h1),
+          ),
+          const SizedBox(height: AppSpacing.xl * 2),
+          AppButton(
+            key: const Key('letsExploreButton'),
+            label: l10n.letsExploreButton,
+            onPressed: () => context.go('/home'),
+          ),
+        ],
       ),
     );
   }
