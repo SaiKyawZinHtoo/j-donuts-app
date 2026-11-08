@@ -26,6 +26,10 @@ class AppTheme {
       focusedBorder: _fieldBorder(AppColors.accent),
       errorBorder: _fieldBorder(AppColors.error),
       focusedErrorBorder: _fieldBorder(AppColors.error),
+      floatingLabelStyle: const TextStyle(color: AppColors.accent),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: AppColors.accent),
     ),
     textSelectionTheme: const TextSelectionThemeData(
       cursorColor: AppColors.accent,

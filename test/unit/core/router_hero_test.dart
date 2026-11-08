@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/native.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
@@ -79,6 +80,15 @@ void main() {
     await t.pump();
     await t.pump(const Duration(seconds: 1));
     expect(heroTag(t), 'product-popular-p1');
+  });
+
+  testWidgets('/product/:id builds a CupertinoPage (edge-swipe back)', (t) async {
+    final router = await boot(t);
+    router.push('/product/p1');
+    await t.pump();
+    await t.pump(const Duration(seconds: 1));
+    final route = ModalRoute.of(t.element(find.byType(ProductDetailScreen)))!;
+    expect(route.settings, isA<CupertinoPage<void>>());
   });
 
   testWidgets('no extra / non-String extra: heroTag null, still renders', (t) async {

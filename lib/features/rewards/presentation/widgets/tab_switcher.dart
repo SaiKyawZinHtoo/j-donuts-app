@@ -13,6 +13,7 @@ class TabSwitcher extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final tabWidth = constraints.maxWidth / 2;
+        final duration = _duration(context);
         return Container(
           height: 40,
           decoration: BoxDecoration(
@@ -22,7 +23,7 @@ class TabSwitcher extends StatelessWidget {
           child: Stack(
             children: [
               AnimatedPositioned(
-                duration: MotionTokens.kTabSwitchDuration,
+                duration: duration,
                 curve: MotionTokens.kEmphasizedCurve,
                 left: activeTab == RewardsTab.earn ? 0 : tabWidth,
                 top: 0,
@@ -48,6 +49,9 @@ class TabSwitcher extends StatelessWidget {
     );
   }
 
+  Duration _duration(BuildContext context) =>
+      MediaQuery.disableAnimationsOf(context) ? Duration.zero : MotionTokens.kTabSwitchDuration;
+
   Widget _tabButton(BuildContext context, RewardsTab tab, String label) {
     return Expanded(
       child: GestureDetector(
@@ -55,7 +59,7 @@ class TabSwitcher extends StatelessWidget {
         onTap: () => onChanged(tab),
         child: Center(
           child: AnimatedSwitcher(
-            duration: MotionTokens.kTabSwitchDuration,
+            duration: _duration(context),
             child: Text(
               label,
               key: ValueKey(activeTab == tab),

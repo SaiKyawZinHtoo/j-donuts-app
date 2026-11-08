@@ -87,8 +87,8 @@ Built:
 
 - `AppTheme` plus token files in `lib/core/theme/`: `colors.dart`, `spacing.dart`, `motion_tokens.dart`,
   `text_styles.dart`.
-- `AppGradientBackground` paints the pink-to-cyan gradient (`AppColors.gradientColors` /
-  `gradientStops`, stops `0, .3, .5, .7, 1`); used by `AuthScaffold` and Welcome.
+- `AppGradientBackground` paints the pink-to-white gradient (`AppColors.gradientColors` /
+  `gradientStops`, stops `0, .3, .5, .7, 1`); used by `AuthScaffold`, Welcome and Onboarding.
 - `AuthScaffold` (`lib/core/widgets/auth_scaffold.dart`): pinned header (back button + trailing),
   scrolling body, optional pinned `bottom` action that rises with the keyboard, legal footer hidden
   while the keyboard is open; `onBack`, `showFooter`, `titleGap` params.
@@ -116,7 +116,7 @@ rather than just pumping frames.
 
 As part of this task, the bundled seed PNGs (`assets/images/seed/*.png`) were replaced — they were
 66-byte stub files with invalid PNG data that failed to decode (confirmed with Pillow, not just a
-test-environment artifact); they're now valid, decodable 1×1 placeholder PNGs. This would have failed
+test-environment artifact); they're now valid, decodable 500×500 PNGs. This would have failed
 to render on a real device too, not only under `flutter test`.
 
 Full suite: 159 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
@@ -136,6 +136,9 @@ none of which block the flows above:
   yet), pull-to-refresh blanks content via `HomeLoading` instead of staying visible during refetch,
   no accessibility semantics on the product quantity stepper, and 11 `prefer_initializing_formals` /
   `unnecessary_library_name` style lints. None are required by the brief's test lists.
+- The five auth routes use a custom shared-axis transition, so the iOS edge-swipe-back gesture does
+  not work there (intentional: it would skip the bloc's `BackRequested` on OTP/Name/DOB). Android
+  system back on OTP/Name/DOB also skips `BackRequested` (pre-existing, no `PopScope`).
 - `AppBottomNav`'s item list and `AppShellScreen`'s tab list aren't structurally linked (a length
   mismatch wouldn't be caught at compile time) — no current caller hits this.
 - Brand logo is only 120px (`assets/images/seed/brand_logo.png`) / 64px (`assets/icon/app_icon.png`),

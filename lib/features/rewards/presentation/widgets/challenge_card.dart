@@ -97,7 +97,9 @@ class _ChallengeCardState extends State<ChallengeCard> {
                 onTapCancel: challenge.isComplete ? () => setState(() => _pressed = false) : null,
                 child: AnimatedScale(
                   scale: _pressed ? 0.9 : 1.0,
-                  duration: MotionTokens.kTabSwitchDuration,
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : MotionTokens.kTabSwitchDuration,
                   child: AppButton(
                     key: Key('challengeEarnButton_${challenge.id}'),
                     label: AppLocalizations.of(context)!.earnTab,

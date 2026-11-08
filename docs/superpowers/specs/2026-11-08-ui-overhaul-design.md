@@ -39,7 +39,7 @@ Because `primary` changes from pink to cyan, every existing use of `AppColors.pr
 
 `core/theme/spacing.dart` — add `buttonRadius = 28` (pill), `fieldRadius = 12`, `backButtonSize = 44`, `authHorizontalPadding = 24`, `ringSize = 40`. `buttonHeight` becomes 56 to match the pill.
 
-`core/theme/motion_tokens.dart` — add: `kSplashLogoDuration` (900ms), `kSplashHoldDuration` (700ms), `kSplashExitDuration` (500ms), `kTileDriftDuration` (900ms), `kStepTransitionDuration` (350ms), `kRingStepDuration` (400ms), `kButtonMorphDuration` (250ms), `kHomeSectionStagger` (80ms), `kNavPillDuration` (250ms), `kHeroDuration` (350ms). Existing tokens unchanged.
+`core/theme/motion_tokens.dart` — add: `kSplashLogoDuration` (900ms), `kSplashHoldDuration` (700ms), `kSplashExitDuration` (500ms), `kTileDriftDuration` (900ms), `kStepTransitionDuration` (350ms), `kRingStepDuration` (400ms), `kButtonMorphDuration` (250ms), `kHomeSectionStagger` (80ms), `kNavPillDuration` (250ms). Existing tokens unchanged.
 
 ## 4. Background gradient
 
@@ -53,7 +53,7 @@ Because `primary` changes from pink to cyan, every existing use of `AppColors.pr
 | 0.70 | `0xFFFEF2F6` (254,242,246) |
 | 1.00 | `0xFFFEFEFE` |
 
-Stops are `static const` lists in `AppColors` (`gradientColors`, `gradientStops`). Used by `AuthScaffold` and Welcome; Home/Product/Rewards keep their current backgrounds (reference does not show them pink).
+Stops are `static const` lists in `AppColors` (`gradientColors`, `gradientStops`). Used by `AuthScaffold`, Welcome and Onboarding; Home/Product/Rewards keep their current backgrounds (reference does not show them pink).
 
 ## 5. Theme
 
@@ -100,7 +100,7 @@ Structure: `AppGradientBackground` → `SafeArea` → column: header row (back b
 
 All five auth screens (Phone, OTP, Name, DOB, Welcome) move onto `AuthScaffold`; none keeps its own `Scaffold`/`AppBar`. Copy is already aligned (previous commit). Differences to add:
 - Titles use bold `h1` (28) per reference; Phone title wraps naturally.
-- **Login variant** (`PhoneScreen(isLogin: true)`): title "Welcome back, Login to your profile" (new ARB `loginScreenTitle`), button label "Login" (`loginButton`), and a fingerprint circle (`Icons.fingerprint` in a bordered circle, `accent`) between the button and footer; tap shows the existing `AppSnackbar` "not implemented" message. No progress ring in login mode.
+- **Login variant** (`PhoneScreen(isLogin: true)`): title "Welcome back, Login to your profile" (new ARB `loginScreenTitle`), button label "Login" (`loginButton`), and a fingerprint circle (`Icons.fingerprint` in a bordered circle, border and icon `textSecondary`) above the pinned Login button; tap shows the existing `AppSnackbar` "not implemented" message. No progress ring in login mode.
 - **Onboarding**: see §9.
 - **Welcome**: gradient background, tiles stagger as today.
 
@@ -109,7 +109,7 @@ All five auth screens (Phone, OTP, Name, DOB, Welcome) move onto `AuthScaffold`;
 New route `/splash` (initial location). `SplashScreen` (new, `features/shell/...` or `core/`; plan decides; it is not auth-specific):
 1. White background, logo (`assets/icon/app_icon.png`, or site logo asset if sharper) in a circle fades+scales from 0.6→1.0 over `kSplashLogoDuration`.
 2. Holds `kSplashHoldDuration` while the app finishes seeding (seed already completes before `runApp`; the hold is purely visual).
-3. Exits: logo moves up/scales as the router redirects to `/onboarding` (or `/home` if a session exists) — implemented as the splash calling `context.go(...)` after the hold, with `kSplashExitDuration` fade.
+3. Exits: logo fades out as the router redirects to `/onboarding` (or `/home` if a session exists) — implemented as the splash calling `context.go(...)` after the hold, with `kSplashExitDuration` fade.
 Router: `initialLocation: '/splash'`; the existing `redirect` treats `/splash` as the former `/` (route-level redirect removed; the splash decides, using `GetSessionUseCase` result already evaluated by the top-level redirect which must NOT redirect away from `/splash`). Reduce Motion: no animation, shortened hold.
 
 **Onboarding** screen rebuilt:

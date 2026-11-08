@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -118,10 +118,10 @@ GoRouter createAppRouter() => GoRouter(
       pageBuilder: (context, state) {
         final id = state.pathParameters['id']!;
         final extra = state.extra;
-        return AppPageTransitions.heroFade(
-          state,
-          ProductDetailScreen(productId: id, heroTag: extra is String ? extra : null),
-          reduceMotion: MediaQuery.disableAnimationsOf(context),
+        // CupertinoPage (not CustomTransitionPage) keeps the iOS edge-swipe back.
+        return CupertinoPage<void>(
+          key: state.pageKey,
+          child: ProductDetailScreen(productId: id, heroTag: extra is String ? extra : null),
         );
       },
     ),
