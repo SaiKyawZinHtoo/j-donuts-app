@@ -274,4 +274,32 @@ void main() {
     final navTop = tester.getTopLeft(find.byType(AppBottomNav)).dy;
     expect(tester.getBottomLeft(find.byKey(const Key('shopCard_sh1'))).dy, lessThanOrEqualTo(navTop));
   });
+
+  testWidgets('offline banner text clears the status bar inset', (tester) async {
+    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => false);
+    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
+    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
+      ..add(const HomeRequested());
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
+    );
+    await tester.pumpWidget(MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(padding: const EdgeInsets.only(top: 47)),
+        child: BlocProvider<HomeBloc>.value(value: bloc, child: child!),
+      ),
+    ));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+
+    final text = find.descendant(
+        of: find.byKey(const Key('homeOfflineBanner')), matching: find.byType(Text));
+    expect(tester.getTopLeft(text).dy, greaterThanOrEqualTo(47));
+    final header = find.byKey(const Key('memberHeader_pointsChip'));
+    expect(header, findsOneWidget);
+  });
 }

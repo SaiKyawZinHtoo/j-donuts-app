@@ -109,15 +109,20 @@ class _HomeContent extends StatelessWidget {
     final bundle = state.data;
     var i = 0;
     return ListView(
+      // ListView would otherwise inset the status bar itself; header paints under it.
+      padding: EdgeInsets.zero,
       children: [
         if (state.isOffline)
           Container(
             key: const Key('homeOfflineBanner'),
             width: double.infinity,
             color: AppColors.error,
-            padding: const EdgeInsets.symmetric(
-              vertical: AppSpacing.sm,
-              horizontal: AppSpacing.md,
+            // Banner is the topmost child, so it pads the status bar itself.
+            padding: EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.sm + MediaQuery.paddingOf(context).top,
+              AppSpacing.md,
+              AppSpacing.sm,
             ),
             child: Text(
               AppLocalizations.of(context)!.homeOfflineBanner,
@@ -125,7 +130,15 @@ class _HomeContent extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-        _entry(i++, MemberHeader(member: bundle.member)),
+        _entry(
+          i++,
+          // Under the offline banner the status-bar inset is already consumed.
+          MediaQuery.removePadding(
+            context: context,
+            removeTop: state.isOffline,
+            child: MemberHeader(member: bundle.member),
+          ),
+        ),
         // Banners overlap the header's bottom edge.
         Transform.translate(
           offset: const Offset(0, -AppSpacing.lg),
