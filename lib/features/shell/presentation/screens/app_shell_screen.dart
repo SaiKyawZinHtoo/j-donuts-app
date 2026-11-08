@@ -1,15 +1,21 @@
 part of '../../shell_import.dart';
 
-/// Bottom-nav shell. Home and Rewards are real tabs (built feature-by-feature
-/// in later tasks); the other two are generic placeholders per design spec §7.
+/// Bottom-nav shell, 5 tabs per design spec §7: Home and Rewards are real
+/// (built feature-by-feature in later tasks); Explore, Wallet and Settings
+/// are generic placeholders.
 class AppShellScreen extends StatefulWidget {
   final Widget homeTab;
   final Widget rewardsTab;
+  final int initialIndex;
+
+  static const int homeIndex = 0;
+  static const int rewardsIndex = 2;
 
   const AppShellScreen({
     super.key,
     required this.homeTab,
     required this.rewardsTab,
+    this.initialIndex = homeIndex,
   });
 
   @override
@@ -17,15 +23,16 @@ class AppShellScreen extends StatefulWidget {
 }
 
 class _AppShellScreenState extends State<AppShellScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex = widget.initialIndex;
 
   @override
   Widget build(BuildContext context) {
     final tabs = [
       widget.homeTab,
+      const PlaceholderTabScreen(label: 'Explore'),
       widget.rewardsTab,
-      const PlaceholderTabScreen(label: 'Orders'),
-      const PlaceholderTabScreen(label: 'Profile'),
+      const PlaceholderTabScreen(label: 'Wallet'),
+      const PlaceholderTabScreen(label: 'Settings'),
     ];
 
     return Scaffold(

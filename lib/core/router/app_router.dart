@@ -8,6 +8,14 @@ class _RoutePlaceholderScreen extends PlaceholderTabScreen {
   const _RoutePlaceholderScreen({required super.label});
 }
 
+/// Shared by the `/home` and `/rewards` routes: same shell, different
+/// starting tab.
+AppShellScreen _buildShell({required int initialIndex}) => AppShellScreen(
+      homeTab: const _RoutePlaceholderScreen(label: 'Home'),
+      rewardsTab: const _RoutePlaceholderScreen(label: 'Rewards'),
+      initialIndex: initialIndex,
+    );
+
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   redirect: (context, state) {
@@ -47,10 +55,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/home',
-      builder: (context, state) => AppShellScreen(
-        homeTab: const _RoutePlaceholderScreen(label: 'Home'),
-        rewardsTab: const _RoutePlaceholderScreen(label: 'Rewards'),
-      ),
+      builder: (context, state) =>
+          _buildShell(initialIndex: AppShellScreen.homeIndex),
     ),
     GoRoute(
       path: '/product/:id',
@@ -61,10 +67,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/rewards',
-      builder: (context, state) => AppShellScreen(
-        homeTab: const _RoutePlaceholderScreen(label: 'Home'),
-        rewardsTab: const _RoutePlaceholderScreen(label: 'Rewards'),
-      ),
+      builder: (context, state) =>
+          _buildShell(initialIndex: AppShellScreen.rewardsIndex),
     ),
   ],
 );
