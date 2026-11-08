@@ -54,7 +54,7 @@ class HomeRepositoryImpl implements HomeRepository {
   ProductSection _mapSection(drift.SectionWithProducts row) => ProductSection(
         id: row.section.id,
         title: row.section.title,
-        productIds: row.products.map((p) => p.id).toList(),
+        products: row.products.map(mapProductRow).toList(),
       );
 
   Shop _mapShop(drift.Shop row) => Shop(

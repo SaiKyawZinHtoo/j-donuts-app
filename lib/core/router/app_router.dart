@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/auth_import.dart';
+import '../../features/product/product_import.dart';
 import '../../features/shell/shell_import.dart';
 import '../result/result.dart';
 
@@ -25,10 +26,10 @@ class _RoutePlaceholderScreen extends PlaceholderTabScreen {
 /// Shared by the `/home` and `/rewards` routes: same shell, different
 /// starting tab.
 AppShellScreen _buildShell({required int initialIndex}) => AppShellScreen(
-      homeTab: const _RoutePlaceholderScreen(label: 'Home'),
-      rewardsTab: const _RoutePlaceholderScreen(label: 'Rewards'),
-      initialIndex: initialIndex,
-    );
+  homeTab: const _RoutePlaceholderScreen(label: 'Home'),
+  rewardsTab: const _RoutePlaceholderScreen(label: 'Rewards'),
+  initialIndex: initialIndex,
+);
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -44,15 +45,18 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const _RoutePlaceholderScreen(label: 'Splash'),
+      builder: (context, state) =>
+          const _RoutePlaceholderScreen(label: 'Splash'),
     ),
     GoRoute(
       path: '/onboarding',
-      builder: (context, state) => const _RoutePlaceholderScreen(label: 'Onboarding'),
+      builder: (context, state) =>
+          const _RoutePlaceholderScreen(label: 'Onboarding'),
     ),
     GoRoute(
       path: '/phone',
-      builder: (context, state) => const _RoutePlaceholderScreen(label: 'Phone'),
+      builder: (context, state) =>
+          const _RoutePlaceholderScreen(label: 'Phone'),
     ),
     GoRoute(
       path: '/otp',
@@ -64,11 +68,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/dob',
-      builder: (context, state) => const _RoutePlaceholderScreen(label: 'Date of birth'),
+      builder: (context, state) =>
+          const _RoutePlaceholderScreen(label: 'Date of birth'),
     ),
     GoRoute(
       path: '/welcome',
-      builder: (context, state) => const _RoutePlaceholderScreen(label: 'Welcome'),
+      builder: (context, state) =>
+          const _RoutePlaceholderScreen(label: 'Welcome'),
     ),
     GoRoute(
       path: '/home',
@@ -79,7 +85,7 @@ final GoRouter appRouter = GoRouter(
       path: '/product/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return _RoutePlaceholderScreen(label: 'Product $id');
+        return ProductDetailScreen(productId: id);
       },
     ),
     GoRoute(

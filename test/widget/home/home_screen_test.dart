@@ -6,6 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:j_donuts_app/core/core_import.dart';
 import 'package:j_donuts_app/core/result/result.dart';
 import 'package:j_donuts_app/features/home/home_import.dart';
+import 'package:j_donuts_app/features/product/product_import.dart';
 
 class MockGetHomeUseCase extends Mock implements GetHomeUseCase {}
 
@@ -44,7 +45,32 @@ void main() {
     ),
     banners: const [],
     sections: const [
-      ProductSection(id: 's1', title: 'Popular', productIds: ['p1', 'p2']),
+      ProductSection(
+        id: 's1',
+        title: 'Popular',
+        products: [
+          Product(
+            id: 'p1',
+            code: 'DN-001',
+            name: 'Glazed',
+            priceMmk: 1000,
+            isNew: false,
+            discountPercent: 0,
+            imageUrl: 'img1.png',
+            description: '',
+          ),
+          Product(
+            id: 'p2',
+            code: 'DN-002',
+            name: 'Chocolate',
+            priceMmk: 1200,
+            isNew: true,
+            discountPercent: 0,
+            imageUrl: 'img2.png',
+            description: '',
+          ),
+        ],
+      ),
     ],
     shops: const [
       Shop(id: 'sh1', name: 'Downtown', address: '123 Main St', distanceLabel: '1.2 km'),

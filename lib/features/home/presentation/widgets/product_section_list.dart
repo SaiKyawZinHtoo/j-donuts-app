@@ -2,11 +2,6 @@ part of '../../home_import.dart';
 
 /// Horizontal list for a home section (Seasonal specials / Popular / Order
 /// again — design spec §5.2). Reused for every [ProductSection].
-///
-/// Shortcut: [ProductSection.productIds] is a `List<String>` only (Task 7
-/// forward-reference, see product_section.dart) — there is no `Product`
-/// entity yet, so each tile renders just its id as a placeholder. Task 9
-/// Step 8 is expected to swap this for real product tiles (name/price/image).
 class ProductSectionList extends StatelessWidget {
   final ProductSection section;
   final String? errorMessage;
@@ -18,7 +13,7 @@ class ProductSectionList extends StatelessWidget {
     if (errorMessage != null) {
       return AppErrorState(message: errorMessage!);
     }
-    if (section.productIds.isEmpty) {
+    if (section.products.isEmpty) {
       return const AppEmptyState(message: 'Nothing here yet.');
     }
     return Column(
@@ -34,13 +29,13 @@ class ProductSectionList extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            itemCount: section.productIds.length,
+            itemCount: section.products.length,
             separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.sm),
             itemBuilder: (context, index) {
-              final productId = section.productIds[index];
+              final product = section.products[index];
               return GestureDetector(
-                key: Key('productTile_$productId'),
-                onTap: () => context.push('/product/$productId'),
+                key: Key('productTile_${product.id}'),
+                onTap: () => context.push('/product/${product.id}'),
                 child: Container(
                   width: 100,
                   decoration: BoxDecoration(
@@ -48,10 +43,53 @@ class ProductSectionList extends StatelessWidget {
                     border: Border.all(color: AppColors.border),
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
-                  alignment: Alignment.center,
                   padding: const EdgeInsets.all(AppSpacing.sm),
-                  // to be enriched by Task 9 with real product data/tiles.
-                  child: Text(productId, style: AppTextStyles.caption, textAlign: TextAlign.center),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(AppSpacing.sm),
+                          child: CachedNetworkImage(
+                            imageUrl: product.imageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            placeholder: (context, url) => const AppSkeleton(
+                                isLoading: true, child: SizedBox.expand()),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/seed/product_placeholder.png',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(product.name,
+                          style: AppTextStyles.caption,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text('${product.priceMmk} MMK',
+                                style: AppTextStyles.caption,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                          if (product.isNew) ...[
+                            const SizedBox(width: 4),
+                            const Text('New',
+                                style: TextStyle(color: AppColors.primary, fontSize: 10)),
+                          ] else if (product.discountPercent > 0) ...[
+                            const SizedBox(width: 4),
+                            Text('-${product.discountPercent}%',
+                                style: const TextStyle(color: AppColors.error, fontSize: 10)),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
