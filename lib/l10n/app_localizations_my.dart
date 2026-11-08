@@ -189,6 +189,9 @@ class AppLocalizationsMy extends AppLocalizations {
   String get whatsThis => 'ဒါကဘာလဲ?';
 
   @override
+  String get addToCartLabel => 'စျေးခြင်းထဲထည့်မည်';
+
+  @override
   String addToCartButton(String total) {
     return 'စျေးခြင်းထဲထည့်မည် · $total ကျပ်';
   }

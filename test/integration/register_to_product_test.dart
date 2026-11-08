@@ -132,7 +132,8 @@ void main() {
     expect(find.byType(ProductDetailScreen), findsOneWidget);
 
     // Back to Home, then over to the Rewards tab.
-    await tester.pageBack();
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.pump();
     await _settleAfterFakeNetwork(tester);
     await tester.tap(find.byIcon(Icons.radio_button_checked));
     await _settleAfterFakeNetwork(tester);

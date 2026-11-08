@@ -187,6 +187,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatsThis => 'What\'s this?';
 
   @override
+  String get addToCartLabel => 'Add to cart';
+
+  @override
   String addToCartButton(String total) {
     return 'Add to cart · $total MMK';
   }

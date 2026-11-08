@@ -180,4 +180,12 @@ void main() {
     await t.pump();
     expect(scale(t), 1.0);
   });
+
+  testWidgets('trailingLabel renders label and total separately', (tester) async {
+    await tester.pumpWidget(
+      _app(AppButton(label: 'Add', trailingLabel: '1,500 MMK', onPressed: () {})),
+    );
+    expect(find.text('ADD'), findsOneWidget);
+    expect(find.text('1,500 MMK'), findsOneWidget);
+  });
 }

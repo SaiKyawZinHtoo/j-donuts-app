@@ -93,6 +93,7 @@
   "productAppBarTitle": "Product",
   "addedToCartMessage": "Added to cart",
   "whatsThis": "What's this?",
+  "addToCartLabel": "Add to cart",
   "addToCartButton": "Add to cart · {total} MMK",
   "@addToCartButton": {
     "placeholders": { "total": { "type": "String" } }

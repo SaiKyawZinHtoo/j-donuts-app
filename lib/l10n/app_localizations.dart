@@ -398,6 +398,12 @@ abstract class AppLocalizations {
   /// **'What\'s this?'**
   String get whatsThis;
 
+  /// No description provided for @addToCartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to cart'**
+  String get addToCartLabel;
+
   /// No description provided for @addToCartButton.
   ///
   /// In en, this message translates to:

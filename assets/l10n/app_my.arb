@@ -58,6 +58,7 @@
   "productAppBarTitle": "ကုန်ပစ္စည်း",
   "addedToCartMessage": "စျေးခြင်းထဲထည့်ပြီးပါပြီ",
   "whatsThis": "ဒါကဘာလဲ?",
+  "addToCartLabel": "စျေးခြင်းထဲထည့်မည်",
   "addToCartButton": "စျေးခြင်းထဲထည့်မည် · {total} ကျပ်",
 
   "earnTab": "ရယူရန်",

@@ -5,11 +5,15 @@ class AppButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final bool loading;
 
+  /// Optional text shown after a thin divider (e.g. a live total).
+  final String? trailingLabel;
+
   const AppButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.loading = false,
+    this.trailingLabel,
   });
 
   @override
@@ -25,6 +29,37 @@ class _AppButtonState extends State<AppButton> {
 
   void _setPressed(bool value) {
     if (_pressed != value) setState(() => _pressed = value);
+  }
+
+  Widget _content(bool reduce) {
+    final label = Text(
+      widget.label.toUpperCase(),
+      key: const ValueKey('label'),
+      style: AppTextStyles.button,
+    );
+    final trailing = widget.trailingLabel;
+    if (trailing == null) return label;
+    return Row(
+      key: const ValueKey('label'),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(child: Text(widget.label.toUpperCase(), style: AppTextStyles.button)),
+        Container(
+          width: 1,
+          height: AppSpacing.md,
+          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          color: AppColors.surface,
+        ),
+        AnimatedSwitcher(
+          duration: reduce ? Duration.zero : MotionTokens.kQtyChange,
+          child: Text(
+            trailing.toUpperCase(),
+            key: ValueKey(trailing),
+            style: AppTextStyles.button,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -79,11 +114,7 @@ class _AppButtonState extends State<AppButton> {
                           ),
                         ),
                       )
-                    : Text(
-                        widget.label.toUpperCase(),
-                        key: const ValueKey('label'),
-                        style: AppTextStyles.button,
-                      ),
+                    : _content(reduce),
               ),
             ),
           ),
