@@ -11,9 +11,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   int _secondsLeft = 0;
   bool _phoneKnown = false;
   bool _phoneRequestInFlight = false;
+  bool _otpRequestInFlight = false;
   bool _dobRequestInFlight = false;
   Timer? _timer;
   RegistrationDraft _draft = const RegistrationDraft();
+  RegistrationStep _currentStep = RegistrationStep.phone;
 
   AuthBloc({
     required this.loginUseCase,
@@ -44,6 +46,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (event is DobSubmitted) {
       if (_dobRequestInFlight) return;
       _dobRequestInFlight = true;
+    } else if (event is OtpDigitEntered && validateOtp(event.code) is ValidationValid) {
+      // Only a *correct* code goes on to call the network (login/registration
+      // step); a repeated wrong code (e.g. the 3-strike lockout flow) must
+      // still be processed every time, so the guard only engages here.
+      if (_otpRequestInFlight) return;
+      _otpRequestInFlight = true;
     }
     super.add(event);
   }
@@ -77,6 +85,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _startOtpTimer(Emitter<AuthState> emit) {
     _attempts = 0;
     _secondsLeft = kOtpResendSeconds;
+    _currentStep = RegistrationStep.otp;
     emit(OtpAwaiting(_secondsLeft, draft: _draft));
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -96,16 +105,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onOtpDigitEntered(OtpDigitEntered event, Emitter<AuthState> emit) async {
     final result = validateOtp(event.code);
     if (result is ValidationValid) {
-      _timer?.cancel();
-      if (_phoneKnown) {
-        final loginResult = await loginUseCase(_draft.phone!);
-        if (loginResult is Ok<AuthUser>) {
-          emit(AuthSuccess(loginResult.value, false, draft: _draft));
+      try {
+        _timer?.cancel();
+        if (_phoneKnown) {
+          final loginResult = await loginUseCase(_draft.phone!);
+          if (loginResult is Ok<AuthUser>) {
+            emit(AuthSuccess(loginResult.value, false, draft: _draft));
+          } else {
+            emit(AuthFailure((loginResult as Err<AuthUser>).message, draft: _draft));
+          }
         } else {
-          emit(AuthFailure((loginResult as Err<AuthUser>).message, draft: _draft));
+          _currentStep = RegistrationStep.name;
+          emit(AwaitingName(draft: _draft));
         }
-      } else {
-        emit(PhoneNeedsRegistration(draft: _draft));
+      } finally {
+        _otpRequestInFlight = false;
       }
       return;
     }
@@ -129,22 +143,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onNameSubmitted(NameSubmitted event, Emitter<AuthState> emit) {
     final firstResult = validateFirstName(event.first);
     if (firstResult is ValidationInvalid) {
-      emit(RegistrationStepInvalid(firstResult.message, draft: _draft));
+      emit(RegistrationStepInvalid(RegistrationStep.name, firstResult.message, draft: _draft));
       return;
     }
     final lastResult = validateLastName(event.last ?? '');
     if (lastResult is ValidationInvalid) {
-      emit(RegistrationStepInvalid(lastResult.message, draft: _draft));
+      emit(RegistrationStepInvalid(RegistrationStep.name, lastResult.message, draft: _draft));
       return;
     }
     _draft = _draft.copyWith(firstName: event.first, lastName: event.last);
+    _currentStep = RegistrationStep.dob;
+    emit(AwaitingDob(draft: _draft));
   }
 
   Future<void> _onDobSubmitted(DobSubmitted event, Emitter<AuthState> emit) async {
     final result = validateDob(event.dob);
     if (result is ValidationInvalid) {
       _dobRequestInFlight = false;
-      emit(RegistrationStepInvalid(result.message, draft: _draft));
+      emit(RegistrationStepInvalid(RegistrationStep.dob, result.message, draft: _draft));
       return;
     }
     _draft = _draft.copyWith(dob: event.dob);
@@ -180,11 +196,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     await authRepository.logout();
     _timer?.cancel();
     _draft = const RegistrationDraft();
+    _currentStep = RegistrationStep.phone;
     emit(const AuthInitial());
   }
 
+  // Steps back exactly one registration screen rather than resetting to the
+  // start, mirroring _currentStep (advanced alongside each forward state).
   void _onBackRequested(BackRequested event, Emitter<AuthState> emit) {
-    emit(AuthInitial(draft: _draft));
+    switch (_currentStep) {
+      case RegistrationStep.dob:
+        _currentStep = RegistrationStep.name;
+        emit(AwaitingName(draft: _draft));
+      case RegistrationStep.name:
+        _currentStep = RegistrationStep.otp;
+        emit(OtpAwaiting(_secondsLeft, draft: _draft));
+      case RegistrationStep.otp:
+        _currentStep = RegistrationStep.phone;
+        _timer?.cancel();
+        emit(AuthInitial(draft: _draft));
+      case RegistrationStep.phone:
+        emit(AuthInitial(draft: _draft));
+    }
   }
 
   @override

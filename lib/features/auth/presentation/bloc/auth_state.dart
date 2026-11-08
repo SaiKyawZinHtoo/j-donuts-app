@@ -25,6 +25,11 @@ class RegistrationDraft {
   }
 }
 
+/// Which registration-flow screen the UI should be on. Lets a BlocBuilder
+/// distinguish otp-for-registration vs name vs dob, and lets `BackRequested`
+/// step back exactly one screen instead of resetting to the start.
+enum RegistrationStep { phone, otp, name, dob }
+
 sealed class AuthState {
   final RegistrationDraft draft;
   const AuthState({this.draft = const RegistrationDraft()});
@@ -61,9 +66,18 @@ final class OtpLocked extends AuthState {
   const OtpLocked({super.draft});
 }
 
+final class AwaitingName extends AuthState {
+  const AwaitingName({super.draft});
+}
+
+final class AwaitingDob extends AuthState {
+  const AwaitingDob({super.draft});
+}
+
 final class RegistrationStepInvalid extends AuthState {
+  final RegistrationStep step;
   final String message;
-  const RegistrationStepInvalid(this.message, {super.draft});
+  const RegistrationStepInvalid(this.step, this.message, {super.draft});
 }
 
 final class AuthSuccess extends AuthState {

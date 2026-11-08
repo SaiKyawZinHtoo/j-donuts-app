@@ -96,6 +96,29 @@ void main() {
         verify(() => mockAuthRepo.checkPhone(any())).called(1);
       },
     );
+
+    blocTest<AuthBloc, AuthState>(
+      'rapid double-tap on OtpDigitEntered sends exactly one login request',
+      setUp: () {
+        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));
+        when(() => mockAuthRepo.login(any())).thenAnswer((_) async {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+          return Result.ok(user);
+        });
+      },
+      build: build,
+      act: (bloc) async {
+        bloc.add(const PhoneSubmitted('09123456789'));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+        bloc
+          ..add(const OtpDigitEntered(kFakeOtpCode))
+          ..add(const OtpDigitEntered(kFakeOtpCode));
+      },
+      wait: const Duration(milliseconds: 50),
+      verify: (_) {
+        verify(() => mockAuthRepo.login(any())).called(1);
+      },
+    );
   });
 
   group('phone submit', () {
@@ -130,7 +153,67 @@ void main() {
         ..add(const PhoneSubmitted('09123456789'))
         ..add(const OtpDigitEntered(kFakeOtpCode)),
       skip: 3,
-      expect: () => [isA<PhoneNeedsRegistration>()],
+      expect: () => [isA<AwaitingName>()],
+    );
+  });
+
+  group('registration step transitions', () {
+    blocTest<AuthBloc, AuthState>(
+      'NameSubmitted valid emits AwaitingDob; invalid emits a name-step RegistrationStepInvalid',
+      setUp: () {
+        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+      },
+      build: build,
+      act: (bloc) => bloc
+        ..add(const PhoneSubmitted('09123456789'))
+        ..add(const OtpDigitEntered(kFakeOtpCode))
+        ..add(const NameSubmitted('123', null)) // invalid: digits
+        ..add(const NameSubmitted('Shan', 'Lay')), // valid
+      skip: 4, // AuthLoading, PhoneNeedsRegistration, OtpAwaiting, AwaitingName
+      expect: () => [
+        isA<RegistrationStepInvalid>().having((s) => s.step, 'step', RegistrationStep.name),
+        isA<AwaitingDob>(),
+      ],
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'DobSubmitted invalid emits a dob-step RegistrationStepInvalid distinct from the name step',
+      setUp: () {
+        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+      },
+      build: build,
+      act: (bloc) => bloc
+        ..add(const PhoneSubmitted('09123456789'))
+        ..add(const OtpDigitEntered(kFakeOtpCode))
+        ..add(const NameSubmitted('Shan', 'Lay'))
+        ..add(DobSubmitted(DateTime.now())), // invalid: today, under min age
+      skip: 5, // AuthLoading, PhoneNeedsRegistration, OtpAwaiting, AwaitingName, AwaitingDob
+      expect: () => [
+        isA<RegistrationStepInvalid>().having((s) => s.step, 'step', RegistrationStep.dob),
+      ],
+    );
+  });
+
+  group('back navigation', () {
+    blocTest<AuthBloc, AuthState>(
+      'BackRequested steps back one registration screen at a time, not to AuthInitial',
+      setUp: () {
+        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+      },
+      build: build,
+      act: (bloc) => bloc
+        ..add(const PhoneSubmitted('09123456789'))
+        ..add(const OtpDigitEntered(kFakeOtpCode))
+        ..add(const NameSubmitted('Shan', 'Lay'))
+        ..add(const BackRequested()) // dob -> name
+        ..add(const BackRequested()) // name -> otp
+        ..add(const BackRequested()), // otp -> phone (AuthInitial)
+      skip: 5, // AuthLoading, PhoneNeedsRegistration, OtpAwaiting, AwaitingName, AwaitingDob
+      expect: () => [
+        isA<AwaitingName>(),
+        isA<OtpAwaiting>(),
+        isA<AuthInitial>(),
+      ],
     );
   });
 
@@ -155,7 +238,8 @@ void main() {
       wait: const Duration(milliseconds: 50),
       skip: 3,
       expect: () => [
-        isA<PhoneNeedsRegistration>(),
+        isA<AwaitingName>(),
+        isA<AwaitingDob>(),
         isA<AuthLoading>(),
         isA<AuthSuccess>().having((s) => s.isNewUser, 'isNewUser', true),
       ],
