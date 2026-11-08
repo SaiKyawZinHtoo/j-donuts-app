@@ -30,7 +30,7 @@ class TabSwitcher extends StatelessWidget {
                 width: tabWidth,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.accent,
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
                 ),

@@ -11,7 +11,12 @@ class AppSpacing {
   static const double xl = 32;
 
   // Widget sizing tokens.
-  static const double buttonHeight = 48;
+  static const double buttonHeight = 56;
+  static const double buttonRadius = 28;
+  static const double fieldRadius = 12;
+  static const double backButtonSize = 44;
+  static const double authHorizontalPadding = 24;
+  static const double ringSize = 40;
   static const double appBarHeight = 56;
   static const double otpBoxWidth = 44;
   static const double otpBoxHeight = 52;

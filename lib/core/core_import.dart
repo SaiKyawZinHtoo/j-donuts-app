@@ -14,6 +14,7 @@ part 'theme/colors.dart';
 part 'theme/text_styles.dart';
 part 'theme/spacing.dart';
 part 'theme/motion_tokens.dart';
+part 'theme/app_theme.dart';
 part 'constants/app_constants.dart';
 part 'widgets/app_text_field.dart';
 part 'widgets/app_button.dart';

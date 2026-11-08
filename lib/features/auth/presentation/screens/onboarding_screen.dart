@@ -28,7 +28,7 @@ class OnboardingScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              const Icon(Icons.circle, size: AppSpacing.iconSizeMd, color: AppColors.primary),
+              const Icon(Icons.circle, size: AppSpacing.iconSizeMd, color: AppColors.accent),
               const SizedBox(height: AppSpacing.lg),
               Text(l10n.onboardingTitle, style: AppTextStyles.h1, textAlign: TextAlign.center),
               const SizedBox(height: AppSpacing.xl),
@@ -47,7 +47,7 @@ class OnboardingScreen extends StatelessWidget {
                     onTap: () => context.push('/phone', extra: 'login'),
                     child: Text(
                       l10n.loginLink,
-                      style: AppTextStyles.body.copyWith(color: AppColors.primary),
+                      style: AppTextStyles.body.copyWith(color: AppColors.accent),
                     ),
                   ),
                 ],

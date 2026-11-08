@@ -15,7 +15,7 @@ class AppLegalFooter extends StatelessWidget {
     final notice = l10n.termsPrivacyNotice;
     final termsOfUse = l10n.termsOfUse;
     final privacyPolicy = l10n.privacyPolicy;
-    final linkStyle = AppTextStyles.caption.copyWith(color: AppColors.primary);
+    final linkStyle = AppTextStyles.caption.copyWith(color: AppColors.accent);
 
     final spans = <InlineSpan>[];
     var remaining = notice;

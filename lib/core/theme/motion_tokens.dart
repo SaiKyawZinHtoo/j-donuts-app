@@ -17,4 +17,15 @@ class MotionTokens {
 
   static const Duration kBannerAutoplayInterval = Duration(seconds: 4);
   static const Duration kPressScaleDuration = Duration(milliseconds: 100);
+
+  static const Duration kSplashLogoDuration = Duration(milliseconds: 900);
+  static const Duration kSplashHoldDuration = Duration(milliseconds: 700);
+  static const Duration kSplashExitDuration = Duration(milliseconds: 500);
+  static const Duration kTileDriftDuration = Duration(milliseconds: 900);
+  static const Duration kStepTransitionDuration = Duration(milliseconds: 350);
+  static const Duration kRingStepDuration = Duration(milliseconds: 400);
+  static const Duration kButtonMorphDuration = Duration(milliseconds: 250);
+  static const Duration kHomeSectionStagger = Duration(milliseconds: 80);
+  static const Duration kNavPillDuration = Duration(milliseconds: 250);
+  static const Duration kHeroDuration = Duration(milliseconds: 350);
 }

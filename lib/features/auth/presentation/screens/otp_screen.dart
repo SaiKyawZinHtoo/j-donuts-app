@@ -120,7 +120,7 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
                   child: Text(
                     secondsLeft == 0 ? l10n.resendCode : l10n.resendIn(_format(secondsLeft)),
                     style: AppTextStyles.caption.copyWith(
-                      color: secondsLeft == 0 ? AppColors.primary : AppColors.textSecondary,
+                      color: secondsLeft == 0 ? AppColors.accent : AppColors.textSecondary,
                     ),
                   ),
                 ),

@@ -83,7 +83,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.sm, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.accent,
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
                   child: Text(l10n.newBadge,

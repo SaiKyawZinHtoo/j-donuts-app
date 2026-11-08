@@ -29,7 +29,7 @@ class AppBottomNav extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: onTap,
-      selectedItemColor: AppColors.primary,
+      selectedItemColor: AppColors.accent,
       unselectedItemColor: AppColors.textSecondary,
       backgroundColor: AppColors.surface,
       type: BottomNavigationBarType.fixed,

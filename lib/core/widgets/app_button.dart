@@ -40,6 +40,8 @@ class _AppButtonState extends State<AppButton> {
             onPressed: widget.loading ? null : widget.onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
+              // Theme's Size.fromHeight is infinite-width; unsafe inside Rows.
+              minimumSize: const Size(0, AppSpacing.buttonHeight),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.sm),
               ),

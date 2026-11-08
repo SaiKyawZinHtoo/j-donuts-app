@@ -107,7 +107,7 @@ class _RewardsBadge extends StatelessWidget {
             key: const Key('rewardsBadge'),
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: AppColors.accent,
               borderRadius: BorderRadius.circular(AppSpacing.lg),
             ),
             child: Text(

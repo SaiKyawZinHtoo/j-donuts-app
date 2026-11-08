@@ -129,7 +129,7 @@ class _ChallengeArtPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4;
     final fillPaint = Paint()
-      ..color = AppColors.primary
+      ..color = AppColors.accent
       ..style = artType == 'coffee' ? PaintingStyle.fill : PaintingStyle.stroke
       ..strokeWidth = 4;
 

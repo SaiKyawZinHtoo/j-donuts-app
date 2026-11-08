@@ -84,7 +84,7 @@ class ProductSectionList extends StatelessWidget {
                           if (product.isNew) ...[
                             const SizedBox(width: 4),
                             Text(AppLocalizations.of(context)!.newBadge,
-                                style: const TextStyle(color: AppColors.primary, fontSize: 10)),
+                                style: const TextStyle(color: AppColors.accent, fontSize: 10)),
                           ] else if (product.discountPercent > 0) ...[
                             const SizedBox(width: 4),
                             Text(
