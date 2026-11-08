@@ -66,6 +66,44 @@ class _RewardsScreenState extends State<RewardsScreen> with SingleTickerProvider
   }
 }
 
+/// One-shot scale + fade entrance badge showing the number of open
+/// challenges (design spec §6.2, "Rewards badge '3'").
+class _RewardsBadge extends StatelessWidget {
+  final int count;
+  final AnimationController controller;
+
+  const _RewardsBadge({required this.count, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final entrance = CurvedAnimation(
+      parent: controller,
+      curve: const Interval(0.0, 0.3, curve: Curves.easeOutBack),
+    );
+    return Align(
+      alignment: Alignment.centerRight,
+      child: ScaleTransition(
+        scale: entrance,
+        child: FadeTransition(
+          opacity: entrance,
+          child: Container(
+            key: const Key('rewardsBadge'),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(AppSpacing.lg),
+            ),
+            child: Text(
+              '$count',
+              style: AppTextStyles.caption.copyWith(color: AppColors.surface),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _RewardsContent extends StatelessWidget {
   final RewardsLoaded state;
   final AnimationController controller;
@@ -85,6 +123,14 @@ class _RewardsContent extends StatelessWidget {
     final member = state.data.member;
     final challenges = state.data.challenges;
 
+    // Ring sweep finishes in the first 60% of the timeline; tier-line fill
+    // (see TierLadder) starts at 30% and runs to 100% -- staggered against
+    // each other per design spec §6.2.
+    final ringAnim = CurvedAnimation(
+      parent: controller,
+      curve: const Interval(0.0, 0.6, curve: MotionTokens.kEmphasizedCurve),
+    );
+
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
@@ -96,17 +142,26 @@ class _RewardsContent extends StatelessWidget {
                 progress: member.nextTierPoints == 0
                     ? 0
                     : member.points / member.nextTierPoints,
-                controller: controller,
+                controller: ringAnim,
               ),
               AnimatedBuilder(
-                animation: controller,
+                // Counts toward the same quantity the ring visualizes
+                // (member.points, matching its numerator), on the same
+                // curved timeline -- spec §6.2 "in sync off the same
+                // AnimationController".
+                animation: ringAnim,
                 builder: (context, _) => Text(
-                  '${(controller.value * member.totalPoints).round()}',
+                  '${(ringAnim.value * member.points).round()}',
                   style: AppTextStyles.h1,
                 ),
               ),
             ],
           ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        _RewardsBadge(
+          count: challenges.where((c) => !c.isComplete).length,
+          controller: controller,
         ),
         const SizedBox(height: AppSpacing.md),
         TierLadder(currentTier: member.tier, controller: controller),

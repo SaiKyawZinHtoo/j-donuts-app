@@ -1,10 +1,12 @@
 part of '../core_import.dart';
 
-/// Circular progress ring driven by an externally-owned [AnimationController]
-/// (e.g. points/loyalty progress), animating from 0 to [progress].
+/// Circular progress ring driven by an externally-owned [Animation]
+/// (e.g. points/loyalty progress), animating from 0 to [progress]. Accepts
+/// a plain [AnimationController] or a curved/intervaled [Animation<double>]
+/// derived from one (e.g. via [CurvedAnimation]).
 class AppProgressRing extends AnimatedWidget {
   final double progress;
-  final AnimationController controller;
+  final Animation<double> controller;
 
   const AppProgressRing({
     super.key,

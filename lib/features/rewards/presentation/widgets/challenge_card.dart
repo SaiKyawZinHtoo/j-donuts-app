@@ -2,7 +2,11 @@ part of '../../rewards_import.dart';
 
 /// A single challenge card with staggered entrance and a per-card
 /// `CustomPainter` driven by `challenge.current/target` (design spec §6.3).
-class ChallengeCard extends StatelessWidget {
+///
+/// The art's progress is held in a [ValueNotifier] and passed to
+/// [CustomPaint]'s `repaint`, so the painter redraws on a progress change
+/// without rebuilding this widget (or the surrounding list).
+class ChallengeCard extends StatefulWidget {
   final Challenge challenge;
   final Animation<double> entrance;
   final VoidCallback? onEarnTap;
@@ -15,10 +19,38 @@ class ChallengeCard extends StatelessWidget {
   });
 
   @override
+  State<ChallengeCard> createState() => _ChallengeCardState();
+}
+
+class _ChallengeCardState extends State<ChallengeCard> {
+  late ValueNotifier<double> _progress;
+  bool _pressed = false;
+
+  double _progressOf(Challenge c) =>
+      c.target == 0 ? 0.0 : (c.current / c.target).clamp(0.0, 1.0);
+
+  @override
+  void initState() {
+    super.initState();
+    _progress = ValueNotifier(_progressOf(widget.challenge));
+  }
+
+  @override
+  void didUpdateWidget(ChallengeCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _progress.value = _progressOf(widget.challenge);
+  }
+
+  @override
+  void dispose() {
+    _progress.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final progress = challenge.target == 0
-        ? 0.0
-        : (challenge.current / challenge.target).clamp(0.0, 1.0);
+    final challenge = widget.challenge;
+    final entrance = widget.entrance;
 
     return FadeTransition(
       opacity: entrance,
@@ -36,11 +68,14 @@ class ChallengeCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              CustomPaint(
-                size: const Size(40, 40),
-                painter: _ChallengeArtPainter(
-                  progress: progress,
-                  artType: challenge.artType,
+              ValueListenableBuilder<double>(
+                valueListenable: _progress,
+                builder: (context, value, _) => CustomPaint(
+                  size: const Size(40, 40),
+                  painter: _ChallengeArtPainter(
+                    progress: value,
+                    artType: challenge.artType,
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -56,13 +91,18 @@ class ChallengeCard extends StatelessWidget {
                   ],
                 ),
               ),
-              AnimatedScale(
-                scale: challenge.isComplete ? 1.0 : 0.95,
-                duration: MotionTokens.kTabSwitchDuration,
-                child: AppButton(
-                  key: Key('challengeEarnButton_${challenge.id}'),
-                  label: 'Earn',
-                  onPressed: challenge.isComplete ? onEarnTap : null,
+              GestureDetector(
+                onTapDown: challenge.isComplete ? (_) => setState(() => _pressed = true) : null,
+                onTapUp: challenge.isComplete ? (_) => setState(() => _pressed = false) : null,
+                onTapCancel: challenge.isComplete ? () => setState(() => _pressed = false) : null,
+                child: AnimatedScale(
+                  scale: _pressed ? 0.9 : 1.0,
+                  duration: MotionTokens.kTabSwitchDuration,
+                  child: AppButton(
+                    key: Key('challengeEarnButton_${challenge.id}'),
+                    label: 'Earn',
+                    onPressed: challenge.isComplete ? widget.onEarnTap : null,
+                  ),
                 ),
               ),
             ],
