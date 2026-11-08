@@ -17,6 +17,7 @@ class AppSpacing {
   static const double backButtonSize = 44;
   static const double authHorizontalPadding = 24;
   static const double ringSize = 40;
+  static const double ringStrokeRatio = 0.3;
   static const double appBarHeight = 56;
   static const double otpBoxWidth = 44;
   static const double otpBoxHeight = 52;
