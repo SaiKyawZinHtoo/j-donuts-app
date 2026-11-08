@@ -134,7 +134,7 @@ void main() {
     // Back to Home, then over to the Rewards tab.
     await tester.pageBack();
     await _settleAfterFakeNetwork(tester);
-    await tester.tap(find.text('Rewards'));
+    await tester.tap(find.byIcon(Icons.local_offer_outlined));
     await _settleAfterFakeNetwork(tester);
 
     expect(find.byType(RewardsScreen), findsOneWidget);

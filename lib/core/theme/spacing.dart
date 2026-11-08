@@ -33,4 +33,6 @@ class AppSpacing {
   static const double onboardingTilesFraction = 0.55;
   static const double onboardingTilesMinFraction = 0.45;
   static const double onboardingContentHeight = 490;
+  static const double navBarHeight = 64;
+  static const double navItemSize = 24;
 }
