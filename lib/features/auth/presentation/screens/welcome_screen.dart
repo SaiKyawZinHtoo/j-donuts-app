@@ -58,39 +58,46 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     return AuthScaffold(
       showBack: false,
       showFooter: false,
+      // spaceBetween inside the scaffold's minHeight: group centered, button
+      // at the bottom, no Spacer (unbounded max height).
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(height: AppSpacing.xl * 2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(4, (index) {
-              final animation = _tileAnimation(index);
-              return AnimatedBuilder(
-                animation: animation,
-                builder: (context, child) => Opacity(
-                  opacity: animation.value,
-                  child: Transform.translate(
-                    offset: Offset(0, (1 - animation.value) * 24),
-                    child: child,
-                  ),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                  child: Icon(
-                    Icons.circle,
-                    size: AppSpacing.iconSizeMd,
-                    color: AppColors.accent,
-                  ),
-                ),
-              );
-            }),
+          const SizedBox.shrink(),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(4, (index) {
+                  final animation = _tileAnimation(index);
+                  return AnimatedBuilder(
+                    animation: animation,
+                    builder: (context, child) => Opacity(
+                      opacity: animation.value,
+                      child: Transform.translate(
+                        offset: Offset(0, (1 - animation.value) * 24),
+                        child: child,
+                      ),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                      child: Icon(
+                        Icons.circle,
+                        size: AppSpacing.iconSizeMd,
+                        color: AppColors.accent,
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              FadeTransition(
+                opacity: _controller,
+                child: Text(l10n.welcomeTitle, style: AppTextStyles.h1),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.lg),
-          FadeTransition(
-            opacity: _controller,
-            child: Text(l10n.welcomeTitle, style: AppTextStyles.h1),
-          ),
-          const SizedBox(height: AppSpacing.xl * 2),
           AppButton(
             key: const Key('letsExploreButton'),
             label: l10n.letsExploreButton,
