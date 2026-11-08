@@ -33,7 +33,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
         )),
         minimumSize: const WidgetStatePropertyAll(
-            Size.fromHeight(AppSpacing.buttonHeight)),
+            Size(0, AppSpacing.buttonHeight)),
         backgroundColor: WidgetStateProperty.resolveWith((states) =>
             states.contains(WidgetState.disabled)
                 ? AppColors.primaryDisabled
