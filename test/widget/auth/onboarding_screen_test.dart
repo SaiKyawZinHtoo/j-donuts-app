@@ -5,15 +5,18 @@ import 'package:j_donuts_app/features/auth/auth_import.dart';
 
 import 'test_helpers.dart';
 
-Widget _app({bool disableAnimations = false, double textScale = 1.0}) =>
-    MediaQuery(
-      data: MediaQueryData(
-        size: const Size(375, 667),
-        disableAnimations: disableAnimations,
-        textScaler: TextScaler.linear(textScale),
-      ),
-      child: makeTestableWidget(const OnboardingScreen()),
-    );
+Widget _app({
+  bool disableAnimations = false,
+  double textScale = 1.0,
+  Size size = const Size(375, 667),
+}) => MediaQuery(
+  data: MediaQueryData(
+    size: size,
+    disableAnimations: disableAnimations,
+    textScaler: TextScaler.linear(textScale),
+  ),
+  child: makeTestableWidget(const OnboardingScreen()),
+);
 
 Finder _inTile(int i, Type t) =>
     find.descendant(of: find.byType(DonutTile).at(i), matching: find.byType(t));
@@ -47,7 +50,10 @@ void main() {
             .translation,
         tile.slideFrom,
       );
-      expect(tester.widget<Opacity>(_inTile(i, Opacity)).opacity, 0);
+      expect(
+        tester.widget<FadeTransition>(_inTile(i, FadeTransition)).opacity.value,
+        0,
+      );
     }
     await tester.pumpAndSettle();
     for (var i = 0; i < 4; i++) {
@@ -57,7 +63,10 @@ void main() {
             .translation,
         Offset.zero,
       );
-      expect(tester.widget<Opacity>(_inTile(i, Opacity)).opacity, 1);
+      expect(
+        tester.widget<FadeTransition>(_inTile(i, FadeTransition)).opacity.value,
+        1,
+      );
     }
   });
 
@@ -72,16 +81,59 @@ void main() {
             .translation,
         Offset.zero,
       );
-      expect(tester.widget<Opacity>(_inTile(i, Opacity)).opacity, 1);
+      expect(
+        tester.widget<FadeTransition>(_inTile(i, FadeTransition)).opacity.value,
+        1,
+      );
     }
   });
 
-  testWidgets('375x667 at 1.3 text scale does not overflow', (tester) async {
-    tester.view.physicalSize = const Size(375, 667);
+  Future<void> pumpAt(WidgetTester tester, Size size, double scale) async {
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(_app(textScale: 1.3));
+    await tester.pumpWidget(_app(size: size, textScale: scale));
     await tester.pumpAndSettle();
-    expect(tester.takeException(), isNull);
-  });
+  }
+
+  for (final (size, scale) in [
+    (const Size(375, 667), 1.0),
+    (const Size(375, 667), 1.3),
+    (const Size(430, 932), 1.0),
+  ]) {
+    testWidgets('no overflow, title clear of tiles at $size x$scale', (
+      tester,
+    ) async {
+      await pumpAt(tester, size, scale);
+      expect(tester.takeException(), isNull);
+      final title = tester.getRect(
+        find.text(
+          AppLocalizations.of(tester.element(find.byType(OnboardingScreen)))!
+              .onboardingTitle,
+        ),
+      );
+      for (var i = 0; i < 4; i++) {
+        expect(
+          title.overlaps(tester.getRect(find.byType(DonutTile).at(i))),
+          isFalse,
+          reason: 'tile $i',
+        );
+      }
+      final button = find.byKey(const Key('getStartedButton'));
+      if (scale == 1.0) {
+        expect(tester.getRect(button).bottom, lessThanOrEqualTo(size.height));
+      } else {
+        await tester.ensureVisible(button);
+        await tester.pumpAndSettle();
+        expect(tester.getRect(button).bottom, lessThanOrEqualTo(size.height));
+      }
+      if (size.height > 900) {
+        expect(
+          tester.getRect(find.byType(AppLegalFooter)).bottom,
+          lessThanOrEqualTo(size.height),
+        );
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

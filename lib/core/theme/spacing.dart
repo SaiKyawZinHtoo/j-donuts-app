@@ -31,4 +31,6 @@ class AppSpacing {
   static const double logoCircleSize = 72;
   static const double logoCirclePadding = 12;
   static const double onboardingTilesFraction = 0.55;
+  static const double onboardingTilesMinFraction = 0.45;
+  static const double onboardingContentHeight = 490;
 }

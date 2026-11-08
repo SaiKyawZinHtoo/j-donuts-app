@@ -19,18 +19,20 @@ class DonutTile extends StatelessWidget {
   final Offset slideFrom;
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: animation,
-    builder: (context, child) => FractionalTranslation(
-      translation: Offset.lerp(slideFrom, Offset.zero, animation.value)!,
-      child: Opacity(opacity: animation.value.clamp(0.0, 1.0), child: child),
-    ),
-    child: Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(color: circleColor, shape: BoxShape.circle),
-      clipBehavior: Clip.antiAlias,
-      child: Image.asset(asset, fit: BoxFit.cover),
+  Widget build(BuildContext context) => FadeTransition(
+    opacity: animation,
+    child: SlideTransition(
+      position: Tween<Offset>(
+        begin: slideFrom,
+        end: Offset.zero,
+      ).animate(animation),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(color: circleColor, shape: BoxShape.circle),
+        clipBehavior: Clip.antiAlias,
+        child: Image.asset(asset, fit: BoxFit.cover),
+      ),
     ),
   );
 }
