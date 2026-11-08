@@ -8,6 +8,7 @@ import '../../data/local/daos/product_dao.dart';
 import '../../data/local/daos/rewards_dao.dart';
 import '../../data/local/database.dart';
 import '../../features/auth/auth_import.dart';
+import '../../features/home/home_import.dart';
 
 /// Registers app-wide singletons. Each later feature task adds its own
 /// repository/use-case registrations in its own file -- not here.
@@ -46,6 +47,13 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<RegisterUseCase>(
     () => RegisterUseCase(getIt()),
   );
+  getIt.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(homeDao: getIt(), memberDao: getIt()),
+  );
+  getIt.registerLazySingleton<GetHomeUseCase>(
+    () => GetHomeUseCase(getIt()),
+  );
+
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
       loginUseCase: getIt(),
