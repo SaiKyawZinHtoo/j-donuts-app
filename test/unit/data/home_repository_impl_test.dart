@@ -28,6 +28,12 @@ void main() {
     ).getHome();
 
     expect(result, isA<Ok<HomeBundle>>());
-    expect((result as Ok<HomeBundle>).value.sections, isNotEmpty);
+    final bundle = (result as Ok<HomeBundle>).value;
+    expect(bundle.sections, isNotEmpty);
+
+    // Canonical member record (design spec §3.2): Silver tier, 500 pts
+    // remaining to Gold.
+    expect(bundle.member.tier, 'Silver');
+    expect(bundle.member.nextTierPoints - bundle.member.points, 500);
   });
 }
