@@ -46,3 +46,10 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Design reference files (not shipped)
+*.pdf
+assets/design_screenshots/
+
+# Generated localization output
+assets/l10n/app_localizations*.dart

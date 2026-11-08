@@ -1,0 +1,62 @@
+[
+  {
+    "id": "p_coconut",
+    "code": "JD022123",
+    "name": "Coconut Donut",
+    "priceMmk": 3200,
+    "isNew": true,
+    "discountPercent": 0,
+    "imageUrl": "assets/images/seed/donut_coconut.png",
+    "description": "Soft glazed donut rolled in toasted coconut flakes."
+  },
+  {
+    "id": "p_choco",
+    "code": "JD022124",
+    "name": "Chocolate Donut",
+    "priceMmk": 2900,
+    "isNew": false,
+    "discountPercent": 10,
+    "imageUrl": "assets/images/seed/donut_chocolate.png",
+    "description": "Rich chocolate glaze over a fluffy ring donut."
+  },
+  {
+    "id": "p_strawberry",
+    "code": "JD022125",
+    "name": "Strawberry Donut",
+    "priceMmk": 2900,
+    "isNew": false,
+    "discountPercent": 0,
+    "imageUrl": "assets/images/seed/donut_strawberry.png",
+    "description": "Pink strawberry glaze with a fruity finish."
+  },
+  {
+    "id": "p_matcha",
+    "code": "JD022126",
+    "name": "Matcha Donut",
+    "priceMmk": 3400,
+    "isNew": true,
+    "discountPercent": 0,
+    "imageUrl": "assets/images/seed/donut_matcha.png",
+    "description": "Japanese matcha glaze with a hint of white chocolate."
+  },
+  {
+    "id": "p_americano",
+    "code": "JD033001",
+    "name": "Americano",
+    "priceMmk": 2500,
+    "isNew": false,
+    "discountPercent": 0,
+    "imageUrl": "assets/images/seed/coffee_americano.png",
+    "description": "Classic black coffee, brewed fresh."
+  },
+  {
+    "id": "p_latte",
+    "code": "JD033002",
+    "name": "Caffe Latte",
+    "priceMmk": 3000,
+    "isNew": false,
+    "discountPercent": 0,
+    "imageUrl": "assets/images/seed/coffee_latte.png",
+    "description": "Espresso with steamed milk."
+  }
+]
