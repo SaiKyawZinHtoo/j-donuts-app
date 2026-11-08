@@ -78,6 +78,9 @@ AuthScaffold({
   VoidCallback? onTapTerms,
   VoidCallback? onTapPrivacy,
   bool showFooter = true,         // AppLegalFooter pinned bottom
+  VoidCallback? onBack,           // overrides back-button action (added in T5)
+  Widget? bottom,                 // primary action pinned above footer, rises with keyboard (T10a)
+  bool titleGap = true,           // gap between header row and body (T10a; Welcome opts out)
 })
 ```
 Structure: `AppGradientBackground` → `SafeArea` → column: header row (back button left, trailing right) → expanded child → footer. Keyboard-safe: child scrolls (`SingleChildScrollView` + `resizeToAvoidBottomInset`), button stays above keyboard; footer hides when keyboard is open.
@@ -89,7 +92,7 @@ Structure: `AppGradientBackground` → `SafeArea` → column: header row (back b
 ## 7. Controls
 
 - `AppButton`: pill, full width, cyan; disabled `primaryDisabled`; press-scale (`AnimatedScale` 0.97, `kPressScaleDuration`) driven by `Listener` (not `GestureDetector`, fixing the known gesture-arena bug); loading state morphs label to a centered spinner with `AnimatedSwitcher` + width stays full (`kButtonMorphDuration`). Label uppercase (already central).
-- `AppTextField`: gets optional `prefix` (`Widget?`) and uses theme decoration. Focus and error states animate (border color + subtle shake on error via existing shake token where applicable).
+- `AppTextField`: gets optional `prefix` (`Widget?`) and uses theme decoration (rendered as `prefixIcon`, since `InputDecoration.prefix` is invisible when unfocused and empty). Focus and error states animate (border color + subtle shake on error via existing shake token where applicable).
 - **Phone field**: `prefix` = fixed `+95` text in `textSecondary`, vertical divider optional; the editable text starts after it. The controller holds only the national number. `validatePhone`/`normalizePhone` already accept both `9…`, `09…` and `+959…`, so the bloc call is unchanged. ARB `phoneCountryCode` is reused for the prefix text; `labelText` removed (no floating label).
 - OTP boxes, DOB fields: restyled to white rounded fields via theme; behavior unchanged.
 

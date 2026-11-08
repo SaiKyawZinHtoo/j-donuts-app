@@ -66,19 +66,36 @@ detail, Rewards — goes through a DAO, never JSON or network directly. `connect
 online/offline for the Home offline banner; "refresh from network when back online" is a documented
 no-op hook since no mock server is in scope (see Known gaps).
 
-**Animations** (spec §6.2), all durations/curves as named constants in
-`core/theme/motion_tokens.dart`: the Rewards points ring sweep + synced number counter (now started
-only when the Rewards tab actually becomes active, not merely built — the shell's `IndexedStack`
-builds every tab up front), tier-ladder highlight with a staggered connecting-line fill, staggered
-challenge-card entrance with per-card CustomPainter progress art, an animated pill under the active
-Earn/Gift tab, OTP shake-on-error, a button press-scale (`AppButton`'s `AnimatedScale`) plus its
-loading-spinner swap, and Welcome screen's staggered donut-tile slide-in, Home's skeleton shimmer.
-Every `AnimationController` checks `MediaQuery.of(context).disableAnimations` and jumps to its end
-state instead of faking a reduced animation.
+**Animations**: every duration/curve is a named constant in `lib/core/theme/motion_tokens.dart`, and
+every animation honors Reduce Motion (`MediaQuery.disableAnimationsOf`) by jumping to its end state.
+Built:
 
-Not built (see Known gaps for the full list): a sliding pill indicator on the bottom nav (it's a
-plain `BottomNavigationBar`), a shared-axis transition between registration steps, and a
-progress-ring-morphs-to-check on the DOB step.
+- Splash: logo scale/fade in, hold, fade-out exit, then route to onboarding or Home.
+- Onboarding: donut tiles drift in, title and button stagger in.
+- Shared-axis step transitions (fade + 30px slide) on `/phone`, `/otp`, `/name`, `/dob`, `/welcome`.
+- Registration progress ring animating 25 -> 50 -> 75 -> 100% and morphing to a check.
+- `AppButton`: press-scale (`Listener`-driven) and Continue -> spinner loading morph.
+- OTP shake on error; Welcome tile stagger.
+- Home: staggered section entrance (once, on first load); skeleton shimmer.
+- Section-scoped Hero (tag `product-<sectionId>-<productId>`) from product tile to detail.
+- Bottom-nav sliding pill; Earn/Gift tab pill.
+- Rewards entrance: points ring sweep + counter (starts when the tab becomes active), tier-ladder
+  highlight, staggered challenge cards with per-card progress art, badge.
+- Home banner autoplay.
+
+## UI / theme
+
+- `AppTheme` plus token files in `lib/core/theme/`: `colors.dart`, `spacing.dart`, `motion_tokens.dart`,
+  `text_styles.dart`.
+- `AppGradientBackground` paints the pink-to-cyan gradient (`AppColors.gradientColors` /
+  `gradientStops`, stops `0, .3, .5, .7, 1`); used by `AuthScaffold` and Welcome.
+- `AuthScaffold` (`lib/core/widgets/auth_scaffold.dart`): pinned header (back button + trailing),
+  scrolling body, optional pinned `bottom` action that rises with the keyboard, legal footer hidden
+  while the keyboard is open; `onBack`, `showFooter`, `titleGap` params.
+- Phone field: fixed `+95` prefix (rendered as `prefixIcon` so it shows when unfocused); the user types
+  the national number, and a leading `0` or pasted `+95` is accepted and normalized.
+- `AppButton` is a pill; `AppProgressRing` / `RegistrationProgressRing` draw the rings.
+- Splash is route `/splash` (the router's `initialLocation`).
 
 ## Testing
 
@@ -102,7 +119,7 @@ As part of this task, the bundled seed PNGs (`assets/images/seed/*.png`) were re
 test-environment artifact); they're now valid, decodable 1×1 placeholder PNGs. This would have failed
 to render on a real device too, not only under `flutter test`.
 
-Full suite: 69 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
+Full suite: 159 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
 (`prefer_initializing_formals`, `unnecessary_library_name`) from earlier tasks, no errors or warnings.
 
 ## Known gaps
@@ -121,9 +138,17 @@ none of which block the flows above:
   `unnecessary_library_name` style lints. None are required by the brief's test lists.
 - `AppBottomNav`'s item list and `AppShellScreen`'s tab list aren't structurally linked (a length
   mismatch wouldn't be caught at compile time) — no current caller hits this.
-- No product tile → detail Hero transition: the same product can appear in more than one Home
-  section (e.g. "Popular" and "Order again"), so a single Hero tag per product id would collide when
-  both tiles are on screen at once; not worth the per-section-unique-tag plumbing for this pass.
+- Brand logo is only 120px (`assets/images/seed/brand_logo.png`) / 64px (`assets/icon/app_icon.png`),
+  so the splash/onboarding logo looks soft; a 512px+ file is needed.
+- Fingerprint button on login is visual only (shows a "not implemented" snackbar).
+- Typeface is not matched to the reference font; the reference's 5th orange onboarding tile circle is
+  not built; onboarding tiles under-overlap on small phones (375x667).
+- Low contrast: phone hint text (~2:1) and inactive bottom-nav labels (70% white).
+- `ChallengeCard`'s outer press-scale stacks with `AppButton`'s (0.9 x 0.97).
+- `AuthScaffold.onBack` was added during implementation and is not in the original spec §6 list
+  (spec updated).
+- Impeller ghosting seen on Onboarding in some iOS simulators is a simulator artifact, not seen as an
+  app bug.
 - Translation is incomplete beyond tier names and the strings added in this pass — most user-facing
   copy only has an English/Myanmar pair for what earlier tasks and this review explicitly touched,
   not a full audit of every string in the app.
