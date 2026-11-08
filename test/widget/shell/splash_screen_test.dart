@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:j_donuts_app/core/core_import.dart';
 import 'package:j_donuts_app/core/router/app_page_transitions.dart';
 import 'package:j_donuts_app/features/shell/shell_import.dart';
+
+int landings = 0;
 
 Widget _app({required bool reduce}) => MaterialApp.router(
   builder: (c, child) => MediaQuery(
@@ -13,17 +16,28 @@ Widget _app({required bool reduce}) => MaterialApp.router(
     initialLocation: '/splash',
     routes: [
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
-      GoRoute(path: '/', builder: (_, _) => const Text('landed')),
+      GoRoute(
+        path: '/',
+        builder: (_, _) {
+          landings++;
+          return const Text('landed');
+        },
+      ),
     ],
   ),
 );
 
 void main() {
-  testWidgets('reduce motion: navigates after one pump, no hang', (t) async {
+  setUp(() => landings = 0);
+
+  testWidgets('reduce motion: skips animation and still leaves the splash', (
+    t,
+  ) async {
     await t.pumpWidget(_app(reduce: true));
     await t.pump();
     await t.pumpAndSettle();
     expect(find.text('landed'), findsOneWidget);
+    expect(landings, 1);
   });
 
   testWidgets('animated: shows logo, then navigates once after hold+exit', (
@@ -34,7 +48,9 @@ void main() {
     expect(find.text('landed'), findsNothing);
     await t.pump(const Duration(seconds: 3));
     await t.pumpAndSettle();
+    await t.pump(const Duration(seconds: 3));
     expect(find.text('landed'), findsOneWidget);
+    expect(landings, 1);
   });
 
   group('sharedAxisX', () {
@@ -79,10 +95,15 @@ void main() {
       expect(w, isA<Text>());
     });
 
-    testWidgets('otherwise fades and slides', (t) async {
-      await build(t, reduce: false);
-      expect(find.byType(SlideTransition), findsWidgets);
-      expect(find.byType(FadeTransition), findsWidgets);
+    testWidgets('otherwise fades and slides by stepSlideOffset', (t) async {
+      final w = await build(t, reduce: false);
+      final fade = w as FadeTransition;
+      final slide = fade.child! as SlideTransition;
+      expect(fade.opacity.value, inExclusiveRange(0, 1));
+      final width = t.view.physicalSize.width / t.view.devicePixelRatio;
+      final dx = slide.position.value.dx;
+      expect(dx, greaterThan(0));
+      expect(dx, lessThan(AppSpacing.stepSlideOffset / width));
     });
   });
 }

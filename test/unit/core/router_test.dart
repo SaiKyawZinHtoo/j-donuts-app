@@ -9,6 +9,7 @@ import 'package:j_donuts_app/core/result/result.dart';
 import 'package:j_donuts_app/core/router/app_router.dart';
 import 'package:j_donuts_app/data/local/database.dart' hide AuthUser;
 import 'package:j_donuts_app/features/auth/auth_import.dart';
+import 'package:j_donuts_app/features/shell/shell_import.dart';
 
 class _Session extends GetSessionUseCase {
   final AuthUser? user;
@@ -55,6 +56,9 @@ void main() {
 
   testWidgets('no session: splash then onboarding', (t) async {
     await _boot(t, null);
+    await t.pump(const Duration(milliseconds: 100));
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.byKey(const Key('getStartedButton')), findsNothing);
     await t.pump(const Duration(seconds: 3));
     await t.pumpAndSettle();
     expect(find.byKey(const Key('getStartedButton')), findsOneWidget);
@@ -67,6 +71,9 @@ void main() {
       t,
       AuthUser(id: '1', phone: '1', firstName: 'A', dob: DateTime(2000)),
     );
+    await t.pump(const Duration(milliseconds: 100));
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.byKey(const Key('getStartedButton')), findsNothing);
     var sawOnboarding = false;
     for (var i = 0; i < 300; i++) {
       await t.pump(const Duration(milliseconds: 20));

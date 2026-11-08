@@ -63,16 +63,18 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Interval(0, inEnd, curve: MotionTokens.kEmphasizedCurve),
     );
     final out = CurvedAnimation(parent: _c, curve: Interval(outStart, 1));
-    final logo = ClipOval(
-      child: Image.asset(
-        'assets/images/seed/brand_logo.png',
-        width: AppSpacing.splashLogoSize,
-        height: AppSpacing.splashLogoSize,
-        fit: BoxFit.cover,
+    final logo = ExcludeSemantics(
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/seed/brand_logo.png',
+          width: AppSpacing.splashLogoSize,
+          height: AppSpacing.splashLogoSize,
+          fit: BoxFit.cover,
+        ),
       ),
     );
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface,
       body: Center(
         child: reduce
             ? logo

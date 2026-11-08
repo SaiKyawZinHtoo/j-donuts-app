@@ -10,11 +10,17 @@ class AppPageTransitions {
   /// the user has animations disabled.
   static CustomTransitionPage<T> sharedAxisX<T>(
     GoRouterState state,
-    Widget child,
-  ) => CustomTransitionPage<T>(
+    Widget child, {
+    bool reduceMotion = false,
+  }) => CustomTransitionPage<T>(
     key: state.pageKey,
     child: child,
-    transitionDuration: MotionTokens.kStepTransitionDuration,
+    transitionDuration: reduceMotion
+        ? Duration.zero
+        : MotionTokens.kStepTransitionDuration,
+    reverseTransitionDuration: reduceMotion
+        ? Duration.zero
+        : MotionTokens.kStepTransitionDuration,
     transitionsBuilder: (context, animation, secondary, child) {
       if (MediaQuery.disableAnimationsOf(context)) return child;
       final curved = CurvedAnimation(

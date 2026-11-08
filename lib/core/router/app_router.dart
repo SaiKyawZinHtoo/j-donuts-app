@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -70,27 +71,40 @@ GoRouter createAppRouter() => GoRouter(
           pageBuilder: (context, state) => AppPageTransitions.sharedAxisX(
             state,
             PhoneScreen(isLogin: state.extra == 'login'),
+            reduceMotion: MediaQuery.disableAnimationsOf(context),
           ),
         ),
         GoRoute(
           path: '/otp',
-          pageBuilder: (context, state) =>
-              AppPageTransitions.sharedAxisX(state, const OtpScreen()),
+          pageBuilder: (context, state) => AppPageTransitions.sharedAxisX(
+            state,
+            const OtpScreen(),
+            reduceMotion: MediaQuery.disableAnimationsOf(context),
+          ),
         ),
         GoRoute(
           path: '/name',
-          pageBuilder: (context, state) =>
-              AppPageTransitions.sharedAxisX(state, const NameScreen()),
+          pageBuilder: (context, state) => AppPageTransitions.sharedAxisX(
+            state,
+            const NameScreen(),
+            reduceMotion: MediaQuery.disableAnimationsOf(context),
+          ),
         ),
         GoRoute(
           path: '/dob',
-          pageBuilder: (context, state) =>
-              AppPageTransitions.sharedAxisX(state, const DobScreen()),
+          pageBuilder: (context, state) => AppPageTransitions.sharedAxisX(
+            state,
+            const DobScreen(),
+            reduceMotion: MediaQuery.disableAnimationsOf(context),
+          ),
         ),
         GoRoute(
           path: '/welcome',
-          pageBuilder: (context, state) =>
-              AppPageTransitions.sharedAxisX(state, const WelcomeScreen()),
+          pageBuilder: (context, state) => AppPageTransitions.sharedAxisX(
+            state,
+            const WelcomeScreen(),
+            reduceMotion: MediaQuery.disableAnimationsOf(context),
+          ),
         ),
       ],
     ),
