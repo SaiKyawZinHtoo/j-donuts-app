@@ -51,19 +51,27 @@ class RegistrationProgressRing extends StatelessWidget {
             key: const ValueKey('ring-progress'),
             tween: Tween<double>(begin: begin, end: end),
             duration: duration,
-            builder: (_, value, _) =>
-                CustomPaint(painter: RegistrationRingPainter(progress: value)),
+            builder: (_, value, _) => CustomPaint(
+              size: const Size.square(AppSpacing.ringSize),
+              painter: RegistrationRingPainter(progress: value),
+            ),
           );
 
-    return SizedBox.square(
-      dimension: AppSpacing.ringSize,
-      child: AnimatedSwitcher(
-        duration: duration,
-        transitionBuilder: (c, a) => FadeTransition(
-          opacity: a,
-          child: ScaleTransition(scale: a, child: c),
+    return Semantics(
+      container: true,
+      label: completed ? 'Registration complete' : 'Registration progress',
+      value: completed ? null : '${(end * 100).round()}%',
+      excludeSemantics: true,
+      child: SizedBox.square(
+        dimension: AppSpacing.ringSize,
+        child: AnimatedSwitcher(
+          duration: duration,
+          transitionBuilder: (c, a) => FadeTransition(
+            opacity: a,
+            child: ScaleTransition(scale: a, child: c),
+          ),
+          child: child,
         ),
-        child: child,
       ),
     );
   }
@@ -86,17 +94,16 @@ class RegistrationRingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final stroke = size.shortestSide * AppSpacing.ringStrokeRatio;
     final rect = (Offset.zero & size).deflate(stroke / 2);
-    final paint = Paint()
+    final track = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke;
-    canvas.drawArc(rect, 0, 2 * math.pi, false, paint..color = trackColor);
-    canvas.drawArc(
-      rect,
-      -math.pi / 2,
-      2 * math.pi * progress,
-      false,
-      paint..color = progressColor,
-    );
+      ..strokeWidth = stroke
+      ..color = trackColor;
+    final arc = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..color = progressColor;
+    canvas.drawArc(rect, 0, 2 * math.pi, false, track);
+    canvas.drawArc(rect, -math.pi / 2, 2 * math.pi * progress, false, arc);
   }
 
   @override
