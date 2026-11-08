@@ -1,8 +1,11 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/auth_import.dart';
+import '../../features/home/home_import.dart';
 import '../../features/product/product_import.dart';
+import '../../features/rewards/rewards_import.dart';
 import '../../features/shell/shell_import.dart';
 import '../result/result.dart';
 
@@ -26,8 +29,14 @@ class _RoutePlaceholderScreen extends PlaceholderTabScreen {
 /// Shared by the `/home` and `/rewards` routes: same shell, different
 /// starting tab.
 AppShellScreen _buildShell({required int initialIndex}) => AppShellScreen(
-  homeTab: const _RoutePlaceholderScreen(label: 'Home'),
-  rewardsTab: const _RoutePlaceholderScreen(label: 'Rewards'),
+  homeTab: BlocProvider<HomeBloc>(
+    create: (_) => GetIt.instance<HomeBloc>()..add(const HomeRequested()),
+    child: const HomeScreen(),
+  ),
+  rewardsTab: BlocProvider<RewardsBloc>(
+    create: (_) => GetIt.instance<RewardsBloc>()..add(const RewardsRequested()),
+    child: const RewardsScreen(),
+  ),
   initialIndex: initialIndex,
 );
 

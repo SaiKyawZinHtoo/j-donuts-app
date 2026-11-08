@@ -10,6 +10,7 @@ import '../../data/local/database.dart';
 import '../../features/auth/auth_import.dart';
 import '../../features/home/home_import.dart';
 import '../../features/product/product_import.dart';
+import '../../features/rewards/rewards_import.dart';
 import '../core_import.dart';
 
 /// Registers app-wide singletons. Each later feature task adds its own
@@ -78,5 +79,15 @@ void setupServiceLocator() {
   );
   getIt.registerFactory<ProductDetailBloc>(
     () => ProductDetailBloc(getProductUseCase: getIt()),
+  );
+
+  getIt.registerLazySingleton<RewardsRepository>(
+    () => RewardsRepositoryImpl(rewardsDao: getIt(), memberDao: getIt()),
+  );
+  getIt.registerLazySingleton<GetRewardsUseCase>(
+    () => GetRewardsUseCase(getIt()),
+  );
+  getIt.registerFactory<RewardsBloc>(
+    () => RewardsBloc(getRewardsUseCase: getIt()),
   );
 }
