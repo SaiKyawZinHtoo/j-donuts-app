@@ -46,7 +46,9 @@ class _PhoneScreenState extends State<PhoneScreen> {
         backgroundColor: AppColors.surface,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).maybePop(),
+          onPressed: () {
+            if (context.canPop()) context.pop();
+          },
         ),
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
@@ -54,7 +56,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
           if (state is PhoneInvalid) {
             setState(() => _serverError = state.message);
           } else if (state is OtpAwaiting) {
-            Navigator.of(context).pushNamed('/otp');
+            context.push('/otp');
           } else if (state is AuthFailure) {
             AppSnackbar.showError(context, state.message);
           }

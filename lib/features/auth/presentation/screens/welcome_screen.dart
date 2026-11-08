@@ -76,7 +76,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               AppButton(
                 key: const Key('letsExploreButton'),
                 label: "Let's explore",
-                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false),
+                onPressed: () => context.go('/home'),
               ),
             ],
           ),

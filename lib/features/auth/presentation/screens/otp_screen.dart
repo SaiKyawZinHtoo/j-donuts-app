@@ -33,7 +33,7 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
   String _format(int seconds) {
     final m = seconds ~/ 60;
     final s = seconds % 60;
-    return '${m.toString().padLeft(1, '0')}:${s.toString().padLeft(2, '0')}';
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -52,9 +52,9 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
           if (state is OtpInvalid) {
             _shakeController.forward(from: 0);
           } else if (state is AwaitingName) {
-            Navigator.of(context).pushNamed('/name');
+            context.push('/name');
           } else if (state is AuthSuccess) {
-            Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+            context.go('/home');
           } else if (state is AuthFailure) {
             AppSnackbar.showError(context, state.message);
           }

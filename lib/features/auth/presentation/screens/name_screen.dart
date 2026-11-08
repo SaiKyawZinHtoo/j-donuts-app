@@ -54,13 +54,22 @@ class _NameScreenState extends State<NameScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AwaitingDob) {
-            Navigator.of(context).pushNamed('/dob');
+            context.push('/dob');
           }
         },
         builder: (context, state) {
-          final errorText = state is RegistrationStepInvalid && state.step == RegistrationStep.name
-              ? state.message
-              : null;
+          // RegistrationStepInvalid carries one message with no field-level
+          // detail, so attribute it by re-running the same validators the
+          // bloc used: whichever field they flag is where the message shows.
+          String? firstError;
+          String? lastError;
+          if (state is RegistrationStepInvalid && state.step == RegistrationStep.name) {
+            if (validateFirstName(_firstController.text) is ValidationInvalid) {
+              firstError = state.message;
+            } else {
+              lastError = state.message;
+            }
+          }
           return Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
@@ -72,13 +81,14 @@ class _NameScreenState extends State<NameScreen> {
                   key: const Key('firstNameField'),
                   controller: _firstController,
                   labelText: 'First name',
-                  errorText: errorText,
+                  errorText: firstError,
                 ),
                 const SizedBox(height: AppSpacing.md),
                 AppTextField(
                   key: const Key('lastNameField'),
                   controller: _lastController,
                   labelText: 'Last name',
+                  errorText: lastError,
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 AppButton(

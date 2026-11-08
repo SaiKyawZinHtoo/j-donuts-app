@@ -69,7 +69,7 @@ class _DobScreenState extends State<DobScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            Navigator.of(context).pushNamedAndRemoveUntil('/welcome', (route) => false);
+            context.go('/welcome');
           } else if (state is AuthFailure) {
             AppSnackbar.showError(context, state.message);
           }

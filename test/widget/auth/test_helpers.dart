@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:j_donuts_app/features/auth/auth_import.dart';
 
@@ -18,18 +19,27 @@ AuthBloc buildAuthBloc({AuthRepository? repository}) {
   );
 }
 
-/// Wraps [child] in a MaterialApp + BlocProvider so widget tests can pump a
-/// bare screen. Supply [bloc] to control/seed AuthBloc state; otherwise a
-/// bloc backed by a bare mock repository is created.
+/// Wraps [child] in a `MaterialApp.router` (the screens navigate via
+/// go_router's `context.go`/`context.push`) plus a [BlocProvider], so widget
+/// tests can pump a bare screen. Supply [bloc] to control/seed AuthBloc
+/// state; otherwise a bloc backed by a bare mock repository is created.
 Widget makeTestableWidget(Widget child, {AuthBloc? bloc}) {
-  return MaterialApp(
-    onGenerateRoute: (settings) => MaterialPageRoute(
-      settings: settings,
-      builder: (_) => Scaffold(body: Center(child: Text(settings.name ?? ''))),
-    ),
-    home: BlocProvider<AuthBloc>.value(
+  final router = GoRouter(
+    initialLocation: '/__test__',
+    routes: [
+      GoRoute(path: '/__test__', builder: (context, state) => child),
+      for (final path in const ['/phone', '/otp', '/name', '/dob', '/welcome', '/home'])
+        GoRoute(
+          path: path,
+          builder: (context, state) => Scaffold(body: Center(child: Text(path))),
+        ),
+    ],
+  );
+  return MaterialApp.router(
+    routerConfig: router,
+    builder: (context, routerChild) => BlocProvider<AuthBloc>.value(
       value: bloc ?? buildAuthBloc(),
-      child: child,
+      child: routerChild!,
     ),
   );
 }

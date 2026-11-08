@@ -34,12 +34,12 @@ class OnboardingScreen extends StatelessWidget {
               AppButton(
                 key: const Key('getStartedButton'),
                 label: "Let's get started",
-                onPressed: () => Navigator.of(context).pushNamed('/phone'),
+                onPressed: () => context.push('/phone'),
               ),
               const SizedBox(height: AppSpacing.md),
               TextButton(
                 key: const Key('loginLinkButton'),
-                onPressed: () => Navigator.of(context).pushNamed('/phone', arguments: 'login'),
+                onPressed: () => context.push('/phone', extra: 'login'),
                 child: const Text('Log in', style: AppTextStyles.body),
               ),
               const SizedBox(height: AppSpacing.lg),
