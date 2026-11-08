@@ -16,6 +16,7 @@ class AppColors {
   static const Color success = Color(0xFF2FAE63);
   static const Color textPrimary = Color(0xFF231A1E);
   static const Color textSecondary = Color(0xFF8A7A80);
+  static const Color hint = Color(0x808A7A80); // textSecondary @50%
   static const Color border = Color(0xFFEBD9DF);
   static const Color tileCyan = Color(0xFF35C4E8);
   static const Color tileBeige = Color(0xFFF9DCCB);

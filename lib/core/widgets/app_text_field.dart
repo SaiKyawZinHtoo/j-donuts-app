@@ -29,10 +29,11 @@ class AppTextField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       onChanged: onChanged,
-      style: AppTextStyles.body,
+      style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
+        hintStyle: AppTextStyles.body.copyWith(color: AppColors.hint),
         // prefixIcon (not prefix): InputDecoration.prefix hides when unfocused+empty.
         prefixIcon: prefix == null
             ? null

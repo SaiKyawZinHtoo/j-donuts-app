@@ -70,6 +70,19 @@ class _PhoneScreenState extends State<PhoneScreen> {
               : const RegistrationProgressRing(step: RegistrationStep.phone),
           onTapTerms: () {},
           onTapPrivacy: () {},
+          bottom: AppButton(
+            key: const Key('continueButton'),
+            label: widget.isLogin ? l10n.loginButton : l10n.continueButton,
+            loading: loading,
+            onPressed: _isValid
+                ? () => context.read<AuthBloc>().add(
+                    PhoneSubmitted(
+                      _national(_controller.text),
+                      isLogin: widget.isLogin,
+                    ),
+                  )
+                : null,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -105,20 +118,6 @@ class _PhoneScreenState extends State<PhoneScreen> {
                   ),
                 ),
               ],
-              const SizedBox(height: AppSpacing.xl),
-              AppButton(
-                key: const Key('continueButton'),
-                label: widget.isLogin ? l10n.loginButton : l10n.continueButton,
-                loading: loading,
-                onPressed: _isValid
-                    ? () => context.read<AuthBloc>().add(
-                        PhoneSubmitted(
-                          _national(_controller.text),
-                          isLogin: widget.isLogin,
-                        ),
-                      )
-                    : null,
-              ),
               if (widget.isLogin) ...[
                 const SizedBox(height: AppSpacing.lg),
                 Center(

@@ -64,6 +64,20 @@ class _NameScreenState extends State<NameScreen> {
         return AuthScaffold(
           onBack: () => context.read<AuthBloc>().add(const BackRequested()),
           trailing: const RegistrationProgressRing(step: RegistrationStep.name),
+          bottom: AppButton(
+            key: const Key('continueButton'),
+            label: l10n.continueButton,
+            onPressed: _isValid
+                ? () => context.read<AuthBloc>().add(
+                    NameSubmitted(
+                      _firstController.text,
+                      _lastController.text.isEmpty
+                          ? null
+                          : _lastController.text,
+                    ),
+                  )
+                : null,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -81,21 +95,6 @@ class _NameScreenState extends State<NameScreen> {
                 controller: _lastController,
                 labelText: l10n.lastNameLabel,
                 errorText: lastError,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              AppButton(
-                key: const Key('continueButton'),
-                label: l10n.continueButton,
-                onPressed: _isValid
-                    ? () => context.read<AuthBloc>().add(
-                        NameSubmitted(
-                          _firstController.text,
-                          _lastController.text.isEmpty
-                              ? null
-                              : _lastController.text,
-                        ),
-                      )
-                    : null,
               ),
             ],
           ),

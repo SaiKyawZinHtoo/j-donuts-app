@@ -35,4 +35,5 @@ class AppSpacing {
   static const double onboardingContentHeight = 490;
   static const double navBarHeight = 64;
   static const double navItemSize = 24;
+  static const double authTitleTopGap = 24;
 }

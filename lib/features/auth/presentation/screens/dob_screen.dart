@@ -78,6 +78,14 @@ class _DobScreenState extends State<DobScreen> {
             step: RegistrationStep.dob,
             completed: _isValid,
           ),
+          bottom: AppButton(
+            key: const Key('continueButton'),
+            label: l10n.continueButton,
+            loading: loading,
+            onPressed: _isValid
+                ? () => context.read<AuthBloc>().add(DobSubmitted(_dob!))
+                : null,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -120,15 +128,6 @@ class _DobScreenState extends State<DobScreen> {
                   style: AppTextStyles.caption.copyWith(color: AppColors.error),
                 ),
               ],
-              const SizedBox(height: AppSpacing.xl),
-              AppButton(
-                key: const Key('continueButton'),
-                label: l10n.continueButton,
-                loading: loading,
-                onPressed: _isValid
-                    ? () => context.read<AuthBloc>().add(DobSubmitted(_dob!))
-                    : null,
-              ),
             ],
           ),
         );

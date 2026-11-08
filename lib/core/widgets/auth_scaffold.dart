@@ -12,6 +12,7 @@ class AuthScaffold extends StatelessWidget {
     this.onTapPrivacy,
     this.showFooter = true,
     this.onBack,
+    this.bottom,
   });
 
   final Widget child;
@@ -21,6 +22,9 @@ class AuthScaffold extends StatelessWidget {
   final VoidCallback? onTapPrivacy;
   final bool showFooter;
   final VoidCallback? onBack;
+
+  /// Primary action pinned under the scrolling body; stays above the keyboard.
+  final Widget? bottom;
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +63,26 @@ class AuthScaffold extends StatelessWidget {
                           constraints: BoxConstraints(
                             minHeight: constraints.maxHeight,
                           ),
-                          child: Padding(padding: hPad, child: child),
+                          child: Padding(
+                            padding: hPad.copyWith(
+                              top: AppSpacing.authTitleTopGap,
+                            ),
+                            child: child,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
+              if (bottom != null)
+                Padding(
+                  padding: hPad.copyWith(
+                    top: AppSpacing.md,
+                    bottom: AppSpacing.md,
+                  ),
+                  child: bottom,
+                ),
               if (showFooter && !keyboardOpen)
                 Padding(
                   padding: hPad.copyWith(

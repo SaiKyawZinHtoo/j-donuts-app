@@ -176,4 +176,27 @@ void main() {
     await tester.tap(find.byType(AppBackButton));
     expect(called, 1);
   });
+
+  testWidgets('bottom sits above footer; stays with keyboard, footer hides', (
+    tester,
+  ) async {
+    _phone(tester);
+    const bottom = SizedBox(key: Key('bot'), height: 56, width: 100);
+    await tester.pumpWidget(
+      _app(const AuthScaffold(bottom: bottom, child: Text('x'))),
+    );
+    expect(
+      tester.getRect(find.byKey(const Key('bot'))).bottom,
+      lessThanOrEqualTo(tester.getRect(find.byType(AppLegalFooter)).top),
+    );
+    await tester.pumpWidget(
+      _app(
+        const AuthScaffold(bottom: bottom, child: Text('x')),
+        inset: const EdgeInsets.only(bottom: 300),
+      ),
+    );
+    expect(find.byType(AppLegalFooter), findsNothing);
+    expect(find.byKey(const Key('bot')), findsOneWidget);
+    expect(tester.getRect(find.byKey(const Key('bot'))).bottom, lessThan(667));
+  });
 }

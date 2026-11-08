@@ -186,7 +186,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           child: Stack(
                             clipBehavior: Clip.none,
                             children: [
-                              Positioned.fill(
+                              // Extends below the cluster so circles are
+                              // clipped left/right/top only, not flat-cut.
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: -unit,
                                 child: ExcludeSemantics(
                                   child: ClipRect(
                                     child: Stack(
