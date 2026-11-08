@@ -14,7 +14,7 @@ class ProductSectionList extends StatelessWidget {
       return AppErrorState(message: errorMessage!);
     }
     if (section.products.isEmpty) {
-      return const AppEmptyState(message: 'Nothing here yet.');
+      return AppEmptyState(message: AppLocalizations.of(context)!.nothingHereYet);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +25,9 @@ class ProductSectionList extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
-          height: 120,
+          // shortcut: fixed height sized for text scale up to 1.3 (spec's max);
+          // a larger scale would need this to grow with MediaQuery.textScaler.
+          height: 140,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -72,18 +74,22 @@ class ProductSectionList extends StatelessWidget {
                       Row(
                         children: [
                           Flexible(
-                            child: Text('${product.priceMmk} MMK',
+                            child: Text(
+                                AppLocalizations.of(context)!
+                                    .priceMmk(product.priceMmk.toString()),
                                 style: AppTextStyles.caption,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis),
                           ),
                           if (product.isNew) ...[
                             const SizedBox(width: 4),
-                            const Text('New',
-                                style: TextStyle(color: AppColors.primary, fontSize: 10)),
+                            Text(AppLocalizations.of(context)!.newBadge,
+                                style: const TextStyle(color: AppColors.primary, fontSize: 10)),
                           ] else if (product.discountPercent > 0) ...[
                             const SizedBox(width: 4),
-                            Text('-${product.discountPercent}%',
+                            Text(
+                                AppLocalizations.of(context)!
+                                    .discountBadge(product.discountPercent),
                                 style: const TextStyle(color: AppColors.error, fontSize: 10)),
                           ],
                         ],

@@ -55,6 +55,8 @@ class _NameScreenState extends State<NameScreen> {
         listener: (context, state) {
           if (state is AwaitingDob) {
             context.push('/dob');
+          } else if (state is OtpAwaiting && context.canPop()) {
+            context.pop();
           }
         },
         builder: (context, state) {
@@ -70,37 +72,38 @@ class _NameScreenState extends State<NameScreen> {
               lastError = state.message;
             }
           }
+          final l10n = AppLocalizations.of(context)!;
           return Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('What is your name?', style: AppTextStyles.h2),
+                Text(l10n.nameScreenTitle, style: AppTextStyles.h2),
                 const SizedBox(height: AppSpacing.lg),
                 AppTextField(
                   key: const Key('firstNameField'),
                   controller: _firstController,
-                  labelText: 'First name',
+                  labelText: l10n.firstNameLabel,
                   errorText: firstError,
                 ),
                 const SizedBox(height: AppSpacing.md),
                 AppTextField(
                   key: const Key('lastNameField'),
                   controller: _lastController,
-                  labelText: 'Last name',
+                  labelText: l10n.lastNameLabel,
                   errorText: lastError,
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 AppButton(
                   key: const Key('continueButton'),
-                  label: 'Continue',
+                  label: l10n.continueButton,
                   onPressed: _isValid
                       ? () => context.read<AuthBloc>().add(
-                            NameSubmitted(
-                              _firstController.text,
-                              _lastController.text.isEmpty ? null : _lastController.text,
-                            ),
-                          )
+                          NameSubmitted(
+                            _firstController.text,
+                            _lastController.text.isEmpty ? null : _lastController.text,
+                          ),
+                        )
                       : null,
                 ),
               ],

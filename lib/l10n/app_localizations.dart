@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_my.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,13 +93,292 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('my'),
+  ];
 
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
   /// **'J Donuts'**
   String get appTitle;
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to J Donuts'**
+  String get onboardingTitle;
+
+  /// No description provided for @getStartedButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s get started'**
+  String get getStartedButton;
+
+  /// No description provided for @loginLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get loginLink;
+
+  /// No description provided for @termsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service & Privacy Policy'**
+  String get termsPrivacy;
+
+  /// No description provided for @socialSignInUnavailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{provider} sign-in is not implemented yet.'**
+  String socialSignInUnavailableMessage(String provider);
+
+  /// No description provided for @legalPlaceholderSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'{doc} placeholder'**
+  String legalPlaceholderSuffix(String doc);
+
+  /// No description provided for @phoneScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number'**
+  String get phoneScreenTitle;
+
+  /// No description provided for @phoneCountryCode.
+  ///
+  /// In en, this message translates to:
+  /// **'+95'**
+  String get phoneCountryCode;
+
+  /// No description provided for @phoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'9xxxxxxxx'**
+  String get phoneHint;
+
+  /// No description provided for @phoneNotFoundRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t find this number. Register instead?'**
+  String get phoneNotFoundRegister;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @otpScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code'**
+  String get otpScreenTitle;
+
+  /// No description provided for @otpIncorrectCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect code, {attemptsLeft} attempt(s) left.'**
+  String otpIncorrectCode(int attemptsLeft);
+
+  /// No description provided for @otpLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please resend the code.'**
+  String get otpLocked;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get resendCode;
+
+  /// No description provided for @resendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {time}'**
+  String resendIn(String time);
+
+  /// No description provided for @nameScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your name?'**
+  String get nameScreenTitle;
+
+  /// No description provided for @firstNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get firstNameLabel;
+
+  /// No description provided for @lastNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get lastNameLabel;
+
+  /// No description provided for @dobScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When were you born?'**
+  String get dobScreenTitle;
+
+  /// No description provided for @dobMonthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'MM'**
+  String get dobMonthLabel;
+
+  /// No description provided for @dobDayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DD'**
+  String get dobDayLabel;
+
+  /// No description provided for @dobYearLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'YYYY'**
+  String get dobYearLabel;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get welcomeTitle;
+
+  /// No description provided for @letsExploreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s explore'**
+  String get letsExploreButton;
+
+  /// No description provided for @homeOfflineBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline. Showing the last saved data.'**
+  String get homeOfflineBanner;
+
+  /// No description provided for @nothingHereYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet.'**
+  String get nothingHereYet;
+
+  /// No description provided for @noNearbyShopsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No nearby shops found.'**
+  String get noNearbyShopsFound;
+
+  /// No description provided for @noBannersRightNow.
+  ///
+  /// In en, this message translates to:
+  /// **'No banners right now.'**
+  String get noBannersRightNow;
+
+  /// No description provided for @nearbyShopsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'There are {count} J\'Donut shops'**
+  String nearbyShopsTitle(int count);
+
+  /// No description provided for @memberTierStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'{tier} tier · {points} pts to next tier'**
+  String memberTierStatus(String tier, int points);
+
+  /// No description provided for @newBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newBadge;
+
+  /// No description provided for @discountBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'-{percent}%'**
+  String discountBadge(int percent);
+
+  /// No description provided for @priceMmk.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} MMK'**
+  String priceMmk(String price);
+
+  /// No description provided for @productAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get productAppBarTitle;
+
+  /// No description provided for @addedToCartMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to cart'**
+  String get addedToCartMessage;
+
+  /// No description provided for @whatsThis.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s this?'**
+  String get whatsThis;
+
+  /// No description provided for @addToCartButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to cart · {total} MMK'**
+  String addToCartButton(String total);
+
+  /// No description provided for @earnTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn'**
+  String get earnTab;
+
+  /// No description provided for @giftTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Gift'**
+  String get giftTab;
+
+  /// No description provided for @homeTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTabLabel;
+
+  /// No description provided for @exploreTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get exploreTabLabel;
+
+  /// No description provided for @rewardsTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards'**
+  String get rewardsTabLabel;
+
+  /// No description provided for @walletTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get walletTabLabel;
+
+  /// No description provided for @settingsTabLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTabLabel;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} coming soon'**
+  String comingSoon(String label);
 }
 
 class _AppLocalizationsDelegate
@@ -112,7 +392,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'my'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -123,6 +403,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'my':
+      return AppLocalizationsMy();
   }
 
   throw FlutterError(

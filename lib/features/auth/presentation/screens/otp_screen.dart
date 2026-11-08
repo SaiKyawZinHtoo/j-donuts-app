@@ -50,11 +50,15 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is OtpInvalid) {
-            _shakeController.forward(from: 0);
+            if (!MediaQuery.of(context).disableAnimations) {
+              _shakeController.forward(from: 0);
+            }
           } else if (state is AwaitingName) {
             context.push('/name');
           } else if (state is AuthSuccess) {
             context.go('/home');
+          } else if (state is AuthInitial && context.canPop()) {
+            context.pop();
           } else if (state is AuthFailure) {
             AppSnackbar.showError(context, state.message);
           }
@@ -62,17 +66,18 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
         builder: (context, state) {
           final locked = state is OtpLocked;
           final secondsLeft = state is OtpAwaiting ? state.secondsLeft : 0;
+          final l10n = AppLocalizations.of(context)!;
           final errorText = state is OtpInvalid
-              ? 'Incorrect code, ${state.attemptsLeft} attempt(s) left.'
+              ? l10n.otpIncorrectCode(state.attemptsLeft)
               : locked
-                  ? 'Too many attempts. Please resend the code.'
-                  : null;
+              ? l10n.otpLocked
+              : null;
           return Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Enter the 6-digit code', style: AppTextStyles.h2),
+                Text(l10n.otpScreenTitle, style: AppTextStyles.h2),
                 const SizedBox(height: AppSpacing.lg),
                 AnimatedBuilder(
                   animation: _shakeAnimation,
@@ -101,7 +106,7 @@ class _OtpScreenState extends State<OtpScreen> with SingleTickerProviderStateMix
                       ? () => context.read<AuthBloc>().add(const OtpResendRequested())
                       : null,
                   child: Text(
-                    secondsLeft == 0 ? 'Resend code' : 'Resend in ${_format(secondsLeft)}',
+                    secondsLeft == 0 ? l10n.resendCode : l10n.resendIn(_format(secondsLeft)),
                     style: AppTextStyles.caption.copyWith(
                       color: secondsLeft == 0 ? AppColors.primary : AppColors.textSecondary,
                     ),

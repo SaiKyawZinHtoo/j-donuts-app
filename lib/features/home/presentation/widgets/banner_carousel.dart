@@ -40,7 +40,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
   @override
   Widget build(BuildContext context) {
     if (widget.banners.isEmpty) {
-      return const AppEmptyState(message: 'No banners right now.');
+      return AppEmptyState(message: AppLocalizations.of(context)!.noBannersRightNow);
     }
     return SizedBox(
       key: const Key('bannerCarousel'),

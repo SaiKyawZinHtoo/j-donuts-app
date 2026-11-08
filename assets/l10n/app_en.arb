@@ -1,4 +1,93 @@
 {
   "@@locale": "en",
-  "appTitle": "J Donuts"
+  "appTitle": "J Donuts",
+
+  "onboardingTitle": "Welcome to J Donuts",
+  "getStartedButton": "Let's get started",
+  "loginLink": "Log in",
+  "termsPrivacy": "Terms of Service & Privacy Policy",
+  "socialSignInUnavailableMessage": "{provider} sign-in is not implemented yet.",
+  "@socialSignInUnavailableMessage": {
+    "placeholders": { "provider": { "type": "String" } }
+  },
+  "legalPlaceholderSuffix": "{doc} placeholder",
+  "@legalPlaceholderSuffix": {
+    "placeholders": { "doc": { "type": "String" } }
+  },
+
+  "phoneScreenTitle": "Enter your phone number",
+  "phoneCountryCode": "+95",
+  "phoneHint": "9xxxxxxxx",
+  "phoneNotFoundRegister": "We couldn't find this number. Register instead?",
+  "continueButton": "Continue",
+
+  "otpScreenTitle": "Enter the 6-digit code",
+  "otpIncorrectCode": "Incorrect code, {attemptsLeft} attempt(s) left.",
+  "@otpIncorrectCode": {
+    "placeholders": { "attemptsLeft": { "type": "int" } }
+  },
+  "otpLocked": "Too many attempts. Please resend the code.",
+  "resendCode": "Resend code",
+  "resendIn": "Resend in {time}",
+  "@resendIn": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+
+  "nameScreenTitle": "What is your name?",
+  "firstNameLabel": "First name",
+  "lastNameLabel": "Last name",
+
+  "dobScreenTitle": "When were you born?",
+  "dobMonthLabel": "MM",
+  "dobDayLabel": "DD",
+  "dobYearLabel": "YYYY",
+
+  "welcomeTitle": "Welcome!",
+  "letsExploreButton": "Let's explore",
+
+  "homeOfflineBanner": "You're offline. Showing the last saved data.",
+  "nothingHereYet": "Nothing here yet.",
+  "noNearbyShopsFound": "No nearby shops found.",
+  "noBannersRightNow": "No banners right now.",
+  "nearbyShopsTitle": "There are {count} J'Donut shops",
+  "@nearbyShopsTitle": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "memberTierStatus": "{tier} tier · {points} pts to next tier",
+  "@memberTierStatus": {
+    "placeholders": {
+      "tier": { "type": "String" },
+      "points": { "type": "int" }
+    }
+  },
+  "newBadge": "New",
+  "discountBadge": "-{percent}%",
+  "@discountBadge": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
+  "priceMmk": "{price} MMK",
+  "@priceMmk": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+
+  "productAppBarTitle": "Product",
+  "addedToCartMessage": "Added to cart",
+  "whatsThis": "What's this?",
+  "addToCartButton": "Add to cart · {total} MMK",
+  "@addToCartButton": {
+    "placeholders": { "total": { "type": "String" } }
+  },
+
+  "earnTab": "Earn",
+  "giftTab": "Gift",
+
+  "homeTabLabel": "Home",
+  "exploreTabLabel": "Explore",
+  "rewardsTabLabel": "Rewards",
+  "walletTabLabel": "Wallet",
+  "settingsTabLabel": "Settings",
+  "comingSoon": "{label} coming soon",
+  "@comingSoon": {
+    "placeholders": { "label": { "type": "String" } }
+  }
 }

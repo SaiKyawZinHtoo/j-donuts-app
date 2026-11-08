@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:j_donuts_app/features/auth/auth_import.dart';
+import 'package:j_donuts_app/l10n/app_localizations.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 
@@ -37,6 +38,8 @@ Widget makeTestableWidget(Widget child, {AuthBloc? bloc}) {
   );
   return MaterialApp.router(
     routerConfig: router,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     builder: (context, routerChild) => BlocProvider<AuthBloc>.value(
       value: bloc ?? buildAuthBloc(),
       child: routerChild!,

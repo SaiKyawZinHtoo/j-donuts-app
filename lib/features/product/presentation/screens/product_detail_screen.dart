@@ -18,16 +18,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocProvider(
       create: (_) => GetIt.instance<ProductDetailBloc>()
         ..add(ProductRequested(widget.productId)),
       child: Scaffold(
         key: const Key('productDetailScreen'),
-        appBar: const AppAppBar(title: 'Product'),
+        appBar: AppAppBar(title: l10n.productAppBarTitle),
         body: BlocConsumer<ProductDetailBloc, ProductDetailState>(
           listener: (context, state) {
             if (state is ProductLoaded && state.addedToCart) {
-              AppSnackbar.showSuccess(context, 'Added to cart');
+              AppSnackbar.showSuccess(context, l10n.addedToCartMessage);
             }
           },
           builder: (context, state) {
@@ -48,6 +49,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget _buildLoaded(BuildContext context, ProductLoaded state) {
     final product = state.product;
     final bloc = context.read<ProductDetailBloc>();
+    final l10n = AppLocalizations.of(context)!;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -84,8 +86,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
-                  child: const Text('New',
-                      style: TextStyle(color: AppColors.surface, fontSize: 12)),
+                  child: Text(l10n.newBadge,
+                      style: const TextStyle(color: AppColors.surface, fontSize: 12)),
                 ),
               ],
             ],
@@ -93,14 +95,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           const SizedBox(height: AppSpacing.sm),
           Text(product.name, style: AppTextStyles.h1),
           const SizedBox(height: AppSpacing.sm),
-          Text('${_mmkFormat.format(product.priceMmk)} MMK', style: AppTextStyles.h2),
+          Text(l10n.priceMmk(_mmkFormat.format(product.priceMmk)), style: AppTextStyles.h2),
           const SizedBox(height: AppSpacing.md),
           InkWell(
             onTap: () => setState(() => _descriptionExpanded = !_descriptionExpanded),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("What's this?", style: AppTextStyles.body),
+                Text(l10n.whatsThis, style: AppTextStyles.body),
                 Icon(_descriptionExpanded ? Icons.expand_less : Icons.expand_more),
               ],
             ),
@@ -129,7 +131,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           const SizedBox(height: AppSpacing.md),
           AppButton(
             key: const Key('addToCartButton'),
-            label: 'Add to cart · ${_mmkFormat.format(state.totalMmk)} MMK',
+            label: l10n.addToCartButton(_mmkFormat.format(state.totalMmk)),
             onPressed: () => bloc.add(const AddToCartPressed()),
           ),
         ],

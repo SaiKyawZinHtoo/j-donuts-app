@@ -37,8 +37,8 @@ class TabSwitcher extends StatelessWidget {
               ),
               Row(
                 children: [
-                  _tabButton(RewardsTab.earn, 'Earn'),
-                  _tabButton(RewardsTab.gift, 'Gift'),
+                  _tabButton(context, RewardsTab.earn, AppLocalizations.of(context)!.earnTab),
+                  _tabButton(context, RewardsTab.gift, AppLocalizations.of(context)!.giftTab),
                 ],
               ),
             ],
@@ -48,7 +48,7 @@ class TabSwitcher extends StatelessWidget {
     );
   }
 
-  Widget _tabButton(RewardsTab tab, String label) {
+  Widget _tabButton(BuildContext context, RewardsTab tab, String label) {
     return Expanded(
       child: GestureDetector(
         key: Key('rewardsTab_${tab.name}'),

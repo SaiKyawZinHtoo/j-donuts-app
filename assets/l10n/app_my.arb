@@ -1,0 +1,60 @@
+{
+  "@@locale": "my",
+  "appTitle": "ဂျေ ဒိုနပ်",
+
+  "onboardingTitle": "ဂျေ ဒိုနပ်မှ ကြိုဆိုပါတယ်",
+  "getStartedButton": "စတင်မည်",
+  "loginLink": "လော့ဂ်အင်",
+  "termsPrivacy": "စည်းမျဉ်းနှင့် ကိုယ်ရေးကိုယ်တာမူဝါဒ",
+  "socialSignInUnavailableMessage": "{provider} ဖြင့် လော့ဂ်အင်ဝင်ခြင်းကို မထည့်သွင်းရသေးပါ။",
+  "legalPlaceholderSuffix": "{doc} နမူနာ",
+
+  "phoneScreenTitle": "သင့်ဖုန်းနံပါတ်ကို ရိုက်ထည့်ပါ",
+  "phoneCountryCode": "+95",
+  "phoneHint": "9xxxxxxxx",
+  "phoneNotFoundRegister": "ဤနံပါတ်ကို ရှာမတွေ့ပါ။ အကောင့်သစ်ဖွင့်မလား?",
+  "continueButton": "ရှေ့ဆက်မည်",
+
+  "otpScreenTitle": "ဂဏန်း ၆ လုံးကို ရိုက်ထည့်ပါ",
+  "otpIncorrectCode": "ကုဒ်မှားနေပါသည်၊ ကြိုးစားခွင့် {attemptsLeft} ကြိမ် ကျန်ပါသည်။",
+  "otpLocked": "ကြိုးစားမှု အကြိမ်များလွန်းပါပြီ။ ကုဒ်ကို ထပ်မံပေးပို့ပါ။",
+  "resendCode": "ကုဒ်ပြန်ပို့မည်",
+  "resendIn": "{time} အတွင်း ပြန်ပို့ပါမည်",
+
+  "nameScreenTitle": "သင့်နာမည်ကား?",
+  "firstNameLabel": "နာမည်",
+  "lastNameLabel": "မျိုးနွယ်အမည်",
+
+  "dobScreenTitle": "သင်မည်သည့်နေ့က မွေးသနည်း?",
+  "dobMonthLabel": "လ",
+  "dobDayLabel": "ရက်",
+  "dobYearLabel": "နှစ်",
+
+  "welcomeTitle": "ကြိုဆိုပါတယ်!",
+  "letsExploreButton": "လေ့လာကြည့်ရှုမည်",
+
+  "homeOfflineBanner": "သင်သည် အော့ဖ်လိုင်းဖြစ်နေသည်။ နောက်ဆုံးသိမ်းဆည်းထားသော အချက်အလက်များကို ပြသထားသည်။",
+  "nothingHereYet": "ဒီနေရာတွင် မရှိသေးပါ။",
+  "noNearbyShopsFound": "အနီးအနားဆိုင်များ မတွေ့ပါ။",
+  "noBannersRightNow": "ယခု ကြော်ငြာများ မရှိပါ။",
+  "nearbyShopsTitle": "ဂျေဒိုနပ် ဆိုင် {count} ခု ရှိပါသည်",
+  "memberTierStatus": "{tier} အဆင့် · နောက်အဆင့်အတွက် {points} အမှတ်လိုသည်",
+  "newBadge": "အသစ်",
+  "discountBadge": "-{percent}%",
+  "priceMmk": "{price} ကျပ်",
+
+  "productAppBarTitle": "ကုန်ပစ္စည်း",
+  "addedToCartMessage": "စျေးခြင်းထဲထည့်ပြီးပါပြီ",
+  "whatsThis": "ဒါကဘာလဲ?",
+  "addToCartButton": "စျေးခြင်းထဲထည့်မည် · {total} ကျပ်",
+
+  "earnTab": "ရယူရန်",
+  "giftTab": "လက်ဆောင်",
+
+  "homeTabLabel": "ပင်မစာမျက်နှာ",
+  "exploreTabLabel": "လေ့လာမည်",
+  "rewardsTabLabel": "ဆုလာဘ်များ",
+  "walletTabLabel": "ပိုက်ဆံအိတ်",
+  "settingsTabLabel": "ဆက်တင်များ",
+  "comingSoon": "{label} မကြာမီလာမည်"
+}

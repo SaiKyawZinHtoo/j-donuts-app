@@ -100,7 +100,7 @@ class _ChallengeCardState extends State<ChallengeCard> {
                   duration: MotionTokens.kTabSwitchDuration,
                   child: AppButton(
                     key: Key('challengeEarnButton_${challenge.id}'),
-                    label: 'Earn',
+                    label: AppLocalizations.of(context)!.earnTab,
                     onPressed: challenge.isComplete ? widget.onEarnTap : null,
                   ),
                 ),

@@ -4,6 +4,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+export 'package:j_donuts_app/l10n/app_localizations.dart';
+
 part 'theme/colors.dart';
 part 'theme/text_styles.dart';
 part 'theme/spacing.dart';

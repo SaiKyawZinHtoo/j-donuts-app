@@ -70,6 +70,8 @@ class _DobScreenState extends State<DobScreen> {
         listener: (context, state) {
           if (state is AuthSuccess) {
             context.go('/welcome');
+          } else if (state is AwaitingName && context.canPop()) {
+            context.pop();
           } else if (state is AuthFailure) {
             AppSnackbar.showError(context, state.message);
           }
@@ -79,12 +81,13 @@ class _DobScreenState extends State<DobScreen> {
           final errorText = state is RegistrationStepInvalid && state.step == RegistrationStep.dob
               ? state.message
               : null;
+          final l10n = AppLocalizations.of(context)!;
           return Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('When were you born?', style: AppTextStyles.h2),
+                Text(l10n.dobScreenTitle, style: AppTextStyles.h2),
                 const SizedBox(height: AppSpacing.lg),
                 Row(
                   children: [
@@ -92,7 +95,7 @@ class _DobScreenState extends State<DobScreen> {
                       child: AppTextField(
                         key: const Key('dobMonthField'),
                         controller: _monthController,
-                        labelText: 'MM',
+                        labelText: l10n.dobMonthLabel,
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -101,7 +104,7 @@ class _DobScreenState extends State<DobScreen> {
                       child: AppTextField(
                         key: const Key('dobDayField'),
                         controller: _dayController,
-                        labelText: 'DD',
+                        labelText: l10n.dobDayLabel,
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -110,7 +113,7 @@ class _DobScreenState extends State<DobScreen> {
                       child: AppTextField(
                         key: const Key('dobYearField'),
                         controller: _yearController,
-                        labelText: 'YYYY',
+                        labelText: l10n.dobYearLabel,
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -123,7 +126,7 @@ class _DobScreenState extends State<DobScreen> {
                 const SizedBox(height: AppSpacing.xl),
                 AppButton(
                   key: const Key('continueButton'),
-                  label: 'Continue',
+                  label: l10n.continueButton,
                   loading: loading,
                   onPressed: _isValid
                       ? () => context.read<AuthBloc>().add(DobSubmitted(_dob!))

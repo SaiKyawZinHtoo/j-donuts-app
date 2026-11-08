@@ -10,18 +10,20 @@ class NearbyShopsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (shops.isEmpty) {
-      return const AppEmptyState(message: 'No nearby shops found.');
+      return AppEmptyState(message: AppLocalizations.of(context)!.noNearbyShopsFound);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text("There are ${shops.length} J'Donut shops", style: AppTextStyles.h2),
+          child: Text(AppLocalizations.of(context)!.nearbyShopsTitle(shops.length),
+              style: AppTextStyles.h2),
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
-          height: 90,
+          // shortcut: fixed height sized for text scale up to 1.3 (spec's max).
+          height: 104,
           child: ListView.separated(
             key: const Key('nearbyShopsRow'),
             scrollDirection: Axis.horizontal,

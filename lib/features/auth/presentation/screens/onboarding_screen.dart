@@ -9,16 +9,17 @@ class OnboardingScreen extends StatelessWidget {
     AppDialog.show(
       context,
       title: provider,
-      message: '$provider sign-in is not implemented yet.',
+      message: AppLocalizations.of(context)!.socialSignInUnavailableMessage(provider),
     );
   }
 
   void _legalPlaceholder(BuildContext context, String doc) {
-    AppSnackbar.showSuccess(context, '$doc placeholder');
+    AppSnackbar.showSuccess(context, AppLocalizations.of(context)!.legalPlaceholderSuffix(doc));
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -29,18 +30,18 @@ class OnboardingScreen extends StatelessWidget {
               const Spacer(),
               const Icon(Icons.circle, size: AppSpacing.iconSizeMd, color: AppColors.primary),
               const SizedBox(height: AppSpacing.lg),
-              Text('Welcome to J Donuts', style: AppTextStyles.h1, textAlign: TextAlign.center),
+              Text(l10n.onboardingTitle, style: AppTextStyles.h1, textAlign: TextAlign.center),
               const SizedBox(height: AppSpacing.xl),
               AppButton(
                 key: const Key('getStartedButton'),
-                label: "Let's get started",
+                label: l10n.getStartedButton,
                 onPressed: () => context.push('/phone'),
               ),
               const SizedBox(height: AppSpacing.md),
               TextButton(
                 key: const Key('loginLinkButton'),
                 onPressed: () => context.push('/phone', extra: 'login'),
-                child: const Text('Log in', style: AppTextStyles.body),
+                child: Text(l10n.loginLink, style: AppTextStyles.body),
               ),
               const SizedBox(height: AppSpacing.lg),
               Row(
@@ -66,7 +67,7 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               GestureDetector(
                 onTap: () => _legalPlaceholder(context, 'Terms & Privacy'),
-                child: const Text('Terms of Service & Privacy Policy', style: AppTextStyles.caption),
+                child: Text(l10n.termsPrivacy, style: AppTextStyles.caption),
               ),
             ],
           ),

@@ -26,7 +26,18 @@ class _AppSkeletonState extends State<AppSkeleton>
     _controller = AnimationController(
       vsync: this,
       duration: MotionTokens.kShimmerDuration,
-    )..repeat(reverse: true);
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.of(context).disableAnimations) {
+      _controller.stop();
+      _controller.value = 0;
+    } else if (!_controller.isAnimating) {
+      _controller.repeat(reverse: true);
+    }
   }
 
   @override

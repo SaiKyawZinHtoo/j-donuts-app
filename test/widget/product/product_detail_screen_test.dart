@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:j_donuts_app/core/result/result.dart';
 import 'package:j_donuts_app/features/product/product_import.dart';
+import 'package:j_donuts_app/l10n/app_localizations.dart';
 
 const _product = Product(
   id: 'p1',
@@ -35,7 +36,11 @@ void main() {
 
   testWidgets('total updates when quantity changes', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: ProductDetailScreen(productId: 'p1')),
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const ProductDetailScreen(productId: 'p1'),
+      ),
     );
     await tester.pump();
     await tester.pump();

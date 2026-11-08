@@ -25,6 +25,8 @@ Widget makeTestableWidget(HomeBloc bloc) {
   );
   return MaterialApp.router(
     routerConfig: router,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     builder: (context, child) => BlocProvider<HomeBloc>.value(value: bloc, child: child!),
   );
 }

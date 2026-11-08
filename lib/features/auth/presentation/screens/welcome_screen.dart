@@ -11,6 +11,7 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  bool _started = false;
 
   @override
   void initState() {
@@ -18,7 +19,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     _controller = AnimationController(
       vsync: this,
       duration: MotionTokens.kStaggerStep * 6,
-    )..forward();
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    if (MediaQuery.of(context).disableAnimations) {
+      _controller.value = 1.0;
+    } else {
+      _controller.forward();
+    }
   }
 
   @override
@@ -39,6 +52,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -70,12 +84,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
               const SizedBox(height: AppSpacing.lg),
               FadeTransition(
                 opacity: _controller,
-                child: Text('Welcome!', style: AppTextStyles.h1),
+                child: Text(l10n.welcomeTitle, style: AppTextStyles.h1),
               ),
               const Spacer(),
               AppButton(
                 key: const Key('letsExploreButton'),
-                label: "Let's explore",
+                label: l10n.letsExploreButton,
                 onPressed: () => context.go('/home'),
               ),
             ],

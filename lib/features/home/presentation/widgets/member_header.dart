@@ -40,7 +40,7 @@ class MemberHeader extends StatelessWidget {
               children: [
                 Text(member.name, style: AppTextStyles.h2),
                 Text(
-                  '${member.tier} tier · $pointsToNext pts to next tier',
+                  AppLocalizations.of(context)!.memberTierStatus(member.tier, pointsToNext),
                   style: AppTextStyles.caption,
                 ),
               ],

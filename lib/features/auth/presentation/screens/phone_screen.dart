@@ -52,6 +52,8 @@ class _PhoneScreenState extends State<PhoneScreen> {
         ),
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
+        listenWhen: (previous, current) =>
+            current is OtpAwaiting && previous is! OtpAwaiting,
         listener: (context, state) {
           if (state is PhoneInvalid) {
             setState(() => _serverError = state.message);
@@ -63,32 +65,33 @@ class _PhoneScreenState extends State<PhoneScreen> {
         },
         builder: (context, state) {
           final loading = state is AuthLoading;
+          final l10n = AppLocalizations.of(context)!;
           return Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Enter your phone number', style: AppTextStyles.h2),
+                Text(l10n.phoneScreenTitle, style: AppTextStyles.h2),
                 const SizedBox(height: AppSpacing.lg),
                 AppTextField(
                   key: const Key('phoneNumberField'),
                   controller: _controller,
-                  labelText: '+95',
-                  hintText: '9xxxxxxxx',
+                  labelText: l10n.phoneCountryCode,
+                  hintText: l10n.phoneHint,
                   keyboardType: TextInputType.phone,
                   errorText: _serverError,
                 ),
                 if (state is PhoneNeedsRegistration && widget.isLogin) ...[
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    "We couldn't find this number. Register instead?",
+                    l10n.phoneNotFoundRegister,
                     style: AppTextStyles.caption.copyWith(color: AppColors.error),
                   ),
                 ],
                 const SizedBox(height: AppSpacing.xl),
                 AppButton(
                   key: const Key('continueButton'),
-                  label: 'Continue',
+                  label: l10n.continueButton,
                   loading: loading,
                   onPressed: _isValid
                       ? () => context.read<AuthBloc>().add(PhoneSubmitted(_controller.text))

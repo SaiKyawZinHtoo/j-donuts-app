@@ -11,6 +11,8 @@ class MockGetRewardsUseCase extends Mock implements GetRewardsUseCase {}
 
 Widget makeTestableWidget(RewardsBloc bloc) {
   return MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     home: BlocProvider<RewardsBloc>.value(value: bloc, child: const RewardsScreen()),
   );
 }

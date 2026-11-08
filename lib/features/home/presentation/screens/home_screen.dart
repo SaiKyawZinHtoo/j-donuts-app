@@ -61,9 +61,9 @@ class _HomeContent extends StatelessWidget {
             width: double.infinity,
             color: AppColors.error,
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm, horizontal: AppSpacing.md),
-            child: const Text(
-              "You're offline. Showing the last saved data.",
-              style: TextStyle(color: AppColors.surface),
+            child: Text(
+              AppLocalizations.of(context)!.homeOfflineBanner,
+              style: const TextStyle(color: AppColors.surface),
               textAlign: TextAlign.center,
             ),
           ),

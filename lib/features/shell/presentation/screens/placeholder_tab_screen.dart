@@ -12,7 +12,7 @@ class PlaceholderTabScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Text(
-          '$label coming soon',
+          AppLocalizations.of(context)!.comingSoon(label),
           style: AppTextStyles.body,
         ),
       ),

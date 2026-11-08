@@ -27,12 +27,13 @@ class _AppShellScreenState extends State<AppShellScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final tabs = [
       widget.homeTab,
-      const PlaceholderTabScreen(label: 'Explore'),
+      PlaceholderTabScreen(label: l10n.exploreTabLabel),
       widget.rewardsTab,
-      const PlaceholderTabScreen(label: 'Wallet'),
-      const PlaceholderTabScreen(label: 'Settings'),
+      PlaceholderTabScreen(label: l10n.walletTabLabel),
+      PlaceholderTabScreen(label: l10n.settingsTabLabel),
     ];
 
     return Scaffold(
@@ -40,6 +41,19 @@ class _AppShellScreenState extends State<AppShellScreen> {
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
+        items: [
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.home_outlined), label: l10n.homeTabLabel),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.explore_outlined), label: l10n.exploreTabLabel),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.local_offer_outlined), label: l10n.rewardsTabLabel),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.account_balance_wallet_outlined),
+              label: l10n.walletTabLabel),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.settings_outlined), label: l10n.settingsTabLabel),
+        ],
       ),
     );
   }
