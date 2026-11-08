@@ -36,10 +36,10 @@ lib/
                    Result<T> type, go_router config + auth redirect guard, get_it DI
   features/
     auth/          onboarding, phone, OTP, name, DOB, welcome screens + AuthBloc
-    home/          member header, banner carousel, product section lists, nearby shops
+    home/          peach member header, banner carousel, product section lists (shared ProductCard), nearby shops
     product/       product detail screen + bloc
     rewards/       points ring, tier ladder, challenge cards, Earn/Gift tabs
-    shell/         5-tab bottom nav (Home/Rewards real; Explore/Wallet/Settings placeholders)
+    shell/         5-tab floating bottom nav (Home/Rewards real; Explore/Wallet/Settings placeholders)
   data/local/      Drift database, tables, DAOs, SeedLoader (reads assets/seed/*.json once)
 assets/
   seed/            products/banners/sections/shops/member JSON, loaded into Drift on first launch
@@ -60,8 +60,10 @@ a good fit for a spec with many named states (loading/loaded/error, OTP locked/i
 steps) that unit tests can drive directly without touching widgets.
 
 **Offline strategy** (spec §5.1): the UI only ever reads the local Drift database. On first launch,
-`SeedLoader` copies `assets/seed/*.json` into Drift tables once (a `seeded` flag guards re-runs,
-verified idempotent under a cold/airplane-mode launch). Every subsequent read — Home, Product
+`SeedLoader` copies `assets/seed/*.json` into Drift tables once (a seed version marker guards
+re-runs, verified idempotent under a cold/airplane-mode launch). The marker is now `'2'`
+(`SeedKeys.seedVersion`): an existing install with an older marker has its seed tables wiped and
+reseeded, while auth users are kept. Every subsequent read — Home, Product
 detail, Rewards — goes through a DAO, never JSON or network directly. `connectivity_plus` reports
 online/offline for the Home offline banner; "refresh from network when back online" is a documented
 no-op hook since no mock server is in scope (see Known gaps).
@@ -79,6 +81,8 @@ Built:
 - `AppButton`: press-scale (`Listener`-driven) and Continue -> spinner loading morph.
 - OTP shake on error; Welcome tile stagger.
 - Home: staggered section entrance (once, on first load); skeleton shimmer.
+- Product detail: entrance (`kDetailEntrance`), quantity change (`kQtyChange`) and description
+  expand/collapse with fade (`kDescriptionExpand`).
 - Section-scoped Hero (tag `product-<sectionId>-<productId>`) from product tile to detail.
 - Bottom-nav sliding pill; Earn/Gift tab pill.
 - Rewards entrance: points ring sweep + counter (starts when the tab becomes active), tier-ladder
@@ -98,6 +102,28 @@ Built:
   the national number, and a leading `0` or pasted `+95` is accepted and normalized.
 - `AppButton` is a pill; `AppProgressRing` / `RegistrationProgressRing` draw the rings.
 - Splash is route `/splash` (the router's `initialLocation`).
+- New tokens: `AppColors.badge` / `pageGrey` / `headerPeach`; card, section, header and welcome-layout
+  tokens in `AppSpacing`; `MotionTokens.kQtyChange` / `kDescriptionExpand` / `kDetailEntrance`.
+- Shared widgets in `lib/core/widgets`: `ProductCard` (`ProductCardImageMode.photo` / `cutout`) and
+  `SectionHeader`.
+- Home: peach `MemberHeader` (bell with count, points chip), banner cards overlapping the header,
+  `SectionHeader` sections, a nearby-shops block over a backdrop image, and bottom padding that
+  clears the floating nav. The bell count `2` is a constant, not real notifications.
+- Bottom nav: floating, with border, shadow and a new icon set (`Icons.workspace_premium_outlined`
+  crown for Explore, `Icons.radio_button_checked` for the centre Rewards tab). The shell uses
+  `extendBody: true`.
+- Product detail: grey page with a white card, an overlapping quantity pill, a "What's this?" row
+  that fades/expands the description, and an `ADD TO CART | total` button (`AppButton.trailingLabel`).
+  The loading and loaded states share one widget tree so the Hero stays stable; the back arrow uses
+  `Navigator.maybePop`.
+- Welcome: staggered rounded tile grid that bleeds off the screen edges with a bottom fade.
+- Seed data: member is Hania (Bronze); seasonal box products added.
+- Assets: `seasonal_1.png` / `seasonal_2.png` are real jdonuts.com photos. `shop_1.png`, `shop_2.png`,
+  `banner_new_shop.png`, `banner_hot.png`, `shops_backdrop.png` and `member_avatar.png` are
+  locally generated **placeholders** (the site has no such images); replace them by file name in
+  `assets/images/seed/`.
+- New Home/Product/Nav strings were written by the implementers in `app_my.arb` and need native
+  Burmese review.
 
 ## Testing
 
@@ -121,7 +147,7 @@ As part of this task, the bundled seed PNGs (`assets/images/seed/*.png`) were re
 test-environment artifact); they're now valid, decodable 500×500 PNGs. This would have failed
 to render on a real device too, not only under `flutter test`.
 
-Full suite: 159 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
+Full suite: 191 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
 (`prefer_initializing_formals`, `unnecessary_library_name`) from earlier tasks, no errors or warnings.
 
 ## Known gaps
@@ -168,6 +194,12 @@ none of which block the flows above:
 - Test coverage: the OTP lockout/resend and phone-normalization bloc paths added in this pass have
   unit tests; broader coverage (e.g. every `RegistrationStepInvalid` branch, `AppOtpBox`'s paste-fill
   edge cases) is not exhaustive.
+
+- Home, Product detail, bottom nav and Welcome were verified by widget tests only, not compared
+  visually against the reference on a device or simulator.
+- Welcome tile shapes and photos only approximate the reference.
+- The Home bell count is a hard-coded `2`; the placeholder images listed under UI / theme are not
+  final art.
 
 ## Manual deliverables not done here
 
