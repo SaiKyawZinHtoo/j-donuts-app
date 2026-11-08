@@ -22,47 +22,52 @@ class AuthScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+    const hPad = EdgeInsets.symmetric(
+      horizontal: AppSpacing.authHorizontalPadding,
+    );
     return AppGradientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.authHorizontalPadding),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Column(
+            children: [
+              Padding(
+                padding: hPad,
+                child: SizedBox(
+                  height: AppSpacing.backButtonSize,
+                  child: Row(
                     children: [
-                      SizedBox(
-                        height: AppSpacing.backButtonSize,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (showBack) const AppBackButton(),
-                            ?trailing,
-                          ],
-                        ),
-                      ),
-                      child,
+                      if (showBack) const AppBackButton(),
                       const Spacer(),
-                      if (showFooter && !keyboardOpen)
-                        Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                          child: AppLegalFooter(
-                            onTapTerms: onTapTerms ?? () {},
-                            onTapPrivacy: onTapPrivacy ?? () {},
-                          ),
-                        ),
+                      ?trailing,
                     ],
                   ),
                 ),
               ),
-            ),
+              Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Padding(padding: hPad, child: child),
+                    ),
+                  ],
+                ),
+              ),
+              if (showFooter && !keyboardOpen)
+                Padding(
+                  padding: hPad.copyWith(
+                    top: AppSpacing.md,
+                    bottom: AppSpacing.md,
+                  ),
+                  child: AppLegalFooter(
+                    onTapTerms: onTapTerms ?? () {},
+                    onTapPrivacy: onTapPrivacy ?? () {},
+                  ),
+                ),
+            ],
           ),
         ),
       ),

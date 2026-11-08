@@ -7,19 +7,23 @@ class AppBackButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: AppColors.surface,
+  Widget build(BuildContext context) => Tooltip(
+    message: MaterialLocalizations.of(context).backButtonTooltip,
+    child: Material(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(AppSpacing.fieldRadius),
+      child: InkWell(
         borderRadius: BorderRadius.circular(AppSpacing.fieldRadius),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(AppSpacing.fieldRadius),
-          onTap: onPressed ??
-              () {
-                if (context.canPop()) context.pop();
-              },
-          child: const SizedBox.square(
-            dimension: AppSpacing.backButtonSize,
-            child: Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          ),
+        onTap:
+            onPressed ??
+            () {
+              if (context.canPop()) context.pop();
+            },
+        child: const SizedBox.square(
+          dimension: AppSpacing.backButtonSize,
+          child: Icon(Icons.arrow_back, color: AppColors.textPrimary),
         ),
-      );
+      ),
+    ),
+  );
 }
