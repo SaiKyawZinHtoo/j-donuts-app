@@ -112,6 +112,9 @@ void main() {
 
   testWidgets('same product in two sections: two distinct Heroes, no exception',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 3000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(app(makeBloc()));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -123,6 +126,9 @@ void main() {
   });
 
   testWidgets('tap tile in second section pushes that section tag', (tester) async {
+    tester.view.physicalSize = const Size(800, 3000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(app(makeBloc()));
     await tester.pump(const Duration(seconds: 1)); // shimmer never settles
     final tile = find.descendant(
@@ -182,6 +188,9 @@ void main() {
   });
 
   testWidgets('stagger: later section lags earlier one mid-animation', (tester) async {
+    tester.view.physicalSize = const Size(800, 3000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(app(makeBloc()));
     await tester.pump();
     await tester.pump();

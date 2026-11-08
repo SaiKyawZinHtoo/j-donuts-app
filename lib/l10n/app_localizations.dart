@@ -344,6 +344,12 @@ abstract class AppLocalizations {
   /// **'-{percent}%'**
   String discountBadge(int percent);
 
+  /// No description provided for @discountOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off'**
+  String discountOff(int percent);
+
   /// No description provided for @priceMmk.
   ///
   /// In en, this message translates to:

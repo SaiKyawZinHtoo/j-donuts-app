@@ -48,6 +48,7 @@
   "memberTierStatus": "{tier} အဆင့် · နောက်အဆင့်အတွက် {points} အမှတ်လိုသည်",
   "newBadge": "အသစ်",
   "discountBadge": "-{percent}%",
+  "discountOff": "{percent}% လျှော့ဈေး",
   "priceMmk": "{price} ကျပ်",
 
   "productAppBarTitle": "ကုန်ပစ္စည်း",

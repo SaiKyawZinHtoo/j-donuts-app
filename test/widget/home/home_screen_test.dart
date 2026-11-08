@@ -71,6 +71,42 @@ void main() {
             imageUrl: 'img2.png',
             description: '',
           ),
+          Product(
+            id: 'p3',
+            code: 'DN-003',
+            name: 'Both',
+            priceMmk: 900,
+            isNew: true,
+            discountPercent: 20,
+            imageUrl: 'img3.png',
+            description: '',
+          ),
+          Product(
+            id: 'p4',
+            code: 'DN-004',
+            name: 'Box',
+            priceMmk: 900,
+            isNew: false,
+            discountPercent: 50,
+            imageUrl: 'img4.png',
+            description: '',
+          ),
+        ],
+      ),
+      ProductSection(
+        id: 'seasonal_specials',
+        title: 'Seasonal',
+        products: [
+          Product(
+            id: 'p5',
+            code: 'DN-005',
+            name: 'Romance',
+            priceMmk: 900,
+            isNew: false,
+            discountPercent: 50,
+            imageUrl: 'img5.png',
+            description: '',
+          ),
         ],
       ),
     ],
@@ -129,5 +165,27 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Product p1'), findsOneWidget);
+  });
+
+  testWidgets('badges: discount, new wins; card widths per mode', (tester) async {
+    tester.view.physicalSize = const Size(800, 3000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
+    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
+    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
+      ..add(const HomeRequested());
+    await tester.pumpWidget(makeTestableWidget(bloc));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('50% off'), findsWidgets);
+    expect(find.text('New'), findsNWidgets(2));
+    expect(find.text('20% off'), findsNothing);
+    expect(tester.getSize(find.byKey(const Key('productTile_p1'))).width,
+        AppSpacing.cardCutoutWidth);
+    final seasonal = find.byKey(const Key('productTile_p5'));
+    await tester.ensureVisible(seasonal);
+    expect(tester.getSize(seasonal).width, AppSpacing.cardPhotoWidth);
   });
 }

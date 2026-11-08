@@ -16,18 +16,20 @@ class ProductSectionList extends StatelessWidget {
     if (section.products.isEmpty) {
       return AppEmptyState(message: AppLocalizations.of(context)!.nothingHereYet);
     }
+    final l10n = AppLocalizations.of(context)!;
+    final mode = section.id == 'seasonal_specials'
+        ? ProductCardImageMode.photo
+        : ProductCardImageMode.cutout;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text(section.title, style: AppTextStyles.h2),
+          child: SectionHeader(title: section.title),
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
-          // shortcut: fixed height sized for text scale up to 1.3 (spec's max);
-          // a larger scale would need this to grow with MediaQuery.textScaler.
-          height: 140,
+          height: ProductCard.heightFor(context, mode),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -35,71 +37,20 @@ class ProductSectionList extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.sm),
             itemBuilder: (context, index) {
               final product = section.products[index];
-              return GestureDetector(
+              final tag = heroTagFor(section.id, product.id);
+              return KeyedSubtree(
                 key: Key('productTile_${product.id}'),
-                onTap: () => context.push('/product/${product.id}',
-                    extra: heroTagFor(section.id, product.id)),
-                child: Container(
-                  width: 100,
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    border: Border.all(color: AppColors.border),
-                    borderRadius: BorderRadius.circular(AppSpacing.sm),
-                  ),
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Hero(
-                          tag: heroTagFor(section.id, product.id),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(AppSpacing.sm),
-                            child: AppSmartImage(
-                              url: product.imageUrl,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              placeholder: (context) => const AppSkeleton(
-                                  isLoading: true, child: SizedBox.expand()),
-                              errorWidget: (context) => Image.asset(
-                                'assets/images/seed/product_placeholder.png',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(product.name,
-                          style: AppTextStyles.caption,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                                AppLocalizations.of(context)!
-                                    .priceMmk(NumberFormat.decimalPattern().format(product.priceMmk)),
-                                style: AppTextStyles.caption,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                          if (product.isNew) ...[
-                            const SizedBox(width: 4),
-                            Text(AppLocalizations.of(context)!.newBadge,
-                                style: const TextStyle(color: AppColors.accent, fontSize: 10)),
-                          ] else if (product.discountPercent > 0) ...[
-                            const SizedBox(width: 4),
-                            Text(
-                                AppLocalizations.of(context)!
-                                    .discountBadge(product.discountPercent),
-                                style: const TextStyle(color: AppColors.error, fontSize: 10)),
-                          ],
-                        ],
-                      ),
-                    ],
-                  ),
+                child: ProductCard(
+                  imageUrl: product.imageUrl,
+                  title: product.name,
+                  mode: mode,
+                  badgeLabel: product.isNew
+                      ? l10n.newBadge
+                      : product.discountPercent > 0
+                          ? l10n.discountOff(product.discountPercent)
+                          : null,
+                  heroTag: tag,
+                  onTap: () => context.push('/product/${product.id}', extra: tag),
                 ),
               );
             },

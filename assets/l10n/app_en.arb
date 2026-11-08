@@ -75,6 +75,10 @@
   "@discountBadge": {
     "placeholders": { "percent": { "type": "int" } }
   },
+  "discountOff": "{percent}% off",
+  "@discountOff": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
   "priceMmk": "{price} MMK",
   "@priceMmk": {
     "placeholders": { "price": { "type": "String" } }

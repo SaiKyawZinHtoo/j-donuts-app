@@ -152,6 +152,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String discountOff(int percent) {
+    return '$percent% off';
+  }
+
+  @override
   String priceMmk(String price) {
     return '$price MMK';
   }
