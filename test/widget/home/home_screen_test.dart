@@ -275,31 +275,43 @@ void main() {
     expect(tester.getBottomLeft(find.byKey(const Key('shopCard_sh1'))).dy, lessThanOrEqualTo(navTop));
   });
 
-  testWidgets('offline banner text clears the status bar inset', (tester) async {
-    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => false);
-    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
-    final router = GoRouter(
-      initialLocation: '/',
-      routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
-    );
-    await tester.pumpWidget(MaterialApp.router(
-      routerConfig: router,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(padding: const EdgeInsets.only(top: 47)),
-        child: BlocProvider<HomeBloc>.value(value: bloc, child: child!),
-      ),
-    ));
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 2));
+  testWidgets('status bar inset: banner paints from top, header not double-inset', (tester) async {
+    Future<void> pumpHome(bool online) async {
+      when(() => mockConnectivity.isOnline()).thenAnswer((_) async => online);
+      when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
+      final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
+        ..add(const HomeRequested());
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
+      );
+      await tester.pumpWidget(MaterialApp.router(
+        key: UniqueKey(),
+        routerConfig: router,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(padding: const EdgeInsets.only(top: 47)),
+          child: BlocProvider<HomeBloc>.value(value: bloc, child: child!),
+        ),
+      ));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 2));
+    }
 
-    final text = find.descendant(
-        of: find.byKey(const Key('homeOfflineBanner')), matching: find.byType(Text));
-    expect(tester.getTopLeft(text).dy, greaterThanOrEqualTo(47));
-    final header = find.byKey(const Key('memberHeader_pointsChip'));
-    expect(header, findsOneWidget);
+    final chip = find.byKey(const Key('memberHeader_pointsChip'));
+    final banner = find.byKey(const Key('homeOfflineBanner'));
+
+    await pumpHome(false); // offline
+    expect(tester.getTopLeft(banner).dy, 0);
+    expect(tester.getTopLeft(find.descendant(of: banner, matching: find.byType(Text))).dy,
+        greaterThanOrEqualTo(47));
+    final offlineGap = tester.getTopLeft(chip).dy - tester.getBottomLeft(banner).dy;
+
+    await pumpHome(true);
+    expect(banner, findsNothing);
+    final onlineGap = tester.getTopLeft(chip).dy - 47; // single inset only
+    // Same header-internal offset with or without banner: no extra 47 gap.
+    expect(offlineGap, closeTo(onlineGap, 1));
   });
 }
