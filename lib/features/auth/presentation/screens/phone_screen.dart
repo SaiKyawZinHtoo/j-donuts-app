@@ -23,13 +23,19 @@ class _PhoneScreenState extends State<PhoneScreen> {
   }
 
   void _onChanged() {
-    final valid = validatePhone(_controller.text) is ValidationValid;
+    final valid = validatePhone(_national(_controller.text)) is ValidationValid;
     if (valid != _isValid || _serverError != null) {
       setState(() {
         _isValid = valid;
         _serverError = null;
       });
     }
+  }
+
+  /// Typed text minus any pasted leading `+95`; the prefix is display-only.
+  String _national(String typed) {
+    final t = typed.trim();
+    return t.startsWith('+95') ? t.substring(3) : t;
   }
 
   @override
@@ -40,85 +46,101 @@ class _PhoneScreenState extends State<PhoneScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) context.pop();
-          },
-        ),
-      ),
-      body: BlocConsumer<AuthBloc, AuthState>(
-        listenWhen: (previous, current) =>
-            current is OtpAwaiting && previous is! OtpAwaiting,
-        listener: (context, state) {
-          if (state is PhoneInvalid) {
-            setState(() => _serverError = state.message);
-            return;
-          }
-          if (ModalRoute.of(context)?.isCurrent != true) return;
-          if (state is OtpAwaiting) {
-            context.push('/otp');
-          } else if (state is AuthFailure) {
-            AppSnackbar.showError(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          final loading = state is AuthLoading;
-          final l10n = AppLocalizations.of(context)!;
-          return Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.phoneScreenTitle, style: AppTextStyles.h2),
-                const SizedBox(height: AppSpacing.lg),
-                AppTextField(
-                  key: const Key('phoneNumberField'),
-                  controller: _controller,
-                  labelText: l10n.phoneCountryCode,
-                  hintText: l10n.phoneHint,
-                  keyboardType: TextInputType.phone,
-                  errorText: _serverError,
+    return BlocConsumer<AuthBloc, AuthState>(
+      listenWhen: (previous, current) =>
+          current is OtpAwaiting && previous is! OtpAwaiting,
+      listener: (context, state) {
+        if (state is PhoneInvalid) {
+          setState(() => _serverError = state.message);
+          return;
+        }
+        if (ModalRoute.of(context)?.isCurrent != true) return;
+        if (state is OtpAwaiting) {
+          context.push('/otp');
+        } else if (state is AuthFailure) {
+          AppSnackbar.showError(context, state.message);
+        }
+      },
+      builder: (context, state) {
+        final loading = state is AuthLoading;
+        final l10n = AppLocalizations.of(context)!;
+        return AuthScaffold(
+          trailing: widget.isLogin
+              ? null
+              : const RegistrationProgressRing(step: RegistrationStep.phone),
+          onTapTerms: () {},
+          onTapPrivacy: () {},
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.isLogin ? l10n.loginScreenTitle : l10n.phoneScreenTitle,
+                style: AppTextStyles.h1,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              AppTextField(
+                key: const Key('phoneNumberField'),
+                controller: _controller,
+                prefix: Text(
+                  l10n.phoneCountryCode,
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-                if (state is PhoneNeedsRegistration && widget.isLogin) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  GestureDetector(
-                    key: const Key('registerInsteadLink'),
-                    onTap: () => context.push('/phone'),
-                    child: Text(
-                      l10n.phoneNotFoundRegister,
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.error,
-                        decoration: TextDecoration.underline,
-                      ),
+                hintText: l10n.phoneHint,
+                keyboardType: TextInputType.phone,
+                errorText: _serverError,
+              ),
+              if (state is PhoneNeedsRegistration && widget.isLogin) ...[
+                const SizedBox(height: AppSpacing.sm),
+                GestureDetector(
+                  key: const Key('registerInsteadLink'),
+                  onTap: () => context.push('/phone'),
+                  child: Text(
+                    l10n.phoneNotFoundRegister,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.error,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
-                ],
-                const SizedBox(height: AppSpacing.xl),
-                AppButton(
-                  key: const Key('continueButton'),
-                  label: l10n.continueButton,
-                  loading: loading,
-                  onPressed: _isValid
-                      ? () => context.read<AuthBloc>().add(
-                          PhoneSubmitted(_controller.text, isLogin: widget.isLogin),
-                        )
-                      : null,
-                ),
-                const Spacer(),
-                AppLegalFooter(
-                  onTapTerms: () {},
-                  onTapPrivacy: () {},
                 ),
               ],
-            ),
-          );
-        },
-      ),
+              const SizedBox(height: AppSpacing.xl),
+              AppButton(
+                key: const Key('continueButton'),
+                label: widget.isLogin ? l10n.loginButton : l10n.continueButton,
+                loading: loading,
+                onPressed: _isValid
+                    ? () => context.read<AuthBloc>().add(
+                        PhoneSubmitted(
+                          _national(_controller.text),
+                          isLogin: widget.isLogin,
+                        ),
+                      )
+                    : null,
+              ),
+              if (widget.isLogin) ...[
+                const SizedBox(height: AppSpacing.lg),
+                Center(
+                  child: IconButton(
+                    key: const Key('fingerprintButton'),
+                    icon: const Icon(Icons.fingerprint),
+                    iconSize: AppSpacing.iconSizeMd,
+                    style: IconButton.styleFrom(
+                      shape: const CircleBorder(),
+                      side: const BorderSide(color: AppColors.textSecondary),
+                    ),
+                    onPressed: () => AppSnackbar.showError(
+                      context,
+                      l10n.socialSignInUnavailableMessage('Fingerprint'),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

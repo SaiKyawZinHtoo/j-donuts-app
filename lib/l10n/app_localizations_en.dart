@@ -61,6 +61,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
+  String get loginScreenTitle => 'Welcome back, Login to your profile';
+
+  @override
+  String get loginButton => 'Login';
+
+  @override
   String get otpScreenTitle => 'Verify your number';
 
   @override

@@ -23,6 +23,8 @@
   "phoneHint": "9xxxxxxxx",
   "phoneNotFoundRegister": "We couldn't find this number. Register instead?",
   "continueButton": "Continue",
+  "loginScreenTitle": "Welcome back, Login to your profile",
+  "loginButton": "Login",
 
   "otpScreenTitle": "Verify your number",
   "otpSubtitle": "We've sent 6 digit OTP to {phone}",

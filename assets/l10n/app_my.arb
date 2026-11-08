@@ -17,6 +17,8 @@
   "phoneHint": "9xxxxxxxx",
   "phoneNotFoundRegister": "ဤနံပါတ်ကို ရှာမတွေ့ပါ။ အကောင့်သစ်ဖွင့်မလား?",
   "continueButton": "ရှေ့ဆက်မည်",
+  "loginScreenTitle": "ပြန်လည်ကြိုဆိုပါတယ်၊ သင့်ပရိုဖိုင်သို့ ဝင်ရောက်ပါ",
+  "loginButton": "ဝင်ရောက်မည်",
 
   "otpScreenTitle": "သင့်နံပါတ်ကို အတည်ပြုပါ",
   "otpSubtitle": "ဂဏန်း ၆ လုံးပါ OTP ကို {phone} သို့ ပို့ထားပါသည်",

@@ -61,6 +61,13 @@ class AppLocalizationsMy extends AppLocalizations {
   String get continueButton => 'ရှေ့ဆက်မည်';
 
   @override
+  String get loginScreenTitle =>
+      'ပြန်လည်ကြိုဆိုပါတယ်၊ သင့်ပရိုဖိုင်သို့ ဝင်ရောက်ပါ';
+
+  @override
+  String get loginButton => 'ဝင်ရောက်မည်';
+
+  @override
   String get otpScreenTitle => 'သင့်နံပါတ်ကို အတည်ပြုပါ';
 
   @override

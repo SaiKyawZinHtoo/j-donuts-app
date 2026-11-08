@@ -188,6 +188,18 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get continueButton;
 
+  /// No description provided for @loginScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back, Login to your profile'**
+  String get loginScreenTitle;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginButton;
+
   /// No description provided for @otpScreenTitle.
   ///
   /// In en, this message translates to:

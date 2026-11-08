@@ -47,13 +47,21 @@ class AuthScaffold extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Padding(padding: hPad, child: child),
-                    ),
-                  ],
+                // Not SliverFillRemaining: it needs intrinsic sizes, which
+                // LayoutBuilder-based children (AppButton) cannot provide.
+                child: LayoutBuilder(
+                  builder: (context, constraints) => CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: Padding(padding: hPad, child: child),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               if (showFooter && !keyboardOpen)
