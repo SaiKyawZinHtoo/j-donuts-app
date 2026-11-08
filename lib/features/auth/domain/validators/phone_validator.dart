@@ -2,8 +2,9 @@ part of '../../auth_import.dart';
 
 /// Normalizes and validates a Myanmar phone number.
 ///
-/// Strips spaces/dashes and one leading 0, prefixes +95, requires 7-9
-/// remaining digits.
+/// Strips spaces/dashes and one leading 0, prefixes +95. The remaining
+/// digits must start with a leading `9` followed by 7-9 more digits
+/// (8-10 digits total after +95).
 ValidationResult validatePhone(String raw) {
   var digits = raw.replaceAll(RegExp(r'[\s-]'), '');
   if (digits.startsWith('0')) {
@@ -12,8 +13,12 @@ ValidationResult validatePhone(String raw) {
   if (!RegExp(r'^\d+$').hasMatch(digits)) {
     return const ValidationInvalid('Phone number must contain only digits.');
   }
-  if (digits.length < 7 || digits.length > 10) {
-    return const ValidationInvalid('Phone number must have 7-10 digits.');
+  if (!digits.startsWith('9')) {
+    return const ValidationInvalid('Phone number must start with 9 after the prefix.');
+  }
+  final afterNine = digits.length - 1;
+  if (afterNine < 7 || afterNine > 9) {
+    return const ValidationInvalid('Phone number must have 7-9 digits after the leading 9.');
   }
   return const ValidationValid();
 }
