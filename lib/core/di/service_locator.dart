@@ -40,4 +40,18 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<GetSessionUseCase>(
     () => GetSessionUseCase(getIt()),
   );
+  getIt.registerLazySingleton<LoginUseCase>(
+    () => LoginUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<RegisterUseCase>(
+    () => RegisterUseCase(getIt()),
+  );
+  getIt.registerFactory<AuthBloc>(
+    () => AuthBloc(
+      loginUseCase: getIt(),
+      registerUseCase: getIt(),
+      getSessionUseCase: getIt(),
+      authRepository: getIt(),
+    ),
+  );
 }

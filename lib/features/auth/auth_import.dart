@@ -1,7 +1,9 @@
 library auth;
 
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:j_donuts_app/core/core_import.dart';
@@ -22,3 +24,6 @@ part 'domain/usecases/get_session_usecase.dart';
 part 'data/datasources/session_datasource.dart';
 part 'data/datasources/auth_local_datasource.dart';
 part 'data/repositories/auth_repository_impl.dart';
+part 'presentation/bloc/auth_event.dart';
+part 'presentation/bloc/auth_state.dart';
+part 'presentation/bloc/auth_bloc.dart';
