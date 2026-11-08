@@ -36,4 +36,13 @@ class AppSpacing {
   static const double navBarHeight = 64;
   static const double navItemSize = 24;
   static const double authTitleTopGap = 24;
+  static const double cardRadius = 20;
+  static const double sectionGap = 24;
+  static const double headerRadius = 32;
+  static const double qtyPillHeight = 56;
+  static const double cardPhotoWidth = 320;
+  static const double cardCutoutWidth = 215;
+  static const double cardPhotoAspect = 1.5; // w/h
+  static const double cardCutoutAspect = 0.67; // w/h
+  static const double chevronButtonSize = 40;
 }

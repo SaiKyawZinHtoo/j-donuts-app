@@ -27,4 +27,7 @@ class MotionTokens {
   static const Duration kButtonMorphDuration = Duration(milliseconds: 250);
   static const Duration kHomeSectionStagger = Duration(milliseconds: 80);
   static const Duration kNavPillDuration = Duration(milliseconds: 250);
+  static const Duration kQtyChange = Duration(milliseconds: 150);
+  static const Duration kDescriptionExpand = Duration(milliseconds: 250);
+  static const Duration kDetailEntrance = Duration(milliseconds: 400);
 }

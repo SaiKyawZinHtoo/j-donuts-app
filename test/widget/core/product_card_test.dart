@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:j_donuts_app/core/core_import.dart';
+
+const _img = 'assets/images/seed/product_placeholder.png';
+
+Widget _host(Widget child, {double scale = 1}) => MaterialApp(
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  builder: (c, w) => MediaQuery(
+    data: MediaQuery.of(c).copyWith(textScaler: TextScaler.linear(scale)),
+    child: w!,
+  ),
+  home: Scaffold(body: Center(child: child)),
+);
+
+void main() {
+  for (final mode in ProductCardImageMode.values) {
+    testWidgets('$mode renders title and image', (t) async {
+      await t.pumpWidget(_host(
+          ProductCard(imageUrl: _img, title: 'Glazed', mode: mode)));
+      expect(find.text('Glazed'), findsOneWidget);
+      expect(find.byType(Image), findsWidgets);
+    });
+
+    testWidgets('$mode height matches heightFor at 1.3x', (t) async {
+      await t.pumpWidget(_host(
+          ProductCard(imageUrl: _img, title: 'Glazed', mode: mode),
+          scale: 1.3));
+      expect(t.takeException(), isNull);
+      final ctx = t.element(find.byType(ProductCard));
+      expect(t.getSize(find.byType(ProductCard)).height,
+          closeTo(ProductCard.heightFor(ctx, mode), 1));
+    });
+  }
+
+  testWidgets('badge shown only when label set', (t) async {
+    await t.pumpWidget(_host(const ProductCard(
+        imageUrl: _img,
+        title: 'a',
+        mode: ProductCardImageMode.photo,
+        badgeLabel: '50% off')));
+    expect(find.text('50% off'), findsOneWidget);
+    await t.pumpWidget(_host(const ProductCard(
+        imageUrl: _img, title: 'a', mode: ProductCardImageMode.photo)));
+    expect(find.text('50% off'), findsNothing);
+  });
+
+  testWidgets('tap calls onTap once', (t) async {
+    var n = 0;
+    await t.pumpWidget(_host(ProductCard(
+        imageUrl: _img,
+        title: 'tap me',
+        mode: ProductCardImageMode.photo,
+        onTap: () => n++)));
+    await t.tap(find.text('tap me'));
+    expect(n, 1);
+  });
+
+  test('widthFor tokens', () {
+    expect(ProductCard.widthFor(ProductCardImageMode.photo),
+        AppSpacing.cardPhotoWidth);
+    expect(ProductCard.widthFor(ProductCardImageMode.cutout),
+        AppSpacing.cardCutoutWidth);
+  });
+}

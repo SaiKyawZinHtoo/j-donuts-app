@@ -33,4 +33,6 @@ part 'widgets/app_legal_footer.dart';
 part 'widgets/app_gradient_background.dart';
 part 'widgets/app_back_button.dart';
 part 'widgets/auth_scaffold.dart';
+part 'widgets/product_card.dart';
+part 'widgets/section_header.dart';
 part 'services/connectivity_service.dart';

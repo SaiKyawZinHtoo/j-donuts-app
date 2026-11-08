@@ -31,4 +31,7 @@ class AppColors {
     Color(0xFFFEFEFE),
   ];
   static const List<double> gradientStops = [0, 0.3, 0.5, 0.7, 1];
+  static const Color badge = Color(0xFFF28B30);
+  static const Color pageGrey = Color(0xFFEEF0F2);
+  static const Color headerPeach = Color(0xFFFCE3D0);
 }
