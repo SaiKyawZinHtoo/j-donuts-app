@@ -13,11 +13,18 @@ class BannerCarousel extends StatefulWidget {
 class _BannerCarouselState extends State<BannerCarousel> {
   late final PageController _controller = PageController();
   Timer? _timer;
+  bool _autoplayDecided = false;
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.banners.length > 1) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reduce Motion: don't start the autoplay timer at all, rather than
+    // running it with instant jumps — a banner that never moves on its own
+    // is what the setting asks for. Decided once; re-evaluating on every
+    // dependency change would restart/stop the timer mid-scroll.
+    if (_autoplayDecided) return;
+    _autoplayDecided = true;
+    if (widget.banners.length > 1 && !MediaQuery.of(context).disableAnimations) {
       _timer = Timer.periodic(MotionTokens.kBannerAutoplayInterval, (_) {
         if (!mounted || !_controller.hasClients) return;
         final next = (_controller.page?.round() ?? 0) + 1;
