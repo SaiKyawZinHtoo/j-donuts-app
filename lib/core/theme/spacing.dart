@@ -33,6 +33,10 @@ class AppSpacing {
   static const double welcomeTileOffset = 90;
   static const double welcomeTileRadius = 28;
   static const double welcomeStackFraction = 0.52;
+  // Tile width and right-column x as screen-width fractions; left bleed as tile-width fraction.
+  static const double welcomeTileWidthFraction = 0.52;
+  static const double welcomeRightColumnFraction = 0.6;
+  static const double welcomeTileBleedFraction = 0.05;
   static const double logoCirclePadding = 12;
   static const double onboardingTilesFraction = 0.55;
   static const double onboardingTilesMinFraction = 0.45;

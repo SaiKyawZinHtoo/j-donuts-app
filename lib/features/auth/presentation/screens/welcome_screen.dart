@@ -77,11 +77,21 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             children: [
               LayoutBuilder(
                 builder: (context, c) {
-                  final stackH =
-                      MediaQuery.sizeOf(context).height *
-                      AppSpacing.welcomeStackFraction;
-                  final tileW = c.maxWidth * 0.52;
-                  final tileH = stackH * 0.46;
+                  // Width from the layout constraints (+ scaffold padding), height from
+                  // MediaQuery (unbounded here); OverflowBox escapes the scaffold's
+                  // horizontal padding so tiles bleed off both screen edges.
+                  final screenW =
+                      c.maxWidth + 2 * AppSpacing.authHorizontalPadding;
+                  final screenH = MediaQuery.sizeOf(context).height;
+                  final stackH = screenH * AppSpacing.welcomeStackFraction;
+                  final tileW = screenW * AppSpacing.welcomeTileWidthFraction;
+                  const off = AppSpacing.welcomeTileOffset;
+                  final tileH = math.max(
+                    0.0,
+                    (stackH - off - AppSpacing.md) / 2,
+                  );
+                  final leftX = -tileW * AppSpacing.welcomeTileBleedFraction;
+                  final rx = screenW * AppSpacing.welcomeRightColumnFraction;
                   Widget tile(int i, double left, double top) => Positioned(
                     left: left,
                     top: top,
@@ -96,37 +106,44 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       slideFrom: const Offset(0, 0.15),
                     ),
                   );
-                  const off = AppSpacing.welcomeTileOffset;
-                  final rx = c.maxWidth * 0.6;
                   return SizedBox(
                     height: stackH,
-                    child: ClipRect(
-                      child: Stack(
-                        children: [
-                          tile(0, -tileW * 0.05, 0),
-                          tile(1, rx, off * 0.5),
-                          tile(2, -tileW * 0.05, tileH + AppSpacing.md),
-                          tile(3, rx, off * 0.5 + tileH + AppSpacing.md),
-                          Positioned.fill(
-                            child: IgnorePointer(
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    stops: const [0.6, 1],
-                                    colors: [
-                                      AppColors.gradientColors.first.withValues(
-                                        alpha: 0,
+                    child: OverflowBox(
+                      minWidth: screenW,
+                      maxWidth: screenW,
+                      minHeight: stackH,
+                      maxHeight: stackH,
+                      child: SizedBox(
+                        width: screenW,
+                        height: stackH,
+                        child: ClipRect(
+                          child: Stack(
+                            children: [
+                              tile(0, leftX, 0),
+                              tile(1, rx, off),
+                              tile(2, leftX, tileH + AppSpacing.md),
+                              tile(3, rx, off + tileH + AppSpacing.md),
+                              Positioned.fill(
+                                child: IgnorePointer(
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        stops: const [0.6, 1],
+                                        colors: [
+                                          AppColors.gradientColors.first
+                                              .withValues(alpha: 0),
+                                          AppColors.gradientColors.first,
+                                        ],
                                       ),
-                                      AppColors.gradientColors.first,
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   );
