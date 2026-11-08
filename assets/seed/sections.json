@@ -1,0 +1,17 @@
+[
+  {
+    "id": "seasonal_specials",
+    "title": "Seasonal Specials",
+    "productIds": ["p_matcha", "p_coconut"]
+  },
+  {
+    "id": "popular",
+    "title": "Popular",
+    "productIds": ["p_coconut", "p_choco", "p_strawberry"]
+  },
+  {
+    "id": "order_again",
+    "title": "Order Again",
+    "productIds": ["p_americano", "p_latte"]
+  }
+]

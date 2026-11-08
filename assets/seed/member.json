@@ -1,0 +1,35 @@
+{
+  "id": "member_main",
+  "name": "Shan Lay",
+  "photoUrl": "assets/images/seed/member_avatar.png",
+  "tier": "Silver",
+  "points": 1500,
+  "nextTierPoints": 2000,
+  "totalPoints": 1500,
+  "challenges": [
+    {
+      "id": "c_coco_donuts",
+      "title": "Eat 4 Coco donuts",
+      "current": 4,
+      "target": 4,
+      "rewardPts": 100,
+      "artType": "donut"
+    },
+    {
+      "id": "c_americano",
+      "title": "Drink 12 cups americano",
+      "current": 9,
+      "target": 12,
+      "rewardPts": 150,
+      "artType": "coffee"
+    },
+    {
+      "id": "c_matcha",
+      "title": "Try 3 Matcha donuts",
+      "current": 1,
+      "target": 3,
+      "rewardPts": 80,
+      "artType": "donut"
+    }
+  ]
+}

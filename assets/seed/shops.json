@@ -1,0 +1,26 @@
+[
+  {
+    "id": "s_junction_city",
+    "name": "J Donuts - Junction City",
+    "address": "No. 3, Bogyoke Aung San Rd, Yangon",
+    "distanceLabel": "0.8 km"
+  },
+  {
+    "id": "s_myay_nu",
+    "name": "J Donuts - Myay Nu",
+    "address": "Myay Nu St, Sanchaung, Yangon",
+    "distanceLabel": "1.4 km"
+  },
+  {
+    "id": "s_hledan",
+    "name": "J Donuts - Hledan",
+    "address": "Pyay Rd, Hledan, Yangon",
+    "distanceLabel": "2.1 km"
+  },
+  {
+    "id": "s_thanlyin",
+    "name": "J Donuts - Thanlyin",
+    "address": "Yangon-Thanlyin Rd, Thanlyin",
+    "distanceLabel": "6.5 km"
+  }
+]
