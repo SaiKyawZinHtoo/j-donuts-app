@@ -23,14 +23,34 @@ void main() {
       expect(find.byType(Image), findsWidgets);
     });
 
-    testWidgets('$mode height matches heightFor at 1.3x', (t) async {
+    testWidgets('$mode title wraps to 2 lines within budget at 1.3x', (t) async {
+      const long = 'Glazed Strawberry Sprinkle Donut With Extra Cream Filling '
+          'And Chocolate Drizzle On Top Deluxe Edition';
+      final titleFinder = find.text(long);
       await t.pumpWidget(_host(
-          ProductCard(imageUrl: _img, title: 'Glazed', mode: mode),
+          ProductCard(imageUrl: _img, title: long, mode: mode),
           scale: 1.3));
       expect(t.takeException(), isNull);
       final ctx = t.element(find.byType(ProductCard));
-      expect(t.getSize(find.byType(ProductCard)).height,
-          closeTo(ProductCard.heightFor(ctx, mode), 1));
+      final imageH = ProductCard.widthFor(mode) /
+          (mode == ProductCardImageMode.photo
+              ? AppSpacing.cardPhotoAspect
+              : AppSpacing.cardCutoutAspect);
+      final budget = ProductCard.heightFor(ctx, mode) - AppSpacing.sm - imageH;
+      final h = t.getSize(titleFinder).height;
+      expect(h, lessThanOrEqualTo(budget + 1));
+      expect(h, greaterThan(budget / 2 + 1)); // more than one line
+      final text = t.widget<Text>(titleFinder);
+      expect(text.maxLines, 2);
+    });
+
+    testWidgets('$mode Hero only when heroTag set', (t) async {
+      await t.pumpWidget(_host(
+          ProductCard(imageUrl: _img, title: 'a', mode: mode, heroTag: 'h')));
+      expect(find.byType(Hero), findsOneWidget);
+      await t.pumpWidget(
+          _host(ProductCard(imageUrl: _img, title: 'a', mode: mode)));
+      expect(find.byType(Hero), findsNothing);
     });
   }
 
