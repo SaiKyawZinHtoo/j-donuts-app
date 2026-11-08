@@ -30,13 +30,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
-          leading: Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                if (context.canPop()) context.pop();
-              },
-            ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).maybePop(),
           ),
         ),
         body: BlocConsumer<ProductDetailBloc, ProductDetailState>(
@@ -53,23 +49,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 if (widget.heroTag == null) {
                   return const AppSkeleton(isLoading: true, child: SizedBox.expand());
                 }
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _maybeHero(
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(AppSpacing.sm),
-                          child: const AppSkeleton(
-                            isLoading: true,
-                            child: SizedBox(height: 200, width: double.infinity),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return _buildLoaded(context, null);
               case ProductError(message: final message):
                 return AppErrorState(message: message);
               case ProductLoaded():
@@ -84,9 +64,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget _maybeHero(Widget child) =>
       widget.heroTag == null ? child : Hero(tag: widget.heroTag!, child: child);
 
-  Widget _buildLoaded(BuildContext context, ProductLoaded state) {
-    final product = state.product;
-    final bloc = context.read<ProductDetailBloc>();
+  Widget _buildLoaded(BuildContext context, ProductLoaded? state) {
+    // Loading (state == null) shares this exact tree so the Hero survives the flip.
+    final product = state?.product;
+    final bloc = state == null ? null : context.read<ProductDetailBloc>();
     final l10n = AppLocalizations.of(context)!;
     final reduce = MediaQuery.disableAnimationsOf(context);
     const half = AppSpacing.qtyPillHeight / 2;
@@ -102,7 +83,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          product == null
+              ? const SizedBox.shrink()
+              : Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
@@ -133,19 +116,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
           _maybeHero(
-            AppSmartImage(
-              url: product.imageUrl,
-              fit: BoxFit.contain,
+            SizedBox(
               height: 280,
               width: double.infinity,
-              placeholder: (context) =>
-                  const AppSkeleton(isLoading: true, child: SizedBox.expand()),
-              errorWidget: (context) => Image.asset(
-                'assets/images/seed/product_placeholder.png',
-                fit: BoxFit.contain,
-                height: 280,
-                width: double.infinity,
-              ),
+              child: product == null
+                  ? const AppSkeleton(isLoading: true, child: SizedBox.expand())
+                  : AppSmartImage(
+                      url: product.imageUrl,
+                      fit: BoxFit.contain,
+                      height: 280,
+                      width: double.infinity,
+                      placeholder: (context) => const AppSkeleton(
+                          isLoading: true, child: SizedBox.expand()),
+                      errorWidget: (context) => Image.asset(
+                        'assets/images/seed/product_placeholder.png',
+                        fit: BoxFit.contain,
+                        height: 280,
+                        width: double.infinity,
+                      ),
+                    ),
             ),
           ),
           const SizedBox(height: half),
@@ -159,7 +148,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       alignment: Alignment.bottomCenter,
       children: [
         Padding(padding: const EdgeInsets.only(bottom: half), child: card),
-        _quantityPill(bloc, state, reduce),
+        state == null ? const SizedBox.shrink() : _quantityPill(bloc!, state, reduce),
       ],
     );
 
@@ -167,14 +156,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       children: [
         cardWithPill,
         const SizedBox(height: AppSpacing.md),
-        _descriptionRow(l10n, product.description, reduce),
+        product == null
+            ? const SizedBox.shrink()
+            : _descriptionRow(l10n, product.description, reduce),
         const SizedBox(height: AppSpacing.md),
-        AppButton(
-          key: const Key('addToCartButton'),
-          label: l10n.addToCartLabel,
-          trailingLabel: l10n.priceMmk(_mmkFormat.format(state.totalMmk)),
-          onPressed: () => bloc.add(const AddToCartPressed()),
-        ),
+        state == null
+            ? const SizedBox.shrink()
+            : AppButton(
+                key: const Key('addToCartButton'),
+                label: l10n.addToCartLabel,
+                trailingLabel: l10n.priceMmk(_mmkFormat.format(state.totalMmk)),
+                onPressed: () => bloc!.add(const AddToCartPressed()),
+              ),
       ],
     );
 
@@ -272,7 +265,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Builder(builder: (context) {
                 // IntrinsicHeight forbids LayoutBuilder, so estimate the text width.
                 final textWidth = MediaQuery.sizeOf(context).width -
-                    AppSpacing.md * 4 - 88 - 1;
+                    AppSpacing.md * 3 - 88 - 1;
                 final w = textWidth < 0 ? 0.0 : textWidth;
                 final painter = TextPainter(
                   text: TextSpan(
@@ -282,7 +275,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   textScaler: MediaQuery.textScalerOf(context),
                   maxLines: maxLines,
                 )..layout(maxWidth: w);
-                final fade = painter.didExceedMaxLines && !_descriptionExpanded;
+                final exceeds = painter.didExceedMaxLines;
+                painter.dispose();
+                final fade = exceeds && !_descriptionExpanded;
                 return AnimatedSize(
                   duration:
                       reduce ? Duration.zero : MotionTokens.kDescriptionExpand,

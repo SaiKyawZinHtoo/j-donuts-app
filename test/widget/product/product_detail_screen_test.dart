@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
@@ -106,4 +108,64 @@ void main() {
     await load(tester, app(scale: 1.3));
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('Hero element survives Loading -> Loaded', (tester) async {
+    final gate = Completer<void>();
+    await GetIt.instance.reset();
+    GetIt.instance.registerFactory<ProductDetailBloc>(
+      () => ProductDetailBloc(
+        getProductUseCase: GetProductUseCase(_SlowRepository(gate.future)),
+      ),
+    );
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const ProductDetailScreen(productId: 'p1', heroTag: 'h'),
+    ));
+    await tester.pump();
+    final before = tester.element(find.byType(Hero));
+    gate.complete();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('ADD TO CART'), findsOneWidget);
+    expect(identical(tester.element(find.byType(Hero)), before), isTrue);
+  });
+
+  testWidgets('back arrow pops a pushed route', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Builder(
+        builder: (c) => TextButton(
+          onPressed: () => Navigator.of(c).push(MaterialPageRoute<void>(
+              builder: (_) => const ProductDetailScreen(productId: 'p1'))),
+          child: const Text('open'),
+        ),
+      ),
+    ));
+    await tester.tap(find.text('open'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byType(ProductDetailScreen), findsNothing);
+  });
+
+  testWidgets('back arrow does not throw when it cannot pop', (tester) async {
+    await load(tester, app());
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+  });
+}
+
+class _SlowRepository implements ProductRepository {
+  final Future<void> gate;
+  _SlowRepository(this.gate);
+  @override
+  Future<Result<Product>> getProduct(String id) async {
+    await gate;
+    return const Result.ok(_product);
+  }
 }
