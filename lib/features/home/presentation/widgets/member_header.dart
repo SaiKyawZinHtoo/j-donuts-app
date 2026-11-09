@@ -172,9 +172,10 @@ class MemberHeader extends StatelessWidget {
                                             ),
                                             child: Text(
                                               '$notificationCount',
-                                              style: AppTextStyles.caption
+                                              style: AppTextStyles.captionBold
                                                   .copyWith(
-                                                    color: AppColors.badge,
+                                                    color:
+                                                        AppColors.textPrimary,
                                                   ),
                                             ),
                                           ),

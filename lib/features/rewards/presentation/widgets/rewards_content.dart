@@ -32,6 +32,12 @@ class _RewardsBadge extends StatelessWidget {
             borderRadius: BorderRadius.horizontal(
               left: Radius.circular(AppSpacing.buttonRadius),
             ),
+            // White outline; the right edge bleeds off screen, so no border.
+            border: Border(
+              left: BorderSide(color: AppColors.surface, width: 2),
+              top: BorderSide(color: AppColors.surface, width: 2),
+              bottom: BorderSide(color: AppColors.surface, width: 2),
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -52,7 +58,7 @@ class _RewardsBadge extends StatelessWidget {
                 child: Text(
                   '$count',
                   style: AppTextStyles.captionBold.copyWith(
-                    color: AppColors.badge,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
