@@ -50,6 +50,7 @@ dependencies:
   talker: ^5.2.0
   talker_dio_logger: ^5.2.0
   intl: ^0.20.2
+  dio: ^5.11.1
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +70,7 @@ dev_dependencies:
   flutter_secure_storage_platform_interface: ^1.1.2
   bloc_test: ^10.0.0
   flutter_launcher_icons: ^0.14.4
+  shelf: ^1.4.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
