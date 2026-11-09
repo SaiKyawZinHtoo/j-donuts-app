@@ -17,6 +17,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool _descriptionExpanded = false;
   static final _mmkFormat = NumberFormat.decimalPattern();
 
+  // Memo for _descriptionExceeds (see product_detail_parts.dart).
+  String? _descriptionMeasureKey;
+  bool _descriptionMeasured = false;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
