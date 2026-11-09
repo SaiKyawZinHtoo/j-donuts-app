@@ -10,7 +10,7 @@ class AppLocalizationsMy extends AppLocalizations {
   AppLocalizationsMy([String locale = 'my']) : super(locale);
 
   @override
-  String get appTitle => 'ဂျေ ဒိုနပ်';
+  String get appTitle => 'J\'Donuts';
 
   @override
   String get onboardingTitle => 'မည်သည့်စိတ်ခံစားချက်အတွက်မဆို ဝိုင်းပုံစားစရာ';

@@ -1,6 +1,6 @@
-# J Donuts
+# J'Donuts
 
-A Flutter app implementing the J Donuts PDF design spec: 6 auth screens, Home, Product detail,
+A Flutter app implementing the J'Donuts PDF design spec: 6 auth screens, Home, Product detail,
 Rewards, and 3 placeholder bottom-nav tabs, backed by a local Drift database seeded from bundled
 JSON. See `docs/superpowers/specs/2026-11-08-j-donuts-app-design.md` for the full design spec and
 `.superpowers/sdd/2026-11-08-j-donuts-app/` for the task-by-task implementation plan and progress log.
