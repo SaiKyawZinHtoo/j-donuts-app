@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_relative_lib_imports
 import 'dart:io';
 
 import 'package:shelf/shelf_io.dart' as io;
