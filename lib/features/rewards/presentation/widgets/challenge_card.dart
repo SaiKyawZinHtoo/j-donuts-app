@@ -158,10 +158,13 @@ class _ChallengeArt extends StatelessWidget {
         child: CustomPaint(
           painter: _ArcPainter(progress),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Image.asset(
-              'assets/images/seed/coffee_latte.png',
-              fit: BoxFit.contain,
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            child: Transform.scale(
+              scale: 1.2,
+              child: Image.asset(
+                'assets/images/seed/coffee_latte.png',
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ),
@@ -224,8 +227,9 @@ class _ArcPainter extends CustomPainter {
       size.width - stroke,
       size.height - stroke,
     );
-    const start = pi * 0.85;
-    const span = pi * 1.3;
+    // Half ring over the top of the cup.
+    const start = pi;
+    const span = pi;
     final p = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = stroke

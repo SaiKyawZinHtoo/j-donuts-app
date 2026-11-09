@@ -50,6 +50,10 @@ void main() {
   );
 
   Future<void> load(WidgetTester tester, Widget w) async {
+    // Tall view: the square picture makes the page taller than the default.
+    tester.view.physicalSize = const Size(390, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(w);
     await tester.pump();
     await tester.pump();

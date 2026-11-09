@@ -28,9 +28,9 @@ extension _ProductDetailParts on _ProductDetailScreenState {
       height: AppSpacing.qtyPillHeight,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.pageGrey,
         borderRadius: BorderRadius.circular(AppSpacing.qtyPillHeight / 2),
-        border: Border.all(color: AppColors.pageGrey, width: AppSpacing.sm / 2),
+        border: Border.all(color: AppColors.surface, width: AppSpacing.sm / 2),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

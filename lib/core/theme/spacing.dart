@@ -52,7 +52,7 @@ class AppSpacing {
   static const double bannerViewportFraction = 0.88; // next banner peeks
   static const double headerBadgeSize = 240;
   static const double rewardCardRadius = 28;
-  static const double rewardArtSize = 96;
+  static const double rewardArtSize = 136;
   static const double tierRowHeight = 96;
   static const double tierBadgeSize = 44;
   static const double navBarTopRadius = 32;

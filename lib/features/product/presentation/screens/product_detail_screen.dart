@@ -118,27 +118,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
           const SizedBox(height: AppSpacing.md),
           _maybeHero(
-            SizedBox(
-              height: AppSpacing.productImageHeight,
-              width: double.infinity,
-              child: product == null
-                  ? const AppSkeleton(isLoading: true, child: SizedBox.expand())
-                  : AppSmartImage(
-                      url: product.imageUrl,
-                      fit: BoxFit.contain,
-                      height: AppSpacing.productImageHeight,
-                      width: double.infinity,
-                      placeholder: (context) => const AppSkeleton(
+            // Square like the source pictures, with softly rounded corners.
+            AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppSpacing.md),
+                child: product == null
+                    ? const AppSkeleton(
                         isLoading: true,
                         child: SizedBox.expand(),
-                      ),
-                      errorWidget: (context) => Image.asset(
-                        'assets/images/seed/product_placeholder.png',
-                        fit: BoxFit.contain,
-                        height: AppSpacing.productImageHeight,
+                      )
+                    : AppSmartImage(
+                        url: product.imageUrl,
+                        fit: BoxFit.cover,
+                        height: double.infinity,
                         width: double.infinity,
+                        placeholder: (context) => const AppSkeleton(
+                          isLoading: true,
+                          child: SizedBox.expand(),
+                        ),
+                        errorWidget: (context) => Image.asset(
+                          'assets/images/seed/product_placeholder.png',
+                          fit: BoxFit.cover,
+                          height: double.infinity,
+                          width: double.infinity,
+                        ),
                       ),
-                    ),
+              ),
             ),
           ),
           const SizedBox(height: half),
