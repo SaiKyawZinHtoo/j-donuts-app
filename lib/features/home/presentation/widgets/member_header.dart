@@ -47,8 +47,8 @@ class MemberHeader extends StatelessWidget {
         children: [
           // Large decorative hexagon behind the bell; clipped by the header.
           Positioned(
-            top: AppSpacing.xl,
-            right: -AppSpacing.xl,
+            top: AppSpacing.xl + AppSpacing.md,
+            right: -AppSpacing.xl * 2.75,
             child: CustomPaint(
               size: const Size.square(AppSpacing.headerBadgeSize),
               painter: const _BigHexPainter(),
@@ -56,10 +56,10 @@ class MemberHeader extends StatelessWidget {
                 dimension: AppSpacing.headerBadgeSize,
                 // Below the bell, like the reference.
                 child: Align(
-                  alignment: Alignment(-0.1, 0.5),
+                  alignment: Alignment(-0.05, -0.15),
                   child: Icon(
                     Icons.star,
-                    size: AppSpacing.headerBadgeSize / 3,
+                    size: AppSpacing.headerBadgeSize / 6,
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -251,49 +251,60 @@ class _ArcRingPainter extends CustomPainter {
 class _BigHexPainter extends CustomPainter {
   const _BigHexPainter();
 
+  /// Hexagon with softly rounded corners.
+  static Path _rounded(Size size) {
+    final c = size.center(Offset.zero);
+    final r = size.shortestSide / 2;
+    final v = [
+      for (var i = 0; i < 6; i++)
+        c +
+            Offset(
+              r * math.cos(math.pi / 3 * i - math.pi / 2),
+              r * math.sin(math.pi / 3 * i - math.pi / 2),
+            ),
+    ];
+    const t = 0.22;
+    final path = Path();
+    for (var i = 0; i < 6; i++) {
+      final prev = v[(i + 5) % 6], cur = v[i], next = v[(i + 1) % 6];
+      final a = Offset.lerp(cur, prev, t)!, b = Offset.lerp(cur, next, t)!;
+      i == 0 ? path.moveTo(a.dx, a.dy) : path.lineTo(a.dx, a.dy);
+      path.quadraticBezierTo(cur.dx, cur.dy, b.dx, b.dy);
+    }
+    return path..close();
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
-    final path = const _HexClipper().getClip(size);
+    final path = _rounded(size);
+    final rect = Offset.zero & size;
     canvas.drawPath(
       path,
       Paint()
         ..shader = const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.surface, AppColors.pageGrey],
-        ).createShader(Offset.zero & size)
-        ..style = PaintingStyle.fill,
+          colors: [Color(0xFFF5DCC8), Color(0xFFEFDCCD)],
+        ).createShader(rect),
     );
     canvas.drawPath(
       path,
       Paint()
-        ..color = AppColors.badge.withValues(alpha: 0.45)
+        ..shader = LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.badge.withValues(alpha: 0.55),
+            AppColors.badge.withValues(alpha: 0),
+          ],
+          stops: const [0.2, 0.7],
+        ).createShader(rect)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 4
+        ..strokeWidth = 8
         ..strokeJoin = StrokeJoin.round,
     );
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _HexClipper extends CustomClipper<Path> {
-  const _HexClipper();
-
-  @override
-  Path getClip(Size size) {
-    final c = size.center(Offset.zero);
-    final r = size.shortestSide / 2;
-    final path = Path();
-    for (var i = 0; i < 6; i++) {
-      final a = math.pi / 3 * i - math.pi / 2;
-      final p = c + Offset(r * math.cos(a), r * math.sin(a));
-      i == 0 ? path.moveTo(p.dx, p.dy) : path.lineTo(p.dx, p.dy);
-    }
-    return path..close();
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }

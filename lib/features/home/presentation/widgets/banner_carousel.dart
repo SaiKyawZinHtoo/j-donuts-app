@@ -1,6 +1,9 @@
 part of '../../home_import.dart';
 
 /// Auto-playing promo banner carousel (design spec §5.2).
+/// Card backgrounds cycled by position (the artwork is a framed picture).
+const _cardColors = [Color(0xFF6A5DAE), Color(0xFF55C3E8)];
+
 class BannerCarousel extends StatefulWidget {
   final List<BannerItem> banners;
 
@@ -74,48 +77,71 @@ class _BannerCarouselState extends State<BannerCarousel> {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(AppSpacing.cardRadius),
               ),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  AppSmartImage(
-                    url: banner.imageUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    placeholder: (context) => const AppSkeleton(
-                      isLoading: true,
-                      child: SizedBox.expand(),
-                    ),
-                    errorWidget: (context) => Image.asset(
-                      'assets/images/seed/banner_seasonal.png',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    ),
-                  ),
-                  if (banner.badge != null)
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: AppSpacing.sm),
-                        child: AppBadge(label: banner.badge!),
-                      ),
-                    ),
-                  // Artwork keeps its left half empty for this headline.
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: FractionallySizedBox(
-                        widthFactor: 0.45,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: _cardColors[index % _cardColors.length],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.sm),
+                  child: Column(
+                    children: [
+                      if (banner.badge != null) AppBadge(label: banner.badge!),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm,
+                        ),
                         child: Text(
                           banner.title,
-                          maxLines: 3,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.bannerTitle,
                         ),
                       ),
-                    ),
+                      // Framed picture at the bottom, cut by the header curve.
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xl + AppSpacing.md,
+                          ),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(AppSpacing.md),
+                              ),
+                              border: Border.all(
+                                color: AppColors.surface.withValues(alpha: 0.7),
+                                width: AppSpacing.badgeBorder,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(AppSpacing.md),
+                              ),
+                              child: SizedBox.expand(
+                                child: AppSmartImage(
+                                  url: banner.imageUrl,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  placeholder: (context) => const AppSkeleton(
+                                    isLoading: true,
+                                    child: SizedBox.expand(),
+                                  ),
+                                  errorWidget: (context) => Image.asset(
+                                    'assets/images/seed/banner_seasonal.png',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           );

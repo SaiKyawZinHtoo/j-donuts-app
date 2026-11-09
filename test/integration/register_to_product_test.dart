@@ -138,6 +138,10 @@ void main() {
     expect(find.byType(MemberHeader), findsOneWidget);
 
     // Home -> Product detail.
+    await tester.ensureVisible(
+      find.byKey(const Key('productTile_p_box_romance')).first,
+    );
+    await tester.pump();
     await tester.tap(find.byKey(const Key('productTile_p_box_romance')).first);
     await _settleAfterFakeNetwork(tester);
 

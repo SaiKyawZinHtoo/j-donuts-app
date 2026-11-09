@@ -50,7 +50,7 @@ class AppSpacing {
   static const double navSelectedFlex =
       2.3; // selected slot width vs 1 for others
   static const double bannerViewportFraction = 0.88; // next banner peeks
-  static const double headerBadgeSize = 150;
+  static const double headerBadgeSize = 240;
   static const double rewardCardRadius = 28;
   static const double rewardArtSize = 96;
   static const double tierRowHeight = 96;
@@ -72,7 +72,7 @@ class AppSpacing {
   static const double shopsListHeight = 270;
   static const double shopCardWidth = 260;
   static const double shopCardImageHeight = 120;
-  static const double bannerHeight = 160;
+  static const double bannerHeight = 184;
   static const double datePickerSheetHeight = 300;
   static const double skeletonPlaceholderHeight = 400;
   static const double inlineSpinnerSize = 20;
