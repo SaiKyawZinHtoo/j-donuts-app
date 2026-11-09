@@ -1,6 +1,6 @@
 part of '../core_import.dart';
 
-enum ProductCardImageMode { photo, cutout }
+enum ProductCardImageMode { photo, cutout, square }
 
 class ProductCard extends StatefulWidget {
   final String imageUrl;
@@ -33,16 +33,19 @@ class ProductCard extends StatefulWidget {
   static TextStyle get _titleStyle =>
       AppTextStyles.bodyBold.copyWith(height: _titleLineHeight);
 
-  static double widthFor(ProductCardImageMode m) =>
-      m == ProductCardImageMode.photo
-      ? AppSpacing.cardPhotoWidth
-      : AppSpacing.cardCutoutWidth;
+  static double widthFor(ProductCardImageMode m) => switch (m) {
+    ProductCardImageMode.photo => AppSpacing.cardPhotoWidth,
+    ProductCardImageMode.cutout => AppSpacing.cardCutoutWidth,
+    ProductCardImageMode.square => AppSpacing.cardSquareWidth,
+  };
 
   static double _imageHeight(ProductCardImageMode m) =>
       widthFor(m) /
-      (m == ProductCardImageMode.photo
-          ? AppSpacing.cardPhotoAspect
-          : AppSpacing.cardCutoutAspect);
+      switch (m) {
+        ProductCardImageMode.photo => AppSpacing.cardPhotoAspect,
+        ProductCardImageMode.cutout => AppSpacing.cardCutoutAspect,
+        ProductCardImageMode.square => 1.0,
+      };
 
   static double _titleHeight(BuildContext context) =>
       MediaQuery.textScalerOf(context).scale(_titleStyle.fontSize!) *
@@ -65,7 +68,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Widget _image() {
-    final cutout = widget.mode == ProductCardImageMode.cutout;
+    final cutout = widget.mode != ProductCardImageMode.photo;
     final img = AppSmartImage(
       url: widget.imageUrl,
       fit: cutout ? BoxFit.contain : BoxFit.cover,

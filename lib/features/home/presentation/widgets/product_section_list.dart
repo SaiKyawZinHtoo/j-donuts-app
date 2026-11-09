@@ -23,9 +23,11 @@ class ProductSectionList extends StatelessWidget {
       );
     }
     final l10n = AppLocalizations.of(context)!;
-    final mode = section.id == 'seasonal_specials'
-        ? ProductCardImageMode.photo
-        : ProductCardImageMode.cutout;
+    final mode = switch (section.id) {
+      'seasonal_specials' => ProductCardImageMode.photo,
+      'order_again' => ProductCardImageMode.square,
+      _ => ProductCardImageMode.cutout,
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -38,9 +38,11 @@ void main() {
       final ctx = t.element(find.byType(ProductCard));
       final imageH =
           ProductCard.widthFor(mode) /
-          (mode == ProductCardImageMode.photo
-              ? AppSpacing.cardPhotoAspect
-              : AppSpacing.cardCutoutAspect);
+          switch (mode) {
+            ProductCardImageMode.photo => AppSpacing.cardPhotoAspect,
+            ProductCardImageMode.cutout => AppSpacing.cardCutoutAspect,
+            ProductCardImageMode.square => 1.0,
+          };
       final budget = ProductCard.heightFor(ctx, mode) - AppSpacing.sm - imageH;
       final h = t.getSize(titleFinder).height;
       expect(h, lessThanOrEqualTo(budget + 1));

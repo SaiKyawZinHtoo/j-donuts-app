@@ -63,15 +63,16 @@ class AppSpacing {
   static const double qtyPillHeight = 56;
   static const double cardPhotoWidth = 320;
   static const double cardCutoutWidth = 215;
+  static const double cardSquareWidth = 180;
   static const double cardPhotoAspect = 1.5; // w/h
   static const double cardCutoutAspect = 0.67; // w/h
   static const double chevronButtonSize = 40;
 
   // Fixed content sizes (were literals in widgets).
   static const double productImageHeight = 280;
-  static const double shopsListHeight = 270;
+  static const double shopsListHeight = 232;
   static const double shopCardWidth = 260;
-  static const double shopCardImageHeight = 120;
+  static const double shopCardImageHeight = 100;
   static const double bannerHeight = 184;
   static const double datePickerSheetHeight = 300;
   static const double skeletonPlaceholderHeight = 400;

@@ -57,6 +57,8 @@ class NearbyShopsRow extends StatelessWidget {
                     backgroundColor: AppColors.surface,
                     foregroundColor: AppColors.primary,
                     shape: const StadiumBorder(),
+                    // Same face, size and spacing as every other button.
+                    textStyle: AppTextStyles.button,
                   ),
                   onPressed: () => AppSnackbar.showSuccess(
                     context,
@@ -90,45 +92,50 @@ class NearbyShopsRow extends StatelessWidget {
                           AppSpacing.cardRadius,
                         ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            _photos[index % _photos.length],
-                            height: AppSpacing.shopCardImageHeight,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(AppSpacing.sm),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    shop.name,
-                                    style: AppTextStyles.body,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    shop.address,
-                                    style: AppTextStyles.caption,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    l10n.orderOnline,
-                                    style: AppTextStyles.bodyBold.copyWith(
-                                      color: AppColors.accent,
-                                    ),
-                                  ),
-                                ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(
+                          AppSpacing.sm + AppSpacing.xs,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Inset picture with its own rounded corners.
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.md,
+                              ),
+                              child: Image.asset(
+                                _photos[index % _photos.length],
+                                height: AppSpacing.shopCardImageHeight,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: AppSpacing.sm),
+                            Text(
+                              shop.name,
+                              style: AppTextStyles.bodyBold.copyWith(
+                                fontSize: 18,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              shop.address,
+                              style: AppTextStyles.body.copyWith(fontSize: 14),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const Spacer(),
+                            Text(
+                              l10n.orderOnline,
+                              style: AppTextStyles.bodyBold.copyWith(
+                                color: AppColors.accent,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
