@@ -58,8 +58,30 @@ flutter analyze        # no issues
 flutter test           # 266 tests (unit, widget, one integration flow)
 ```
 
-The app starts with **no backend**. To also try the optional mock server see
-[Trying the mock server](#11-trying-the-mock-server).
+The app starts with **no backend** (offline-first, local data only).
+
+### Mock server in 30 seconds (optional)
+
+The brief's optional mock API lives in `tool/mock_server/` (`shelf`, versioned `/v1/...`, response
+envelope `{data, error, meta}`, ETag/`304`). Use two terminals:
+
+```bash
+# Terminal 1: start the server (keep it open; stop with Ctrl-C)
+dart run tool/mock_server/bin/server.dart --port 8080
+# prints: J'Donuts mock server on http://0.0.0.0:8080
+```
+
+```bash
+# Terminal 2: run the app pointed at it
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8080     # Android emulator
+flutter run --dart-define=API_BASE_URL=http://localhost:8080    # iOS Simulator
+flutter run --dart-define=API_BASE_URL=http://<YOUR_PC_IP>:8080 # real phone, same Wi-Fi
+```
+
+Quick check without the app: `curl http://localhost:8080/v1/products` returns `{"data":[...],"error":null,"meta":{...}}`.
+Optional server flags: `--delay <ms>` (slow answers) and `--fail-rate <0..1>` (e.g. `1` makes every call answer 503).
+In the app, pull Home down to refresh; the `flutter run` console shows `[http-request] [GET] .../v1/products`.
+Full walkthrough, checks and troubleshooting: [Trying the mock server](#11-trying-the-mock-server).
 
 ## 2. Try the app (demo script)
 
