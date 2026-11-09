@@ -1,14 +1,14 @@
 [
   {
     "id": "b_seasonal",
-    "imageUrl": "assets/images/seed/banner_new_shop.png",
+    "imageUrl": "assets/images/seed/shop_1.png",
     "title": "Seasonal Specials are here",
     "badge": "New shop",
     "deepLinkTarget": "section:seasonal_specials"
   },
   {
     "id": "b_rewards",
-    "imageUrl": "assets/images/seed/banner_hot.png",
+    "imageUrl": "assets/images/seed/shop_2.png",
     "title": "Earn points on every order",
     "badge": "50% off",
     "deepLinkTarget": "rewards"
