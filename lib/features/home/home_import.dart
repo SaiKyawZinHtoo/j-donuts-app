@@ -20,6 +20,7 @@ part 'domain/entities/banner.dart';
 part 'domain/entities/product_section.dart';
 part 'domain/entities/shop.dart';
 part 'domain/repositories/home_repository.dart';
+part 'domain/repositories/sync_repository.dart';
 part 'domain/usecases/get_home_usecase.dart';
 part 'data/repositories/home_repository_impl.dart';
 part 'presentation/bloc/home_event.dart';
