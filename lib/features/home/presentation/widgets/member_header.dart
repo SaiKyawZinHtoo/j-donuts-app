@@ -17,14 +17,17 @@ class MemberHeader extends StatelessWidget {
   });
 
   static String _nextTier(String tier) => switch (tier) {
-        'Bronze' => 'Gold',
-        _ => 'Platinum',
-      };
+    'Bronze' => 'Gold',
+    _ => 'Platinum',
+  };
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final pointsToNext = (member.nextTierPoints - member.points).clamp(0, member.nextTierPoints);
+    final pointsToNext = (member.nextTierPoints - member.points).clamp(
+      0,
+      member.nextTierPoints,
+    );
     const avatar = AppSpacing.iconSizeMd;
     return Container(
       width: double.infinity,
@@ -37,7 +40,9 @@ class MemberHeader extends StatelessWidget {
       ),
       decoration: const BoxDecoration(
         color: AppColors.headerPeach,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(AppSpacing.headerRadius)),
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppSpacing.headerRadius),
+        ),
       ),
       child: SafeArea(
         bottom: false,
@@ -56,7 +61,8 @@ class MemberHeader extends StatelessWidget {
                         width: avatar,
                         height: avatar,
                         fit: BoxFit.cover,
-                        errorWidget: (context) => const SizedBox(width: avatar, height: avatar),
+                        errorWidget: (context) =>
+                            const SizedBox(width: avatar, height: avatar),
                       ),
                     ),
                   ),
@@ -66,10 +72,22 @@ class MemberHeader extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(member.name, style: AppTextStyles.h1, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(
+                        member.name,
+                        style: AppTextStyles.h1,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       if (phone != null)
-                        Text(phone!, key: const Key('memberHeader_phone'), style: AppTextStyles.caption),
-                      Text(l10n.memberTierCaption(member.tier), style: AppTextStyles.caption),
+                        Text(
+                          phone!,
+                          key: const Key('memberHeader_phone'),
+                          style: AppTextStyles.caption,
+                        ),
+                      Text(
+                        l10n.memberTierCaption(member.tier),
+                        style: AppTextStyles.caption,
+                      ),
                     ],
                   ),
                 ),
@@ -79,7 +97,10 @@ class MemberHeader extends StatelessWidget {
                     width: AppSpacing.headerBadgeSize,
                     height: AppSpacing.headerBadgeSize,
                     color: AppColors.pageGrey,
-                    child: const Icon(Icons.star, color: AppColors.textSecondary),
+                    child: const Icon(
+                      Icons.star,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -91,21 +112,39 @@ class MemberHeader extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppSpacing.md),
                     onTap: onBellTap,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.sm,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.notifications_none, color: AppColors.surface),
-                          if (notificationCount > 0) const SizedBox(width: AppSpacing.xs),
-                          if (notificationCount > 0)
-                          Container(
-                            padding: const EdgeInsets.all(AppSpacing.xs),
-                            decoration: const BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),
-                            child: Text(
-                              '$notificationCount',
-                              style: AppTextStyles.caption.copyWith(color: AppColors.badge),
-                            ),
+                          const Icon(
+                            Icons.notifications_none,
+                            color: AppColors.surface,
                           ),
+                          if (notificationCount > 0)
+                            const SizedBox(width: AppSpacing.xs),
+                          if (notificationCount > 0)
+                            AnimatedSwitcher(
+                              duration: MediaQuery.disableAnimationsOf(context)
+                                  ? Duration.zero
+                                  : MotionTokens.kQtyChange,
+                              child: Container(
+                                key: ValueKey(notificationCount),
+                                padding: const EdgeInsets.all(AppSpacing.xs),
+                                decoration: const BoxDecoration(
+                                  color: AppColors.surface,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '$notificationCount',
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: AppColors.badge,
+                                  ),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -116,7 +155,10 @@ class MemberHeader extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             Container(
               key: const Key('memberHeader_pointsChip'),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(AppSpacing.md),
@@ -143,7 +185,13 @@ class _ArcRingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
-    canvas.drawArc(Offset.zero & size, -math.pi / 2, math.pi * 1.5, false, paint);
+    canvas.drawArc(
+      Offset.zero & size,
+      -math.pi / 2,
+      math.pi * 1.5,
+      false,
+      paint,
+    );
   }
 
   @override

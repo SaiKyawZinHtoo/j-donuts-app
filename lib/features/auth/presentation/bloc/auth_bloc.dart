@@ -109,7 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // within the same attempt -- give the error a visible window first.
     final lastInvalid = _lastInvalidAt;
     if (lastInvalid != null &&
-        DateTime.now().difference(lastInvalid) < const Duration(milliseconds: 1500)) {
+        DateTime.now().difference(lastInvalid) < MotionTokens.kOtpErrorHold) {
       return;
     }
     emit(OtpAwaiting(_secondsLeft, draft: _draft));

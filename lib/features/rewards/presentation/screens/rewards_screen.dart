@@ -40,6 +40,11 @@ class _RewardsScreenState extends State<RewardsScreen>
   void didUpdateWidget(RewardsScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isActive && !oldWidget.isActive) _maybeStartEntrance();
+    if (!widget.isActive && oldWidget.isActive) {
+      // Replay the entrance next time the tab is shown.
+      _entranceStarted = false;
+      _controller.value = 0;
+    }
   }
 
   void _maybeStartEntrance() {

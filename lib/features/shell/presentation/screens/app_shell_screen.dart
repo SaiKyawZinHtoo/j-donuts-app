@@ -38,7 +38,19 @@ class _AppShellScreenState extends State<AppShellScreen> {
 
     return Scaffold(
       extendBody: true,
-      body: IndexedStack(index: _currentIndex, children: tabs),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          for (var i = 0; i < tabs.length; i++)
+            AnimatedOpacity(
+              opacity: i == _currentIndex ? 1 : 0,
+              duration: MediaQuery.disableAnimationsOf(context)
+                  ? Duration.zero
+                  : MotionTokens.kTabSwitchDuration,
+              child: tabs[i],
+            ),
+        ],
+      ),
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
