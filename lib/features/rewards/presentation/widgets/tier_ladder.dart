@@ -151,27 +151,30 @@ class TierBadge extends StatelessWidget {
         child: CustomPaint(
           painter: _ShieldPainter(TierLadder.colorOf(tier)),
           child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (stars > 0)
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (stars > 0)
+                    Text(
+                      '★' * stars,
+                      style: AppTextStyles.body.copyWith(
+                        fontSize: size * 0.38,
+                        height: 1,
+                        color: AppColors.tierMark,
+                      ),
+                    ),
                   Text(
-                    '★' * stars,
-                    style: AppTextStyles.body.copyWith(
-                      fontSize: size * 0.3,
-                      height: 1,
-                      color: AppColors.surface,
+                    tier[0],
+                    style: AppTextStyles.bodyBold.copyWith(
+                      fontSize: size * 0.42,
+                      height: 1.1,
+                      color: AppColors.tierMark,
                     ),
                   ),
-                Text(
-                  tier[0],
-                  style: AppTextStyles.bodyBold.copyWith(
-                    fontSize: size * 0.42,
-                    height: 1.1,
-                    color: AppColors.surface,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
