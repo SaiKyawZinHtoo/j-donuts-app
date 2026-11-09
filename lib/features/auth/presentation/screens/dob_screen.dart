@@ -3,52 +3,107 @@ part of '../../auth_import.dart';
 /// PDF screen 5/6: date-of-birth entry (month/day/year fields), progress
 /// ring morphs into a check icon once the date validates.
 class DobScreen extends StatefulWidget {
-  const DobScreen({super.key});
+  /// Test seam; production uses the platform picker.
+  @visibleForTesting
+  final Future<DateTime?> Function(BuildContext context, DateTime initial)?
+  pickDate;
+
+  const DobScreen({super.key, this.pickDate});
 
   @override
   State<DobScreen> createState() => _DobScreenState();
 }
 
 class _DobScreenState extends State<DobScreen> {
-  final _monthController = TextEditingController();
-  final _dayController = TextEditingController();
-  final _yearController = TextEditingController();
-  bool _isValid = false;
+  static final _earliest = DateTime(1900);
+  DateTime? _dob;
 
-  @override
-  void initState() {
-    super.initState();
-    for (final c in [_monthController, _dayController, _yearController]) {
-      c.addListener(_revalidate);
+  ValidationResult? get _validation =>
+      _dob == null ? null : validateDob(_dob!);
+  bool get _isValid => _validation is ValidationValid;
+
+  DateTime get _initial {
+    if (_dob != null) return _dob!;
+    final now = DateTime.now();
+    return DateTime(now.year - 18, now.month, now.day);
+  }
+
+  Future<void> _pick() async {
+    final picked = widget.pickDate != null
+        ? await widget.pickDate!(context, _initial)
+        : Theme.of(context).platform == TargetPlatform.iOS
+        ? await _pickCupertino()
+        : await showDatePicker(
+            context: context,
+            initialDate: _initial,
+            firstDate: _earliest,
+            lastDate: DateTime.now(),
+          );
+    if (picked != null && mounted) setState(() => _dob = picked);
+  }
+
+  // Wheel picker in a bottom sheet (iOS); returns null when dismissed.
+  Future<DateTime?> _pickCupertino() {
+    var temp = _initial;
+    return showCupertinoModalPopup<DateTime>(
+      context: context,
+      builder: (sheet) => Container(
+        height: 300,
+        color: AppColors.surface,
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: CupertinoButton(
+                key: const Key('dobPickerDone'),
+                onPressed: () => Navigator.of(sheet).pop(temp),
+                child: Text(
+                  MaterialLocalizations.of(sheet).okButtonLabel,
+                  style: const TextStyle(color: AppColors.accent),
+                ),
+              ),
+            ),
+            Expanded(
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.date,
+                initialDateTime: temp,
+                minimumYear: _earliest.year,
+                maximumDate: DateTime.now(),
+                onDateTimeChanged: (d) => temp = d,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _monthName(BuildContext context) {
+    final locale = Localizations.localeOf(context).toString();
+    try {
+      return DateFormat.MMM(locale).format(_dob!);
+    } catch (_) {
+      // intl date symbols may not be loaded for this locale.
+      return DateFormat.MMM('en').format(_dob!);
     }
   }
 
-  DateTime? get _dob {
-    final month = int.tryParse(_monthController.text);
-    final day = int.tryParse(_dayController.text);
-    final year = int.tryParse(_yearController.text);
-    if (month == null || day == null || year == null) return null;
-    if (_yearController.text.length != 4) return null;
-    if (month < 1 || month > 12 || day < 1 || day > 31) return null;
-    final dt = DateTime(year, month, day);
-    // DateTime silently normalizes an out-of-range day (e.g. Feb 30 ->
-    // Mar 2); reject anything that didn't round-trip exactly.
-    if (dt.month != month || dt.day != day || dt.year != year) return null;
-    return dt;
-  }
-
-  void _revalidate() {
-    final dob = _dob;
-    final valid = dob != null && validateDob(dob) is ValidationValid;
-    if (valid != _isValid) setState(() => _isValid = valid);
-  }
-
-  @override
-  void dispose() {
-    _monthController.dispose();
-    _dayController.dispose();
-    _yearController.dispose();
-    super.dispose();
+  Widget _field(Key key, String label, String? value) {
+    return Expanded(
+      child: InkWell(
+        key: key,
+        borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+        onTap: _pick,
+        child: InputDecorator(
+          isEmpty: value == null,
+          decoration: InputDecoration(labelText: label),
+          child: Text(
+            value ?? '',
+            style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -66,9 +121,11 @@ class _DobScreenState extends State<DobScreen> {
       },
       builder: (context, state) {
         final loading = state is AuthLoading;
-        final errorText =
-            state is RegistrationStepInvalid &&
-                state.step == RegistrationStep.dob
+        final v = _validation;
+        final errorText = v is ValidationInvalid
+            ? v.message
+            : state is RegistrationStepInvalid &&
+                  state.step == RegistrationStep.dob
             ? state.message
             : null;
         final l10n = AppLocalizations.of(context)!;
@@ -93,32 +150,14 @@ class _DobScreenState extends State<DobScreen> {
               const SizedBox(height: AppSpacing.lg),
               Row(
                 children: [
-                  Expanded(
-                    child: AppTextField(
-                      key: const Key('dobMonthField'),
-                      controller: _monthController,
-                      labelText: l10n.dobMonthLabel,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
+                  _field(const Key('dobMonthField'), l10n.dobMonthLabel,
+                      _dob == null ? null : _monthName(context)),
                   const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: AppTextField(
-                      key: const Key('dobDayField'),
-                      controller: _dayController,
-                      labelText: l10n.dobDayLabel,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
+                  _field(const Key('dobDayField'), l10n.dobDayLabel,
+                      _dob?.day.toString()),
                   const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: AppTextField(
-                      key: const Key('dobYearField'),
-                      controller: _yearController,
-                      labelText: l10n.dobYearLabel,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
+                  _field(const Key('dobYearField'), l10n.dobYearLabel,
+                      _dob?.year.toString()),
                 ],
               ),
               if (errorText != null) ...[

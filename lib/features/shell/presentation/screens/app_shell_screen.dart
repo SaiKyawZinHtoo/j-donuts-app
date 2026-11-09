@@ -9,7 +9,7 @@ class AppShellScreen extends StatefulWidget {
   final int initialIndex;
 
   static const int homeIndex = 0;
-  static const int rewardsIndex = 2;
+  static const int rewardsIndex = 1;
 
   const AppShellScreen({
     super.key,
@@ -30,8 +30,8 @@ class _AppShellScreenState extends State<AppShellScreen> {
     final l10n = AppLocalizations.of(context)!;
     final tabs = [
       widget.homeTab,
-      PlaceholderTabScreen(label: l10n.exploreTabLabel),
       widget.rewardsTab(_currentIndex == AppShellScreen.rewardsIndex),
+      PlaceholderTabScreen(label: l10n.exploreTabLabel),
       PlaceholderTabScreen(label: l10n.walletTabLabel),
       const SettingsTabScreen(),
     ];
@@ -46,9 +46,9 @@ class _AppShellScreenState extends State<AppShellScreen> {
           BottomNavigationBarItem(
               icon: const Icon(Icons.home_outlined), label: l10n.homeTabLabel),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.workspace_premium_outlined), label: l10n.exploreTabLabel),
+              icon: const Icon(Icons.workspace_premium_outlined), label: l10n.rewardsTabLabel),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.radio_button_checked), label: l10n.rewardsTabLabel),
+              icon: const Icon(Icons.radio_button_checked), label: l10n.exploreTabLabel),
           BottomNavigationBarItem(
               icon: const Icon(Icons.account_balance_wallet_outlined),
               label: l10n.walletTabLabel),

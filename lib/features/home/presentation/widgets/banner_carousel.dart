@@ -11,7 +11,10 @@ class BannerCarousel extends StatefulWidget {
 }
 
 class _BannerCarouselState extends State<BannerCarousel> {
-  late final PageController _controller = PageController();
+  late final PageController _controller = PageController(
+    viewportFraction: AppSpacing.bannerViewportFraction,
+    // First banner aligns with the page gutter; the next one peeks on the right.
+  );
   Timer? _timer;
   bool _autoplayDecided = false;
 
@@ -54,24 +57,50 @@ class _BannerCarouselState extends State<BannerCarousel> {
       height: 160,
       child: PageView.builder(
         controller: _controller,
+        padEnds: false,
         itemCount: widget.banners.length,
         itemBuilder: (context, index) {
           final banner = widget.banners[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            padding: EdgeInsets.only(
+              left: index == 0 ? AppSpacing.md : AppSpacing.xs,
+              right: AppSpacing.xs,
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-              child: AppSmartImage(
-                url: banner.imageUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                placeholder: (context) =>
-                    const AppSkeleton(isLoading: true, child: SizedBox.expand()),
-                errorWidget: (context) => Image.asset(
-                  'assets/images/seed/banner_seasonal.png',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  AppSmartImage(
+                    url: banner.imageUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    placeholder: (context) => const AppSkeleton(
+                        isLoading: true, child: SizedBox.expand()),
+                    errorWidget: (context) => Image.asset(
+                      'assets/images/seed/banner_seasonal.png',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
+                  // Artwork keeps its left half empty for this headline.
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: FractionallySizedBox(
+                        widthFactor: 0.45,
+                        child: Text(
+                          banner.title,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.h1.copyWith(
+                              color: AppColors.surface, fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );

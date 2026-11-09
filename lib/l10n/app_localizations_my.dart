@@ -185,6 +185,37 @@ class AppLocalizationsMy extends AppLocalizations {
   String get giftTab => 'လက်ဆောင်';
 
   @override
+  String get rewardsTitle => 'J\' Donuts ဆုလာဘ်များ';
+
+  @override
+  String get rewardsBadgeLabel => 'ဆုလာဘ်များ';
+
+  @override
+  String get totalPointsLabel => 'စုစုပေါင်းအမှတ်';
+
+  @override
+  String get tierHereNow => 'သင် ယခု ဤနေရာတွင် ရှိသည်';
+
+  @override
+  String tierRemaining(int points, String tier) {
+    return '$tier ဖြစ်ရန် အမှတ် $points လိုသေးသည်';
+  }
+
+  @override
+  String get tierSoon => 'မကြာမီ ရောက်ရှိမည်';
+
+  @override
+  String get tierReached => 'ရောက်ရှိပြီး';
+
+  @override
+  String get earnMoreTab => 'စားလေ ရလေ';
+
+  @override
+  String pointsShort(int points) {
+    return '$points pts';
+  }
+
+  @override
   String get homeTabLabel => 'ပင်မစာမျက်နှာ';
 
   @override

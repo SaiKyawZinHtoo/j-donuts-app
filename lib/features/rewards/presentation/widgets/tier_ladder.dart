@@ -1,48 +1,120 @@
 part of '../../rewards_import.dart';
 
-/// Tier ladder: a connecting line that fills alongside tier icons that
-/// scale/color-tween in, driven by a screen-owned [controller] (design spec
-/// §6.3).
+/// Vertical tier timeline (reference screen 10): shield badges joined by a
+/// line that fills toward the next tier, driven by the screen's [controller].
+/// Shows three consecutive tiers starting at the current one (the last three
+/// for the top tier).
 class TierLadder extends AnimatedWidget {
   final String currentTier;
+  final int points;
+  final int nextTierPoints;
   final AnimationController controller;
 
-  static const _tiers = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+  static const tiers = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+  static const _shown = 3;
 
   const TierLadder({
     super.key,
     required this.currentTier,
+    required this.points,
+    required this.nextTierPoints,
     required this.controller,
   }) : super(listenable: controller);
 
+  static Color colorOf(String tier) => switch (tier) {
+    'Bronze' => AppColors.tierBronze,
+    'Silver' => AppColors.tierSilver,
+    'Gold' => AppColors.tierGold,
+    _ => AppColors.tierPlatinum,
+  };
+
   @override
   Widget build(BuildContext context) {
-    final fillAnim = CurvedAnimation(
+    final l10n = AppLocalizations.of(context)!;
+    final active = tiers.indexOf(currentTier).clamp(0, tiers.length - 1);
+    final start = active.clamp(0, tiers.length - _shown);
+    final fill = CurvedAnimation(
       parent: controller,
       curve: const Interval(0.3, 1.0, curve: MotionTokens.kEmphasizedCurve),
-    );
-    final activeIndex = _tiers.indexOf(currentTier).clamp(0, _tiers.length - 1);
+    ).value;
+    final progress = nextTierPoints == 0
+        ? 0.0
+        : (points / nextTierPoints).clamp(0.0, 1.0);
+    const rowH = AppSpacing.tierRowHeight;
+    const badge = AppSpacing.tierBadgeSize;
+
+    String caption(int tierIndex) {
+      if (tierIndex < active) return l10n.tierReached;
+      if (tierIndex == active) return l10n.tierHereNow;
+      if (tierIndex == active + 1) {
+        return l10n.tierRemaining(
+          (nextTierPoints - points).clamp(0, nextTierPoints),
+          tiers[tierIndex],
+        );
+      }
+      return l10n.tierSoon;
+    }
 
     return SizedBox(
-      height: 64,
+      height: rowH * _shown,
       child: Stack(
-        alignment: Alignment.center,
         children: [
           Positioned.fill(
             child: CustomPaint(
               painter: _TierLinePainter(
-                fillFraction: fillAnim.value * (activeIndex / (_tiers.length - 1)),
+                badge: badge,
+                rowHeight: rowH,
+                rows: _shown,
+                // Only the segment leaving the current tier fills (toward the next).
+                fillFraction: active < tiers.length - 1 && start == active
+                    ? progress * fill
+                    : 0,
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
             children: [
-              for (var i = 0; i < _tiers.length; i++)
-                _TierIcon(
-                  label: _tiers[i],
-                  active: i <= activeIndex,
-                  scale: i <= activeIndex ? fillAnim.value : 1.0,
+              for (var r = 0; r < _shown; r++)
+                SizedBox(
+                  height: rowH,
+                  child: Row(
+                    children: [
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.xs),
+                          child: TierBadge(
+                            tier: tiers[start + r],
+                            size: badge,
+                            scale: start + r <= active ? fill : 1,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: AppSpacing.xs),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                tiers[start + r],
+                                style: AppTextStyles.body.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                caption(start + r),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.caption,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
             ],
           ),
@@ -52,54 +124,132 @@ class TierLadder extends AnimatedWidget {
   }
 }
 
-class _TierIcon extends StatelessWidget {
-  final String label;
-  final bool active;
+/// Shield badge with the tier initial and 0-3 stars (S/G/P as in the mock).
+class TierBadge extends StatelessWidget {
+  final String tier;
+  final double size;
   final double scale;
 
-  const _TierIcon({required this.label, required this.active, required this.scale});
+  const TierBadge({
+    super.key,
+    required this.tier,
+    required this.size,
+    this.scale = 1,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Transform.scale(
-          scale: 0.7 + (0.3 * scale),
-          child: Icon(
-            Icons.emoji_events,
-            color: Color.lerp(AppColors.border, AppColors.accent, active ? scale : 0),
+    final stars = switch (tier) {
+      'Silver' => 1,
+      'Gold' => 2,
+      'Platinum' => 3,
+      _ => 0,
+    };
+    return Transform.scale(
+      scale: 0.7 + 0.3 * scale,
+      child: SizedBox(
+        width: size,
+        height: size * 1.15,
+        child: CustomPaint(
+          painter: _ShieldPainter(TierLadder.colorOf(tier)),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (stars > 0)
+                  Text(
+                    '★' * stars,
+                    style: TextStyle(
+                      fontSize: size * 0.2,
+                      height: 1,
+                      color: AppColors.surface,
+                    ),
+                  ),
+                Text(
+                  tier[0],
+                  style: TextStyle(
+                    fontSize: size * 0.42,
+                    height: 1.1,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.surface,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        Text(label, style: AppTextStyles.caption),
-      ],
+      ),
     );
   }
 }
 
-class _TierLinePainter extends CustomPainter {
-  final double fillFraction;
-
-  _TierLinePainter({required this.fillFraction});
+class _ShieldPainter extends CustomPainter {
+  final Color color;
+  const _ShieldPainter(this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final y = size.height / 2;
-    final trackPaint = Paint()
-      ..color = AppColors.border
-      ..strokeWidth = 2;
-    final fillPaint = Paint()
-      ..color = AppColors.accent
-      ..strokeWidth = 2;
-
-    canvas.drawLine(Offset(0, y), Offset(size.width, y), trackPaint);
-    canvas.drawLine(
-      Offset(0, y),
-      Offset(size.width * fillFraction.clamp(0.0, 1.0), y),
-      fillPaint,
+    final w = size.width;
+    final h = size.height;
+    final path = Path()
+      ..moveTo(w * 0.5, 0)
+      ..quadraticBezierTo(w * 0.8, h * 0.12, w, h * 0.12)
+      ..lineTo(w, h * 0.55)
+      ..quadraticBezierTo(w, h * 0.85, w * 0.5, h)
+      ..quadraticBezierTo(0, h * 0.85, 0, h * 0.55)
+      ..lineTo(0, h * 0.12)
+      ..quadraticBezierTo(w * 0.2, h * 0.12, w * 0.5, 0)
+      ..close();
+    canvas.drawPath(path, Paint()..color = color);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = AppColors.surface.withValues(alpha: 0.7),
     );
   }
 
   @override
-  bool shouldRepaint(covariant _TierLinePainter oldDelegate) =>
-      oldDelegate.fillFraction != fillFraction;
+  bool shouldRepaint(covariant _ShieldPainter old) => old.color != color;
+}
+
+class _TierLinePainter extends CustomPainter {
+  final double badge;
+  final double rowHeight;
+  final int rows;
+  final double fillFraction;
+
+  const _TierLinePainter({
+    required this.badge,
+    required this.rowHeight,
+    required this.rows,
+    required this.fillFraction,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final x = badge / 2;
+    final top = badge * 1.15 + AppSpacing.xs + AppSpacing.xs;
+    final bottom = rowHeight * (rows - 1) + AppSpacing.xs * 2;
+    final track = Paint()
+      ..color = AppColors.pageGrey
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+    final fill = Paint()
+      ..color = AppColors.textSecondary
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(Offset(x, top), Offset(x, bottom), track);
+    final gapEnd = rowHeight + AppSpacing.xs * 2;
+    canvas.drawLine(
+      Offset(x, top),
+      Offset(x, top + (gapEnd - top) * fillFraction.clamp(0.0, 1.0)),
+      fill,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _TierLinePainter old) =>
+      old.fillFraction != fillFraction;
 }

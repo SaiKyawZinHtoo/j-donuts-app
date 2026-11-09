@@ -117,31 +117,28 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         width: screenW,
                         height: stackH,
                         child: ClipRect(
-                          child: Stack(
-                            children: [
-                              tile(0, leftX, 0),
-                              tile(1, rx, off),
-                              tile(2, leftX, tileH + AppSpacing.md),
-                              tile(3, rx, off + tileH + AppSpacing.md),
-                              Positioned.fill(
-                                child: IgnorePointer(
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        stops: const [0.6, 1],
-                                        colors: [
-                                          AppColors.gradientColors.first
-                                              .withValues(alpha: 0),
-                                          AppColors.gradientColors.first,
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          // Fade the tiles themselves to transparent so the page
+                          // gradient shows through (no mismatched overlay colour).
+                          child: ShaderMask(
+                            blendMode: BlendMode.dstIn,
+                            shaderCallback: (rect) => const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: [0, 0.6, 1],
+                              colors: [
+                                Color(0xFFFFFFFF),
+                                Color(0xFFFFFFFF),
+                                Color(0x00FFFFFF),
+                              ],
+                            ).createShader(rect),
+                            child: Stack(
+                              children: [
+                                tile(0, leftX, 0),
+                                tile(1, rx, off),
+                                tile(2, leftX, tileH + AppSpacing.md),
+                                tile(3, rx, off + tileH + AppSpacing.md),
+                              ],
+                            ),
                           ),
                         ),
                       ),

@@ -85,6 +85,17 @@
 
   "earnTab": "Earn",
   "giftTab": "Gift",
+  "rewardsTitle": "J' Donuts Rewards",
+  "rewardsBadgeLabel": "Rewards",
+  "totalPointsLabel": "Total points",
+  "tierHereNow": "You're here now",
+  "tierRemaining": "{points} pts Remaining to become {tier}",
+  "@tierRemaining": { "placeholders": { "points": { "type": "int" }, "tier": { "type": "String" } } },
+  "tierSoon": "You'll be here soon",
+  "tierReached": "Reached",
+  "earnMoreTab": "Eat more earn more",
+  "pointsShort": "{points} pts",
+  "@pointsShort": { "placeholders": { "points": { "type": "int" } } },
 
   "homeTabLabel": "Home",
   "exploreTabLabel": "Explore",

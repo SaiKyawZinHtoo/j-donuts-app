@@ -12,6 +12,7 @@ import 'package:j_donuts_app/core/result/result.dart';
 import 'package:j_donuts_app/data/local/database.dart' as drift;
 import 'package:j_donuts_app/data/local/daos/home_dao.dart' as drift;
 import 'package:j_donuts_app/data/local/daos/member_dao.dart' as drift;
+import 'package:j_donuts_app/data/local/daos/rewards_dao.dart' as drift;
 import 'package:j_donuts_app/features/product/product_import.dart';
 
 part 'domain/entities/member.dart';

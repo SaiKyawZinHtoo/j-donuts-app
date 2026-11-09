@@ -9,8 +9,8 @@ class RewardsRepositoryImpl implements RewardsRepository {
   const RewardsRepositoryImpl({
     required drift.RewardsDao rewardsDao,
     required drift.MemberDao memberDao,
-  })  : _rewardsDao = rewardsDao,
-        _memberDao = memberDao;
+  }) : _rewardsDao = rewardsDao,
+       _memberDao = memberDao;
 
   @override
   Future<Result<RewardsBundle>> getRewards() async {
@@ -33,11 +33,11 @@ class RewardsRepositoryImpl implements RewardsRepository {
   }
 
   Challenge _mapChallenge(drift.Challenge row) => Challenge(
-        id: row.id,
-        title: row.title,
-        current: row.current,
-        target: row.target,
-        rewardPts: row.rewardPts,
-        artType: row.artType,
-      );
+    id: row.id,
+    title: row.title,
+    current: row.current,
+    target: row.target,
+    rewardPts: row.rewardPts,
+    artType: row.artType,
+  );
 }

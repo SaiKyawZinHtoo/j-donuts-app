@@ -43,11 +43,15 @@ void main() {
     expect(mid, lessThan(end));
   });
 
-  testWidgets('only active label shown', (t) async {
+  testWidgets('only active label visible', (t) async {
     await t.pumpWidget(_host(1, (_) {}));
-    expect(find.text('Explore'), findsOneWidget);
-    expect(find.text('Home'), findsNothing);
-    expect(find.text('Rewards'), findsNothing);
+    double opacity(String l) => t
+        .widget<Opacity>(find.ancestor(
+            of: find.text(l), matching: find.byType(Opacity)))
+        .opacity;
+    expect(opacity('Rewards'), 1);
+    expect(opacity('Home'), 0);
+    expect(opacity('Explore'), 0);
   });
 
   testWidgets('disableAnimations: pill final on first frame', (t) async {
@@ -65,9 +69,9 @@ void main() {
     final h = t.ensureSemantics();
     await t.pumpWidget(_host(1, (_) {}));
     expect(
-      t.getSemantics(find.bySemanticsLabel('Explore')),
+      t.getSemantics(find.bySemanticsLabel('Rewards')),
       matchesSemantics(
-        label: 'Explore',
+        label: 'Rewards',
         isButton: true,
         isSelected: true,
         hasSelectedState: true,
@@ -75,5 +79,24 @@ void main() {
       ),
     );
     h.dispose();
+  });
+
+  testWidgets('active label sits to the right of its icon', (t) async {
+    await t.pumpWidget(_host(0, (_) {}));
+    expect(
+      t.getTopLeft(find.text('Home')).dx,
+      greaterThan(t.getTopRight(find.byIcon(Icons.home_outlined)).dx - 1),
+    );
+  });
+
+  testWidgets('switching tabs mid-animation never overflows', (t) async {
+    await t.pumpWidget(_host(0, (_) {}));
+    await t.pumpWidget(_host(3, (_) {}));
+    for (var i = 0; i < 10; i++) {
+      await t.pump(MotionTokens.kNavPillDuration ~/ 10);
+    }
+    await t.pumpAndSettle();
+    expect(t.takeException(), isNull);
+    expect(find.text('Wallet'), findsOneWidget);
   });
 }

@@ -6,12 +6,13 @@ import 'package:j_donuts_app/data/local/daos/home_dao.dart';
 import 'package:j_donuts_app/data/local/daos/member_dao.dart';
 import 'package:j_donuts_app/data/local/daos/product_dao.dart';
 import 'package:j_donuts_app/data/local/daos/rewards_dao.dart';
-import 'package:j_donuts_app/data/local/database.dart';
+import 'package:j_donuts_app/data/local/database.dart' hide AuthUser;
 import 'package:j_donuts_app/features/auth/auth_import.dart';
 import 'package:j_donuts_app/features/home/home_import.dart';
 import 'package:j_donuts_app/features/product/product_import.dart';
 import 'package:j_donuts_app/features/rewards/rewards_import.dart';
 import 'package:j_donuts_app/core/core_import.dart';
+import 'package:j_donuts_app/core/result/result.dart';
 
 /// Registers app-wide singletons. Each later feature task adds its own
 /// repository/use-case registrations in its own file -- not here.
@@ -51,7 +52,18 @@ void setupServiceLocator() {
     () => RegisterUseCase(getIt()),
   );
   getIt.registerLazySingleton<HomeRepository>(
-    () => HomeRepositoryImpl(homeDao: getIt(), memberDao: getIt()),
+    () => HomeRepositoryImpl(
+      homeDao: getIt(),
+      memberDao: getIt(),
+      rewardsDao: getIt(),
+      readProfile: () async {
+        final r = await getIt<GetSessionUseCase>().call();
+        final u = r is Ok<AuthUser?> ? r.value : null;
+        if (u == null) return null;
+        final name = [u.firstName, u.lastName].whereType<String>().join(' ').trim();
+        return (name: name, phone: u.phone);
+      },
+    ),
   );
   getIt.registerLazySingleton<GetHomeUseCase>(
     () => GetHomeUseCase(getIt()),

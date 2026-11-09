@@ -43,6 +43,14 @@ class AppSpacing {
   static const double onboardingContentHeight = 490;
   static const double navBarHeight = 64;
   static const double navItemSize = 24;
+  static const double navSelectedFlex = 2.3; // selected slot width vs 1 for others
+  static const double bannerViewportFraction = 0.88; // next banner peeks
+  static const double headerBadgeSize = 56;
+  static const double rewardCardRadius = 28;
+  static const double rewardArtSize = 96;
+  static const double tierRowHeight = 96;
+  static const double tierBadgeSize = 44;
+  static const double navBarTopRadius = 32;
   static const double authTitleTopGap = 24;
   static const double cardRadius = 20;
   static const double sectionGap = 24;

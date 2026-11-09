@@ -66,4 +66,55 @@ void main() {
     final button = tester.widget<AppButton>(find.byKey(const Key('challengeEarnButton_c1')));
     expect(button.onPressed, isNotNull);
   });
+
+  Future<void> pumpRewards(WidgetTester tester, String tier, int points, Size size) async {
+    tester.view.physicalSize = size;
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    const challenges = [
+      Challenge(id: 'c1', title: 'Eat 4 Coco donuts', current: 4, target: 4, rewardPts: 100, artType: 'donut'),
+      Challenge(id: 'c2', title: 'Drink 12 cups americano', current: 9, target: 12, rewardPts: 150, artType: 'coffee'),
+      Challenge(id: 'c3', title: 'Try 3 Matcha donuts', current: 1, target: 3, rewardPts: 80, artType: 'donut'),
+    ];
+    when(() => mockGetRewards.call()).thenAnswer((_) async => Result.ok(RewardsBundle(
+          member: Member(
+            id: 'm1',
+            name: 'Shan',
+            photoUrl: '',
+            tier: tier,
+            points: points,
+            nextTierPoints: 2000,
+            totalPoints: 680000,
+          ),
+          challenges: challenges,
+        )));
+    final bloc = RewardsBloc(getRewardsUseCase: mockGetRewards)..add(const RewardsRequested());
+    await tester.pumpWidget(makeTestableWidget(bloc));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1200));
+  }
+
+  for (final size in const [Size(360, 740), Size(430, 932)]) {
+    testWidgets('layout: no overflow, comma total, 3 tiers at $size', (tester) async {
+      await pumpRewards(tester, 'Silver', 1500, size);
+      expect(tester.takeException(), isNull);
+      expect(find.text('680,000'), findsOneWidget);
+      expect(find.text('Silver'), findsOneWidget);
+      expect(find.text('Gold'), findsOneWidget);
+      expect(find.text('Platinum'), findsOneWidget);
+      expect(find.text("You're here now"), findsOneWidget);
+      expect(find.text('500 pts Remaining to become Gold'), findsOneWidget);
+      expect(find.text("You'll be here soon"), findsOneWidget);
+      expect(find.text('Eat more earn more'), findsOneWidget);
+      expect(find.byKey(const Key('rewardsBadge')), findsOneWidget);
+    });
+  }
+
+  testWidgets('top tier shows the last three tiers', (tester) async {
+    await pumpRewards(tester, 'Platinum', 2000, const Size(360, 740));
+    expect(find.text('Bronze'), findsNothing);
+    expect(find.text('Silver'), findsOneWidget);
+    expect(find.text('Reached'), findsNWidgets(2));
+    expect(find.text("You're here now"), findsOneWidget);
+  });
 }

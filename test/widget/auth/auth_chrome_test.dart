@@ -1,4 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/cupertino.dart' show CupertinoDatePicker;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -22,10 +24,9 @@ void main() {
     await tester.pump();
   }
 
-  Future<void> enterDob(WidgetTester t, String m, String d, String y) async {
-    await t.enterText(find.byKey(const Key('dobMonthField')), m);
-    await t.enterText(find.byKey(const Key('dobDayField')), d);
-    await t.enterText(find.byKey(const Key('dobYearField')), y);
+  Future<void> pickDob(WidgetTester t, DateTime d) async {
+    await pump(t, DobScreen(pickDate: (_, _) async => d));
+    await t.tap(find.byKey(const Key('dobMonthField')));
     await t.pumpAndSettle();
   }
 
@@ -63,27 +64,50 @@ void main() {
   testWidgets('DobScreen: AuthScaffold + dob ring, check when valid', (
     tester,
   ) async {
-    await pump(tester, const DobScreen());
+    await pump(tester, DobScreen(pickDate: (_, _) async => DateTime(1990, 1, 15)));
     expectChrome(tester, RegistrationStep.dob);
     expect(find.byIcon(Icons.check), findsNothing);
-    await enterDob(tester, '01', '15', '1990');
+    await tester.tap(find.byKey(const Key('dobMonthField')));
+    await tester.pumpAndSettle();
+    expect(find.text('15'), findsOneWidget);
+    expect(find.text('1990'), findsOneWidget);
     expect(find.byIcon(Icons.check), findsOneWidget);
     expect(continueEnabled(tester), isTrue);
     await expectBackDispatches(tester);
   });
 
-  testWidgets('DobScreen: invalid dates show no check, Continue disabled', (
+  testWidgets('DobScreen: under-13 date shows error, no check, Continue off', (
+    tester,
+  ) async {
+    final now = DateTime.now();
+    await pickDob(tester, DateTime(now.year - 5, now.month, now.day));
+    expect(find.byIcon(Icons.check), findsNothing);
+    expect(continueEnabled(tester), isFalse);
+    expect(find.textContaining('at least'), findsOneWidget);
+  });
+
+  testWidgets('DobScreen: Android opens the Material calendar dialog', (
     tester,
   ) async {
     await pump(tester, const DobScreen());
-    for (final d in [
-      ['13', '01', '1990'],
-      ['02', '30', '1990'],
-    ]) {
-      await enterDob(tester, d[0], d[1], d[2]);
-      expect(find.byIcon(Icons.check), findsNothing);
-      expect(continueEnabled(tester), isFalse);
-    }
+    await tester.tap(find.byKey(const Key('dobYearField')));
+    await tester.pumpAndSettle();
+    expect(find.byType(DatePickerDialog), findsOneWidget);
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    expect(continueEnabled(tester), isTrue);
+  });
+
+  testWidgets('DobScreen: iOS opens the Cupertino wheel sheet', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    await pump(tester, const DobScreen());
+    await tester.tap(find.byKey(const Key('dobDayField')));
+    await tester.pumpAndSettle();
+    expect(find.byType(CupertinoDatePicker), findsOneWidget);
+    await tester.tap(find.byKey(const Key('dobPickerDone')));
+    await tester.pumpAndSettle();
+    expect(continueEnabled(tester), isTrue);
+    debugDefaultTargetPlatformOverride = null;
   });
 
   testWidgets('WelcomeScreen: no back button, no legal footer', (tester) async {

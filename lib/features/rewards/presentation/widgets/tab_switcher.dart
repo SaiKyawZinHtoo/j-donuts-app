@@ -1,75 +1,60 @@
 part of '../../rewards_import.dart';
 
-/// Earn/Gift tab switcher: a sliding pill behind the active label, with an
-/// [AnimatedSwitcher] content swap (design spec §6.3).
+/// Earn/Gift pills (reference screen 10): the active pill is cyan, the other
+/// light grey, both with a white outline. Colors cross-fade on switch.
 class TabSwitcher extends StatelessWidget {
   final RewardsTab activeTab;
   final ValueChanged<RewardsTab> onChanged;
 
-  const TabSwitcher({super.key, required this.activeTab, required this.onChanged});
+  const TabSwitcher({
+    super.key,
+    required this.activeTab,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final tabWidth = constraints.maxWidth / 2;
-        final duration = _duration(context);
-        return Container(
-          height: 40,
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(AppSpacing.sm),
-          ),
-          child: Stack(
-            children: [
-              AnimatedPositioned(
-                duration: duration,
-                curve: MotionTokens.kEmphasizedCurve,
-                left: activeTab == RewardsTab.earn ? 0 : tabWidth,
-                top: 0,
-                bottom: 0,
-                width: tabWidth,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.accent,
-                    borderRadius: BorderRadius.circular(AppSpacing.sm),
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  _tabButton(context, RewardsTab.earn, AppLocalizations.of(context)!.earnTab),
-                  _tabButton(context, RewardsTab.gift, AppLocalizations.of(context)!.giftTab),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Duration _duration(BuildContext context) =>
-      MediaQuery.disableAnimationsOf(context) ? Duration.zero : MotionTokens.kTabSwitchDuration;
-
-  Widget _tabButton(BuildContext context, RewardsTab tab, String label) {
-    return Expanded(
-      child: GestureDetector(
+    final l10n = AppLocalizations.of(context)!;
+    final duration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : MotionTokens.kTabSwitchDuration;
+    Widget pill(RewardsTab tab, String label) {
+      final active = activeTab == tab;
+      return GestureDetector(
         key: Key('rewardsTab_${tab.name}'),
+        behavior: HitTestBehavior.opaque,
         onTap: () => onChanged(tab),
-        child: Center(
-          child: AnimatedSwitcher(
-            duration: _duration(context),
-            child: Text(
-              label,
-              key: ValueKey(activeTab == tab),
-              style: AppTextStyles.body.copyWith(
-                color: activeTab == tab ? AppColors.surface : AppColors.textPrimary,
-              ),
+        child: AnimatedContainer(
+          duration: duration,
+          curve: MotionTokens.kEmphasizedCurve,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.sm + AppSpacing.xs,
+          ),
+          decoration: BoxDecoration(
+            color: active ? AppColors.navBar : AppColors.pageGrey,
+            borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+            border: Border.all(color: AppColors.surface, width: 3),
+          ),
+          child: AnimatedDefaultTextStyle(
+            duration: duration,
+            style: AppTextStyles.body.copyWith(
+              fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+              color: active ? AppColors.surface : AppColors.textSecondary,
             ),
+            child: Text(label),
           ),
         ),
-      ),
+      );
+    }
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: AppSpacing.xs,
+      children: [
+        pill(RewardsTab.earn, l10n.earnMoreTab),
+        pill(RewardsTab.gift, l10n.giftTab),
+      ],
     );
   }
 }

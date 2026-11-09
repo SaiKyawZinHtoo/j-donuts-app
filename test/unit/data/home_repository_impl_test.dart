@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:j_donuts_app/core/result/result.dart';
 import 'package:j_donuts_app/data/local/daos/home_dao.dart' hide HomeBundle;
 import 'package:j_donuts_app/data/local/daos/member_dao.dart';
+import 'package:j_donuts_app/data/local/daos/rewards_dao.dart';
 import 'package:j_donuts_app/data/local/database.dart';
 import 'package:j_donuts_app/data/local/seed/seed_loader.dart';
 import 'package:j_donuts_app/features/home/home_import.dart';
@@ -25,6 +26,8 @@ void main() {
     final result = await HomeRepositoryImpl(
       homeDao: HomeDao(db),
       memberDao: MemberDao(db),
+      rewardsDao: RewardsDao(db),
+      readProfile: () async => (name: 'Aye Aye', phone: '0912345678'),
     ).getHome();
 
     expect(result, isA<Ok<HomeBundle>>());
@@ -33,6 +36,9 @@ void main() {
 
     // Canonical member record (design spec §3.2): Silver tier, 500 pts
     // remaining to Gold.
+    expect(bundle.member.name, 'Aye Aye');
+    expect(bundle.phone, '0912345678');
+    expect(bundle.openChallenges, 2);
     expect(bundle.member.tier, 'Bronze');
     expect(bundle.member.nextTierPoints - bundle.member.points, 500);
   });

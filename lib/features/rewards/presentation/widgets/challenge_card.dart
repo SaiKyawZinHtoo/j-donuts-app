@@ -52,59 +52,77 @@ class _ChallengeCardState extends State<ChallengeCard> {
     final challenge = widget.challenge;
     final entrance = widget.entrance;
 
+    final l10n = AppLocalizations.of(context)!;
     return FadeTransition(
       opacity: entrance,
       child: SlideTransition(
-        position: Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
-            .animate(entrance),
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.1),
+          end: Offset.zero,
+        ).animate(entrance),
         child: Container(
           key: Key('challengeCard_${challenge.id}'),
-          margin: const EdgeInsets.symmetric(vertical: AppSpacing.xs, horizontal: AppSpacing.md),
+          margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppSpacing.sm),
-            border: Border.all(color: AppColors.border),
+            borderRadius: BorderRadius.circular(AppSpacing.rewardCardRadius),
           ),
           child: Row(
             children: [
               ValueListenableBuilder<double>(
                 valueListenable: _progress,
-                builder: (context, value, _) => CustomPaint(
-                  size: const Size(40, 40),
-                  painter: _ChallengeArtPainter(
-                    progress: value,
-                    artType: challenge.artType,
-                  ),
-                ),
+                builder: (context, value, _) =>
+                    _ChallengeArt(progress: value, artType: challenge.artType),
               ),
-              const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(challenge.title, style: AppTextStyles.body),
+                    Text(challenge.title, style: AppTextStyles.h2),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
-                      '${challenge.current}/${challenge.target} · +${challenge.rewardPts} pts',
-                      style: AppTextStyles.caption,
+                      '${challenge.current}/${challenge.target}',
+                      style: AppTextStyles.body,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTapDown: challenge.isComplete
+                              ? (_) => setState(() => _pressed = true)
+                              : null,
+                          onTapUp: challenge.isComplete
+                              ? (_) => setState(() => _pressed = false)
+                              : null,
+                          onTapCancel: challenge.isComplete
+                              ? () => setState(() => _pressed = false)
+                              : null,
+                          child: AnimatedScale(
+                            scale: _pressed ? 0.9 : 1.0,
+                            duration: MediaQuery.disableAnimationsOf(context)
+                                ? Duration.zero
+                                : MotionTokens.kTabSwitchDuration,
+                            child: AppButton(
+                              key: Key('challengeEarnButton_${challenge.id}'),
+                              label: l10n.earnTab,
+                              onPressed: challenge.isComplete
+                                  ? widget.onEarnTap
+                                  : null,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Flexible(
+                          child: Text(
+                            l10n.pointsShort(challenge.rewardPts),
+                            style: AppTextStyles.body,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                ),
-              ),
-              GestureDetector(
-                onTapDown: challenge.isComplete ? (_) => setState(() => _pressed = true) : null,
-                onTapUp: challenge.isComplete ? (_) => setState(() => _pressed = false) : null,
-                onTapCancel: challenge.isComplete ? () => setState(() => _pressed = false) : null,
-                child: AnimatedScale(
-                  scale: _pressed ? 0.9 : 1.0,
-                  duration: MediaQuery.disableAnimationsOf(context)
-                      ? Duration.zero
-                      : MotionTokens.kTabSwitchDuration,
-                  child: AppButton(
-                    key: Key('challengeEarnButton_${challenge.id}'),
-                    label: AppLocalizations.of(context)!.earnTab,
-                    onPressed: challenge.isComplete ? widget.onEarnTap : null,
-                  ),
                 ),
               ),
             ],
@@ -115,47 +133,113 @@ class _ChallengeCardState extends State<ChallengeCard> {
   }
 }
 
-/// Donut-quarters or coffee-arc art per [Challenge.artType].
-class _ChallengeArtPainter extends CustomPainter {
+/// Progress art: a donut photo that regains color clockwise as progress grows,
+/// or a drink with an orange arc over it ([artType] 'coffee').
+class _ChallengeArt extends StatelessWidget {
   final double progress;
   final String artType;
 
-  _ChallengeArtPainter({required this.progress, required this.artType});
+  const _ChallengeArt({required this.progress, required this.artType});
+
+  static const _grey = ColorFilter.matrix(<double>[
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0.2126, 0.7152, 0.0722, 0, 0,
+    0.2126, 0.7152, 0.0722, 0, 0,
+    0, 0, 0, 1, 0,
+  ]);
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
-    final radius = size.shortestSide / 2;
-    final trackPaint = Paint()
-      ..color = AppColors.border
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4;
-    final fillPaint = Paint()
-      ..color = AppColors.accent
-      ..style = artType == 'coffee' ? PaintingStyle.fill : PaintingStyle.stroke
-      ..strokeWidth = 4;
-
-    canvas.drawCircle(center, radius, trackPaint);
+  Widget build(BuildContext context) {
+    const size = AppSpacing.rewardArtSize;
     if (artType == 'coffee') {
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        -pi / 2,
-        2 * pi * progress.clamp(0.0, 1.0),
-        true,
-        fillPaint,
+      return SizedBox(
+        width: size,
+        height: size,
+        child: CustomPaint(
+          painter: _ArcPainter(progress),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Image.asset(
+              'assets/images/seed/coffee_latte.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
       );
-    } else {
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
+    }
+    final img = Image.asset(
+      'assets/images/seed/donut_strawberry.png',
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+    );
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        children: [
+          ColorFiltered(
+            colorFilter: _grey,
+            child: Opacity(opacity: 0.6, child: img),
+          ),
+          ClipPath(clipper: _WedgeClipper(progress), child: img),
+        ],
+      ),
+    );
+  }
+}
+
+class _WedgeClipper extends CustomClipper<Path> {
+  final double progress;
+  const _WedgeClipper(this.progress);
+
+  @override
+  Path getClip(Size size) {
+    if (progress >= 1) return Path()..addRect(Offset.zero & size);
+    return Path()
+      ..moveTo(size.width / 2, size.height / 2)
+      ..arcTo(
+        Offset.zero & size,
         -pi / 2,
         2 * pi * progress.clamp(0.0, 1.0),
         false,
-        fillPaint,
-      );
-    }
+      )
+      ..close();
   }
 
   @override
-  bool shouldRepaint(covariant _ChallengeArtPainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.artType != artType;
+  bool shouldReclip(covariant _WedgeClipper old) => old.progress != progress;
+}
+
+class _ArcPainter extends CustomPainter {
+  final double progress;
+  const _ArcPainter(this.progress);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const stroke = 10.0;
+    final rect = Rect.fromLTWH(
+      stroke / 2,
+      stroke / 2,
+      size.width - stroke,
+      size.height - stroke,
+    );
+    const start = pi * 0.85;
+    const span = pi * 1.3;
+    final p = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+    canvas.drawArc(rect, start, span, false, p..color = AppColors.pageGrey);
+    canvas.drawArc(
+      rect,
+      start,
+      span * progress.clamp(0.0, 1.0),
+      false,
+      p..color = AppColors.badge,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _ArcPainter old) => old.progress != progress;
 }

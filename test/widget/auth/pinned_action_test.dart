@@ -50,7 +50,6 @@ void main() {
   for (final e in {
     'phone': (const PhoneScreen(), ['phoneNumberField']),
     'name': (const NameScreen(), ['firstNameField', 'lastNameField']),
-    'dob': (const DobScreen(), ['dobMonthField', 'dobYearField']),
   }.entries) {
     testWidgets('${e.key}: fields visible above action with keyboard open', (
       tester,

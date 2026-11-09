@@ -5,13 +5,17 @@ part of '../../rewards_import.dart';
 class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
   final GetRewardsUseCase getRewardsUseCase;
 
-  RewardsBloc({required this.getRewardsUseCase}) : super(const RewardsLoading()) {
+  RewardsBloc({required this.getRewardsUseCase})
+    : super(const RewardsLoading()) {
     on<RewardsRequested>(_onRequested);
     on<TabChanged>(_onTabChanged);
     on<ChallengeTapped>((event, emit) {});
   }
 
-  Future<void> _onRequested(RewardsEvent event, Emitter<RewardsState> emit) async {
+  Future<void> _onRequested(
+    RewardsEvent event,
+    Emitter<RewardsState> emit,
+  ) async {
     emit(const RewardsLoading());
     final result = await getRewardsUseCase.call();
     if (result is Ok<RewardsBundle>) {

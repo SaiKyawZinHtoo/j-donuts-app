@@ -59,4 +59,17 @@ void main() {
       expect(f.opacity.value, 1.0);
     }
   });
+
+  testWidgets('tiles fade via ShaderMask (no solid overlay colour)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(disableAnimations: true));
+    await tester.pumpAndSettle();
+    final mask = find.ancestor(
+      of: find.byType(DonutTile).first,
+      matching: find.byType(ShaderMask),
+    );
+    expect(mask, findsOneWidget);
+    expect(tester.widget<ShaderMask>(mask).blendMode, BlendMode.dstIn);
+  });
 }

@@ -198,6 +198,8 @@ void main() {
         data: const MediaQueryData(size: Size(375, 812), textScaler: TextScaler.linear(1.3)),
         child: const Scaffold(
           body: MemberHeader(
+            phone: '0912345678',
+            notificationCount: 2,
             member: Member(
               id: 'm1',
               name: 'Hania',
@@ -212,6 +214,7 @@ void main() {
       ),
     ));
     expect(find.text('Hania'), findsOneWidget);
+    expect(find.text('0912345678'), findsOneWidget);
     expect(find.text('Bronze member'), findsOneWidget);
     expect(find.descendant(
         of: find.byKey(const Key('memberHeader_pointsChip')),
@@ -219,6 +222,27 @@ void main() {
     expect(find.descendant(
         of: find.byKey(const Key('memberHeader_bellButton')), matching: find.text('2')), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('MemberHeader bell: no badge at 0 and tap fires', (tester) async {
+    var taps = 0;
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: MemberHeader(
+          onBellTap: () => taps++,
+          member: const Member(
+            id: 'm1', name: 'A', photoUrl: 'x', tier: 'Bronze',
+            points: 1, nextTierPoints: 2, totalPoints: 1,
+          ),
+        ),
+      ),
+    ));
+    expect(find.descendant(
+        of: find.byKey(const Key('memberHeader_bellButton')), matching: find.text('0')), findsNothing);
+    await tester.tap(find.byKey(const Key('memberHeader_bellButton')));
+    expect(taps, 1);
   });
 
   testWidgets('BannerCarousel exposes key and no autoplay timer under Reduce Motion', (tester) async {
@@ -322,5 +346,44 @@ void main() {
     final onlineGap = tester.getTopLeft(chip).dy - 47; // single inset only
     // Same header-internal offset with or without banner: no extra 47 gap.
     expect(offlineGap, closeTo(onlineGap, 1));
+  });
+
+  testWidgets('banner clears points chip and aligns with it', (tester) async {
+    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
+    final withBanner = HomeBundle(
+      member: testBundle.member,
+      banners: const [
+        BannerItem(id: 'b1', imageUrl: 'assets/images/seed/banner_seasonal.png', title: 't', deepLinkTarget: ''),
+      ],
+      sections: testBundle.sections,
+      shops: testBundle.shops,
+    );
+    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(withBanner));
+    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
+      ..add(const HomeRequested());
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
+    );
+    tester.view.physicalSize = const Size(1080, 2340);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(MaterialApp.router(
+      routerConfig: router,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) =>
+          BlocProvider.value(value: bloc, child: child!),
+    ));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+    final chip = find.byKey(const Key('memberHeader_pointsChip'));
+    final banner = find.byKey(const Key('bannerCarousel'));
+    expect(tester.getBottomLeft(chip).dy,
+        lessThanOrEqualTo(tester.getTopLeft(banner).dy));
+    expect(
+      tester.getTopLeft(chip).dx,
+      tester.getTopLeft(find.descendant(of: banner, matching: find.byType(ClipRRect)).first).dx,
+    );
   });
 }

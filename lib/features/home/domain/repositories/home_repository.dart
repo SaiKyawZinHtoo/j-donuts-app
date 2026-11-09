@@ -6,12 +6,16 @@ class HomeBundle {
   final List<BannerItem> banners;
   final List<ProductSection> sections;
   final List<Shop> shops;
+  final String? phone;
+  final int openChallenges;
 
   const HomeBundle({
     required this.member,
     required this.banners,
     required this.sections,
     required this.shops,
+    this.phone,
+    this.openChallenges = 0,
   });
 }
 

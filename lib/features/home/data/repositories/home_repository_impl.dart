@@ -5,12 +5,18 @@ part of '../../home_import.dart';
 class HomeRepositoryImpl implements HomeRepository {
   final drift.HomeDao _homeDao;
   final drift.MemberDao _memberDao;
+  final drift.RewardsDao _rewardsDao;
+  final Future<({String name, String phone})?> Function() _readProfile;
 
   const HomeRepositoryImpl({
     required drift.HomeDao homeDao,
     required drift.MemberDao memberDao,
+    required drift.RewardsDao rewardsDao,
+    required Future<({String name, String phone})?> Function() readProfile,
   })  : _homeDao = homeDao,
-        _memberDao = memberDao;
+        _memberDao = memberDao,
+        _rewardsDao = rewardsDao,
+        _readProfile = readProfile;
 
   @override
   Future<Result<HomeBundle>> getHome() async {
@@ -21,9 +27,24 @@ class HomeRepositoryImpl implements HomeRepository {
         return const Result.err('No member profile found.');
       }
 
+      final profile = await _readProfile();
+      final challenges = await _rewardsDao.getChallenges();
+      final seed = mapMemberRow(memberRow);
       return Result.ok(
         HomeBundle(
-          member: mapMemberRow(memberRow),
+          member: profile == null
+              ? seed
+              : Member(
+                  id: seed.id,
+                  name: profile.name,
+                  photoUrl: seed.photoUrl,
+                  tier: seed.tier,
+                  points: seed.points,
+                  nextTierPoints: seed.nextTierPoints,
+                  totalPoints: seed.totalPoints,
+                ),
+          phone: profile?.phone,
+          openChallenges: challenges.where((c) => c.current < c.target).length,
           banners: bundle.banners.map(_mapBanner).toList(),
           sections: bundle.sections.map(_mapSection).toList(),
           shops: bundle.shops.map(_mapShop).toList(),

@@ -59,6 +59,17 @@
 
   "earnTab": "ရယူရန်",
   "giftTab": "လက်ဆောင်",
+  "rewardsTitle": "J' Donuts ဆုလာဘ်များ",
+  "rewardsBadgeLabel": "ဆုလာဘ်များ",
+  "totalPointsLabel": "စုစုပေါင်းအမှတ်",
+  "tierHereNow": "သင် ယခု ဤနေရာတွင် ရှိသည်",
+  "tierRemaining": "{tier} ဖြစ်ရန် အမှတ် {points} လိုသေးသည်",
+  "@tierRemaining": { "placeholders": { "points": { "type": "int" }, "tier": { "type": "String" } } },
+  "tierSoon": "မကြာမီ ရောက်ရှိမည်",
+  "tierReached": "ရောက်ရှိပြီး",
+  "earnMoreTab": "စားလေ ရလေ",
+  "pointsShort": "{points} pts",
+  "@pointsShort": { "placeholders": { "points": { "type": "int" } } },
 
   "homeTabLabel": "ပင်မစာမျက်နှာ",
   "exploreTabLabel": "လေ့လာမည်",

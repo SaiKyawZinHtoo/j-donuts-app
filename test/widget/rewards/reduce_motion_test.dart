@@ -23,9 +23,8 @@ void main() {
         TabSwitcher(activeTab: RewardsTab.earn, onChanged: (_) {}),
         reduce: reduce,
       ));
-      expect(tester.widget<AnimatedPositioned>(find.byType(AnimatedPositioned)).duration, expected);
-      for (final s in tester.widgetList<AnimatedSwitcher>(find.byType(AnimatedSwitcher))) {
-        expect(s.duration, expected);
+      for (final c in tester.widgetList<AnimatedContainer>(find.byType(AnimatedContainer))) {
+        expect(c.duration, expected);
       }
     });
 

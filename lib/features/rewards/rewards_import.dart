@@ -20,6 +20,7 @@ part 'presentation/bloc/rewards_event.dart';
 part 'presentation/bloc/rewards_state.dart';
 part 'presentation/bloc/rewards_bloc.dart';
 part 'presentation/widgets/tier_ladder.dart';
+part 'presentation/widgets/points_donut.dart';
 part 'presentation/widgets/challenge_card.dart';
 part 'presentation/widgets/tab_switcher.dart';
 part 'presentation/screens/rewards_screen.dart';

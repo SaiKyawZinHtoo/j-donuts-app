@@ -183,6 +183,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get giftTab => 'Gift';
 
   @override
+  String get rewardsTitle => 'J\' Donuts Rewards';
+
+  @override
+  String get rewardsBadgeLabel => 'Rewards';
+
+  @override
+  String get totalPointsLabel => 'Total points';
+
+  @override
+  String get tierHereNow => 'You\'re here now';
+
+  @override
+  String tierRemaining(int points, String tier) {
+    return '$points pts Remaining to become $tier';
+  }
+
+  @override
+  String get tierSoon => 'You\'ll be here soon';
+
+  @override
+  String get tierReached => 'Reached';
+
+  @override
+  String get earnMoreTab => 'Eat more earn more';
+
+  @override
+  String pointsShort(int points) {
+    return '$points pts';
+  }
+
+  @override
   String get homeTabLabel => 'Home';
 
   @override

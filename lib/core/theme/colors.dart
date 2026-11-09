@@ -32,5 +32,11 @@ class AppColors {
   static const List<double> gradientStops = [0, 0.3, 0.5, 0.7, 1];
   static const Color badge = Color(0xFFF28B30);
   static const Color pageGrey = Color(0xFFEEF0F2);
+  static const Color navBar = Color(0xFF77CDE6);
+  static const Color navPill = Color(0xFFE8629F);
+  static const Color tierBronze = Color(0xFFD9A06B);
+  static const Color tierSilver = Color(0xFFC4C7CC);
+  static const Color tierGold = Color(0xFFF0D27C);
+  static const Color tierPlatinum = Color(0xFFBFE3F2);
   static const Color headerPeach = Color(0xFFFCE3D0);
 }

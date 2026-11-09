@@ -111,9 +111,9 @@ void main() {
     await _settleAfterFakeNetwork(tester);
 
     // DOB (well over the 13-year minimum) -> Welcome.
-    await _typeInto(tester, 'dobMonthField', '5');
-    await _typeInto(tester, 'dobDayField', '20');
-    await _typeInto(tester, 'dobYearField', '1995');
+    await tester.tap(find.byKey(const Key('dobMonthField')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK')); // default initial date is 18 years ago
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('continueButton')));
     await _settleAfterFakeNetwork(tester);
@@ -135,7 +135,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pump();
     await _settleAfterFakeNetwork(tester);
-    await tester.tap(find.byIcon(Icons.radio_button_checked));
+    await tester.tap(find.byIcon(Icons.workspace_premium_outlined));
     await _settleAfterFakeNetwork(tester);
 
     expect(find.byType(RewardsScreen), findsOneWidget);

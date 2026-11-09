@@ -5,10 +5,7 @@ class RewardsBundle {
   final Member member;
   final List<Challenge> challenges;
 
-  const RewardsBundle({
-    required this.member,
-    required this.challenges,
-  });
+  const RewardsBundle({required this.member, required this.challenges});
 }
 
 abstract class RewardsRepository {

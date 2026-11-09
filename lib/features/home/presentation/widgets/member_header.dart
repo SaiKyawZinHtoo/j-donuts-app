@@ -6,12 +6,14 @@ class MemberHeader extends StatelessWidget {
   final Member member;
   final VoidCallback? onBellTap;
   final int notificationCount;
+  final String? phone;
 
   const MemberHeader({
     super.key,
     required this.member,
     this.onBellTap,
-    this.notificationCount = 2,
+    this.notificationCount = 0,
+    this.phone,
   });
 
   static String _nextTier(String tier) => switch (tier) {
@@ -26,7 +28,13 @@ class MemberHeader extends StatelessWidget {
     const avatar = AppSpacing.iconSizeMd;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
+      // Extra bottom room: the banner overlaps this strip, never the points chip.
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md + AppSpacing.lg,
+      ),
       decoration: const BoxDecoration(
         color: AppColors.headerPeach,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(AppSpacing.headerRadius)),
@@ -59,6 +67,8 @@ class MemberHeader extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(member.name, style: AppTextStyles.h1, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      if (phone != null)
+                        Text(phone!, key: const Key('memberHeader_phone'), style: AppTextStyles.caption),
                       Text(l10n.memberTierCaption(member.tier), style: AppTextStyles.caption),
                     ],
                   ),
@@ -66,8 +76,8 @@ class MemberHeader extends StatelessWidget {
                 ClipPath(
                   clipper: const _HexClipper(),
                   child: Container(
-                    width: AppSpacing.iconSizeMd,
-                    height: AppSpacing.iconSizeMd,
+                    width: AppSpacing.headerBadgeSize,
+                    height: AppSpacing.headerBadgeSize,
                     color: AppColors.pageGrey,
                     child: const Icon(Icons.star, color: AppColors.textSecondary),
                   ),
@@ -86,7 +96,8 @@ class MemberHeader extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.notifications_none, color: AppColors.surface),
-                          const SizedBox(width: AppSpacing.xs),
+                          if (notificationCount > 0) const SizedBox(width: AppSpacing.xs),
+                          if (notificationCount > 0)
                           Container(
                             padding: const EdgeInsets.all(AppSpacing.xs),
                             decoration: const BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),

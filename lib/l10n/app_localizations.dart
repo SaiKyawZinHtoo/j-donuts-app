@@ -398,6 +398,60 @@ abstract class AppLocalizations {
   /// **'Gift'**
   String get giftTab;
 
+  /// No description provided for @rewardsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'J\' Donuts Rewards'**
+  String get rewardsTitle;
+
+  /// No description provided for @rewardsBadgeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards'**
+  String get rewardsBadgeLabel;
+
+  /// No description provided for @totalPointsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total points'**
+  String get totalPointsLabel;
+
+  /// No description provided for @tierHereNow.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re here now'**
+  String get tierHereNow;
+
+  /// No description provided for @tierRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{points} pts Remaining to become {tier}'**
+  String tierRemaining(int points, String tier);
+
+  /// No description provided for @tierSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll be here soon'**
+  String get tierSoon;
+
+  /// No description provided for @tierReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached'**
+  String get tierReached;
+
+  /// No description provided for @earnMoreTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Eat more earn more'**
+  String get earnMoreTab;
+
+  /// No description provided for @pointsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{points} pts'**
+  String pointsShort(int points);
+
   /// No description provided for @homeTabLabel.
   ///
   /// In en, this message translates to:

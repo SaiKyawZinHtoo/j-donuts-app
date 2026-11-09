@@ -137,7 +137,12 @@ class _HomeContent extends StatelessWidget {
           MediaQuery.removePadding(
             context: context,
             removeTop: state.isOffline,
-            child: MemberHeader(member: bundle.member),
+            child: MemberHeader(
+              member: bundle.member,
+              phone: bundle.phone,
+              notificationCount: bundle.openChallenges,
+              onBellTap: () => context.go('/rewards'),
+            ),
           ),
         ),
         // Banners overlap the header's bottom edge.

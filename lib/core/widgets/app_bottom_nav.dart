@@ -1,13 +1,13 @@
 part of '../core_import.dart';
 
-/// Default 5-slot row per design spec §7 / bottom-nav mock: Home, Explore,
-/// Rewards (center), Wallet, Settings. Pass [items] to override.
+/// Default 5-slot row per design spec §7 / bottom-nav mock: Home, Rewards,
+/// Explore, Wallet, Settings. Pass [items] to override.
 const List<BottomNavigationBarItem> kDefaultBottomNavItems = [
   BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-  BottomNavigationBarItem(icon: Icon(Icons.workspace_premium_outlined), label: 'Explore'),
+  BottomNavigationBarItem(icon: Icon(Icons.workspace_premium_outlined), label: 'Rewards'),
   BottomNavigationBarItem(
     icon: Icon(Icons.radio_button_checked),
-    label: 'Rewards',
+    label: 'Explore',
   ),
   BottomNavigationBarItem(
     icon: Icon(Icons.account_balance_wallet_outlined),
@@ -36,98 +36,131 @@ class AppBottomNav extends StatelessWidget {
     final duration = MediaQuery.disableAnimationsOf(context)
         ? Duration.zero
         : MotionTokens.kNavPillDuration;
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
-          0,
-          AppSpacing.md,
-          AppSpacing.sm,
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.navBar,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.navBarTopRadius),
         ),
-        child: Container(
-          height: AppSpacing.navBarHeight,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
-            border: const Border(top: BorderSide(color: AppColors.surface)),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.35),
-                blurRadius: AppSpacing.sm,
-                offset: const Offset(0, 2),
+        border: Border(top: BorderSide(color: AppColors.surface)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: SizedBox(
+            height: AppSpacing.navBarHeight,
+            // One animated position `p` drives slot widths, pill and labels so
+            // they can never disagree mid-transition.
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(end: currentIndex.toDouble()),
+              duration: duration,
+              curve: MotionTokens.kEmphasizedCurve,
+              builder: (context, p, _) => LayoutBuilder(
+                builder: (context, constraints) =>
+                    _buildBar(p, constraints.maxWidth),
               ),
-            ],
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final slot = constraints.maxWidth / items.length;
-              return Stack(
-                children: [
-                  AnimatedPositioned(
-                    key: const Key('navPill'),
-                    duration: duration,
-                    curve: MotionTokens.kEmphasizedCurve,
-                    left: currentIndex * slot,
-                    top: 0,
-                    bottom: 0,
-                    width: slot,
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.xs),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: AppColors.accent,
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.buttonRadius,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      for (var i = 0; i < items.length; i++)
-                        Expanded(child: _item(i)),
-                    ],
-                  ),
-                ],
-              );
-            },
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _item(int i) {
-    final selected = i == currentIndex;
+  Widget _buildBar(double p, double width) {
+    final n = items.length;
+    // 1 when p is on slot i, falling to 0 one slot away.
+    final closeness = [
+      for (var i = 0; i < n; i++) (1 - (i - p).abs()).clamp(0.0, 1.0),
+    ];
+    final weights = [
+      for (final c in closeness) 1 + (AppSpacing.navSelectedFlex - 1) * c,
+    ];
+    final unit = width / (n - 1 + AppSpacing.navSelectedFlex);
+    final lefts = <double>[];
+    var x = 0.0;
+    for (final w in weights) {
+      lefts.add(x);
+      x += w * unit;
+    }
+    return Stack(
+      children: [
+        Positioned(
+          key: const Key('navPill'),
+          // Linear in p (not derived from slot edges, which would wobble).
+          left: p * unit + AppSpacing.xs,
+          width: AppSpacing.navSelectedFlex * unit - 2 * AppSpacing.xs,
+          top: 0,
+          bottom: 0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.navPill,
+                borderRadius: BorderRadius.circular(AppSpacing.navBarHeight),
+                border: Border.all(color: AppColors.surface),
+              ),
+            ),
+          ),
+        ),
+        for (var i = 0; i < n; i++)
+          Positioned(
+            left: lefts[i],
+            width: weights[i] * unit,
+            top: 0,
+            bottom: 0,
+            child: _item(i, closeness[i]),
+          ),
+      ],
+    );
+  }
+
+  Widget _item(int i, double c) {
     final label = items[i].label;
-    final color = AppColors.surface;
+    const color = AppColors.surface;
     return Semantics(
       button: true,
-      selected: selected,
+      selected: i == currentIndex,
       label: label,
       excludeSemantics: true,
-      onTap: () => onTap(i),
+      onTap: () => _tap(i),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => onTap(i),
+        onTap: () => _tap(i),
         child: IconTheme(
-          data: IconThemeData(color: color, size: AppSpacing.navItemSize),
-          child: Column(
+          data: const IconThemeData(color: color, size: AppSpacing.navItemSize),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              items[i].icon,
-              if (selected && label != null)
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.caption.copyWith(color: color),
+              Transform.scale(scale: 1 + 0.1 * c, child: items[i].icon),
+              if (label != null)
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: AppSpacing.sm * c),
+                    child: Opacity(
+                      opacity: c,
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.clip,
+                        style: AppTextStyles.caption.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _tap(int i) {
+    if (i != currentIndex) HapticFeedback.selectionClick();
+    onTap(i);
   }
 }
