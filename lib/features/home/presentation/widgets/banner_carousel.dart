@@ -106,12 +106,14 @@ class _BannerCarouselState extends State<BannerCarousel> {
                             horizontal: AppSpacing.xl + AppSpacing.md,
                           ),
                           child: DecoratedBox(
+                            // Foreground: the picture must not paint over the border.
+                            position: DecorationPosition.foreground,
                             decoration: BoxDecoration(
                               borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(AppSpacing.md),
                               ),
                               border: Border.all(
-                                color: AppColors.surface.withValues(alpha: 0.7),
+                                color: AppColors.surface,
                                 width: AppSpacing.badgeBorder,
                               ),
                             ),
