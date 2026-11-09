@@ -38,9 +38,8 @@ class _RewardsBadge extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(context)!.rewardsBadgeLabel,
-                style: AppTextStyles.body.copyWith(
+                style: AppTextStyles.bodyBold.copyWith(
                   color: AppColors.surface,
-                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -52,9 +51,8 @@ class _RewardsBadge extends StatelessWidget {
                 ),
                 child: Text(
                   '$count',
-                  style: AppTextStyles.caption.copyWith(
+                  style: AppTextStyles.captionBold.copyWith(
                     color: AppColors.badge,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

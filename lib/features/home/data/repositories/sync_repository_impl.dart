@@ -32,15 +32,18 @@ class SyncRepositoryImpl implements SyncRepository {
     return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
   }
 
-  Future<String?> _meta(String key) async =>
-      (await (_db.select(_db.meta)..where((m) => m.key.equals(key))).getSingleOrNull())?.value;
+  Future<String?> _meta(String key) async => (await (_db.select(
+    _db.meta,
+  )..where((m) => m.key.equals(key))).getSingleOrNull())?.value;
 
   Future<void> _setMeta(String key, String value) => _db
       .into(_db.meta)
       .insertOnConflictUpdate(MetaCompanion.insert(key: key, value: value));
 
-  Future<Result<FetchResult<T>>> _get<T>(String r, T? Function(Map<String, dynamic>) p) async =>
-      _remote.fetch<T>(r, p, etag: await _meta(_etagKey(r)));
+  Future<Result<FetchResult<T>>> _get<T>(
+    String r,
+    T? Function(Map<String, dynamic>) p,
+  ) async => _remote.fetch<T>(r, p, etag: await _meta(_etagKey(r)));
 
   Future<Result<SyncOutcome>> _run() async {
     try {
@@ -63,7 +66,10 @@ class SyncRepositoryImpl implements SyncRepository {
         if (b is FetchedData<BannerDto>) await _replaceBanners(b);
         if (s is FetchedData<SectionDto>) await _replaceSections(s);
         if (h is FetchedData<ShopDto>) await _replaceShops(h);
-        await _setMeta(_lastSyncedKey, _now().millisecondsSinceEpoch.toString());
+        await _setMeta(
+          _lastSyncedKey,
+          _now().millisecondsSinceEpoch.toString(),
+        );
       });
       return Result.ok(changed ? SyncOutcome.updated : SyncOutcome.notModified);
     } catch (e) {
@@ -77,18 +83,20 @@ class SyncRepositoryImpl implements SyncRepository {
   Future<void> _replaceProducts(FetchedData<ProductDto> d) async {
     await _db.delete(_db.products).go();
     for (final x in d.items) {
-      await _db.into(_db.products).insertOnConflictUpdate(
-        ProductsCompanion.insert(
-          id: x.id,
-          code: x.code,
-          name: x.name,
-          priceMmk: x.priceMmk,
-          isNew: Value(x.isNew),
-          discountPercent: Value(x.discountPercent),
-          imageUrl: x.imageUrl,
-          description: Value(x.description),
-        ),
-      );
+      await _db
+          .into(_db.products)
+          .insertOnConflictUpdate(
+            ProductsCompanion.insert(
+              id: x.id,
+              code: x.code,
+              name: x.name,
+              priceMmk: x.priceMmk,
+              isNew: Value(x.isNew),
+              discountPercent: Value(x.discountPercent),
+              imageUrl: x.imageUrl,
+              description: Value(x.description),
+            ),
+          );
     }
     await _saveEtag('products', d.etag);
   }
@@ -96,14 +104,16 @@ class SyncRepositoryImpl implements SyncRepository {
   Future<void> _replaceBanners(FetchedData<BannerDto> d) async {
     await _db.delete(_db.banners).go();
     for (final x in d.items) {
-      await _db.into(_db.banners).insertOnConflictUpdate(
-        BannersCompanion.insert(
-          id: x.id,
-          imageUrl: x.imageUrl,
-          title: x.title,
-          deepLinkTarget: Value(x.deepLinkTarget),
-        ),
-      );
+      await _db
+          .into(_db.banners)
+          .insertOnConflictUpdate(
+            BannersCompanion.insert(
+              id: x.id,
+              imageUrl: x.imageUrl,
+              title: x.title,
+              deepLinkTarget: Value(x.deepLinkTarget),
+            ),
+          );
     }
     await _saveEtag('banners', d.etag);
   }
@@ -111,35 +121,43 @@ class SyncRepositoryImpl implements SyncRepository {
   Future<void> _replaceShops(FetchedData<ShopDto> d) async {
     await _db.delete(_db.shops).go();
     for (final x in d.items) {
-      await _db.into(_db.shops).insertOnConflictUpdate(
-        ShopsCompanion.insert(
-          id: x.id,
-          name: x.name,
-          address: x.address,
-          distanceLabel: Value(x.distanceLabel),
-        ),
-      );
+      await _db
+          .into(_db.shops)
+          .insertOnConflictUpdate(
+            ShopsCompanion.insert(
+              id: x.id,
+              name: x.name,
+              address: x.address,
+              distanceLabel: Value(x.distanceLabel),
+            ),
+          );
     }
     await _saveEtag('shops', d.etag);
   }
 
   Future<void> _replaceSections(FetchedData<SectionDto> d) async {
-    final known = (await _db.select(_db.products).get()).map((p) => p.id).toSet();
+    final known = (await _db.select(_db.products).get())
+        .map((p) => p.id)
+        .toSet();
     await _db.delete(_db.sectionsProducts).go();
     await _db.delete(_db.sections).go();
     for (final x in d.items) {
-      await _db.into(_db.sections).insertOnConflictUpdate(
-        SectionsCompanion.insert(id: x.id, title: x.title),
-      );
+      await _db
+          .into(_db.sections)
+          .insertOnConflictUpdate(
+            SectionsCompanion.insert(id: x.id, title: x.title),
+          );
       final ids = x.productIds.where(known.contains).toSet().toList();
       for (var i = 0; i < ids.length; i++) {
-        await _db.into(_db.sectionsProducts).insertOnConflictUpdate(
-          SectionsProductsCompanion.insert(
-            sectionId: x.id,
-            productId: ids[i],
-            sortOrder: Value(i),
-          ),
-        );
+        await _db
+            .into(_db.sectionsProducts)
+            .insertOnConflictUpdate(
+              SectionsProductsCompanion.insert(
+                sectionId: x.id,
+                productId: ids[i],
+                sortOrder: Value(i),
+              ),
+            );
       }
     }
     await _saveEtag('sections', d.etag);

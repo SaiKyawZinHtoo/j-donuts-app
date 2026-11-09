@@ -14,6 +14,7 @@ import 'package:j_donuts_app/l10n/app_localizations.dart';
 export 'package:j_donuts_app/l10n/app_localizations.dart';
 
 part 'theme/colors.dart';
+part 'theme/app_fonts.dart';
 part 'theme/text_styles.dart';
 part 'theme/spacing.dart';
 part 'theme/motion_tokens.dart';

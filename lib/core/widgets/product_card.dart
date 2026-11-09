@@ -30,10 +30,8 @@ class ProductCard extends StatefulWidget {
   static const String _fallbackAsset =
       'assets/images/seed/product_placeholder.png';
 
-  static TextStyle get _titleStyle => AppTextStyles.body.copyWith(
-    fontWeight: FontWeight.w700,
-    height: _titleLineHeight,
-  );
+  static TextStyle get _titleStyle =>
+      AppTextStyles.bodyBold.copyWith(height: _titleLineHeight);
 
   static double widthFor(ProductCardImageMode m) =>
       m == ProductCardImageMode.photo
@@ -148,9 +146,8 @@ class _ProductCardState extends State<ProductCard> {
                 ),
                 child: Text(
                   widget.badgeLabel!,
-                  style: AppTextStyles.caption.copyWith(
+                  style: AppTextStyles.captionBold.copyWith(
                     color: AppColors.surface,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

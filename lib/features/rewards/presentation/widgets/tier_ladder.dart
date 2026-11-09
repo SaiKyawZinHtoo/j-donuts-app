@@ -99,9 +99,7 @@ class TierLadder extends AnimatedWidget {
                             children: [
                               Text(
                                 tiers[start + r],
-                                style: AppTextStyles.body.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style: AppTextStyles.bodyBold,
                               ),
                               Text(
                                 caption(start + r),
@@ -167,10 +165,9 @@ class TierBadge extends StatelessWidget {
                   ),
                 Text(
                   tier[0],
-                  style: TextStyle(
+                  style: AppTextStyles.bodyBold.copyWith(
                     fontSize: size * 0.42,
                     height: 1.1,
-                    fontWeight: FontWeight.w800,
                     color: AppColors.surface,
                   ),
                 ),

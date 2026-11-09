@@ -84,12 +84,7 @@ extension _ProductDetailParts on _ProductDetailScreenState {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Icon(Icons.help, color: AppColors.success),
-                Text(
-                  l10n.whatsThis,
-                  style: AppTextStyles.body.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                Text(l10n.whatsThis, style: AppTextStyles.bodyBold),
               ],
             ),
           ),
@@ -106,9 +101,7 @@ extension _ProductDetailParts on _ProductDetailScreenState {
                   alignment: Alignment.topCenter,
                   child: DecoratedBox(
                     decoration: const BoxDecoration(
-                      border: Border(
-                        left: BorderSide(color: AppColors.border),
-                      ),
+                      border: Border(left: BorderSide(color: AppColors.border)),
                     ),
                     child: Stack(
                       children: [

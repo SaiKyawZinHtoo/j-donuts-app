@@ -64,7 +64,9 @@ class _HomeScreenState extends State<HomeScreen>
                 edgeOffset: MediaQuery.paddingOf(context).top,
                 onRefresh: () {
                   final done = Completer<void>();
-                  context.read<HomeBloc>().add(HomeRefreshRequested(done: done));
+                  context.read<HomeBloc>().add(
+                    HomeRefreshRequested(done: done),
+                  );
                   return done.future;
                 },
                 child: _HomeContent(

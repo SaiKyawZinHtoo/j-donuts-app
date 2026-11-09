@@ -25,7 +25,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  Future<void> _onRequested(HomeRequested event, Emitter<HomeState> emit) async {
+  Future<void> _onRequested(
+    HomeRequested event,
+    Emitter<HomeState> emit,
+  ) async {
     emit(const HomeLoading());
     _isOffline = !(await connectivity.isOnline());
     if (await _load(emit)) await _syncInBackground(emit);
@@ -57,7 +60,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         HomeLoaded(
           result.value,
           _isOffline,
-          sectionErrors: current is HomeLoaded ? current.sectionErrors : const {},
+          sectionErrors: current is HomeLoaded
+              ? current.sectionErrors
+              : const {},
           lastSyncedAt: await syncRepository?.lastSyncedAt(),
         ),
       );

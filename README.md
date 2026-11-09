@@ -10,6 +10,7 @@ from bundled JSON); the mock server is optional.
 | **Fake OTP code** | **`123456`** (also shown as a demo "SMS" local notification) |
 | **Flutter / Dart** | Flutter **3.47.7** (stable) / Dart **3.13.5** (`sdk: ^3.13.4` in `pubspec.yaml`) |
 | **State management** | BLoC (`flutter_bloc`) |
+| **Fonts** | Mija (headings, bold text, buttons) and Inter Display (body); see `assets/fonts/NOTICE.md` |
 | **Platforms** | Android and iOS (profile-mode checks on a physical Android phone; iOS Simulator) |
 | **App id / name** | Android `com.example.j_donuts_app`, iOS `com.example.jDonutsApp` / **J'Donuts** |
 
@@ -174,6 +175,9 @@ integration_test/              on-device frame-timing test (see section 9)
 - **Errors**: use cases return `Result<T>`; every screen has loading, error and empty states.
 - **Theme**: colours, type, spacing and motion are tokens (`lib/core/theme/`); widgets read tokens, not literals.
 - **Text**: all strings live in ARB files (English + Burmese) through gen-l10n.
+- **Typography**: font families are tokens too (`AppFonts`); `AppTextStyles` puts **Mija** on every heading, bold
+  style and button label and **Inter Display** on body text and the app default. Widgets never name a font or
+  a weight (a unit test enforces it).
 - **Layout**: portrait phones 4.7-6.9 in; text scale up to 1.3 is covered by a widget test.
 
 ## 5. State management: why BLoC
@@ -480,6 +484,10 @@ Stated plainly so nobody has to find them:
 - **Placeholder art**: `shops_backdrop.png`, `shop_1.png`, `shop_2.png`, `banner_new_shop.png`,
   `banner_hot.png` and `member_avatar.png` are locally generated stand-ins (the public site has no such
   images). Replace the files under the same names for final art. The brand logo is small (120 px), so it looks soft.
+- **Fonts**: **Mija** is a commercial typeface (Latinotype, all rights reserved). It is included only so this test
+  builds and matches the designs; get your own licence before reusing it (`assets/fonts/NOTICE.md`). Only the
+  Regular weight of Mija and Inter Display is bundled, so bold text is not heavier than regular (no true Mija
+  Bold file). Neither font has Myanmar glyphs, so Burmese text uses the system Myanmar font.
 - **Burmese strings** added during the UI passes were written by the author/assistant and are not yet
   reviewed by a native reader.
 - **Connectivity** uses `connectivity_plus` only; there is **no active reachability probe** (a connected

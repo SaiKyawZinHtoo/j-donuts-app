@@ -95,6 +95,14 @@ flutter:
     - assets/icon/facebook.svg
     - assets/icon/apple.png
 
+  fonts:
+    - family: Mija
+      fonts:
+        - asset: assets/fonts/Mija/Mija-Regular.otf
+    - family: InterDisplay
+      fonts:
+        - asset: assets/fonts/InterDisplay/InterDisplay-Regular.otf
+
 flutter_launcher_icons:
   android: true
   ios: true

@@ -5,6 +5,7 @@ class AppTheme {
 
   static final ThemeData light = ThemeData(
     useMaterial3: true,
+    fontFamily: AppFonts.body,
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.accent,

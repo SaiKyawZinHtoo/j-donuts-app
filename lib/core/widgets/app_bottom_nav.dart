@@ -147,10 +147,7 @@ class AppBottomNav extends StatelessWidget {
                         maxLines: 1,
                         softWrap: false,
                         overflow: TextOverflow.clip,
-                        style: AppTextStyles.caption.copyWith(
-                          color: color,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: AppTextStyles.captionBold.copyWith(color: color),
                       ),
                     ),
                   ),

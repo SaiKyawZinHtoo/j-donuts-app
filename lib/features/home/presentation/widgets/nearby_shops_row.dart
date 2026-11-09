@@ -120,9 +120,8 @@ class NearbyShopsRow extends StatelessWidget {
                                   const Spacer(),
                                   Text(
                                     l10n.orderOnline,
-                                    style: AppTextStyles.body.copyWith(
+                                    style: AppTextStyles.bodyBold.copyWith(
                                       color: AppColors.accent,
-                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                 ],
