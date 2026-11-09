@@ -158,7 +158,7 @@ class TierBadge extends StatelessWidget {
                   Text(
                     '★' * stars,
                     style: AppTextStyles.body.copyWith(
-                      fontSize: size * 0.2,
+                      fontSize: size * 0.3,
                       height: 1,
                       color: AppColors.surface,
                     ),

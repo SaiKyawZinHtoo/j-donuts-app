@@ -40,7 +40,7 @@ class PointsDonut extends StatelessWidget {
                 children: [
                   Text(
                     l10n.totalPointsLabel,
-                    style: AppTextStyles.caption.copyWith(
+                    style: AppTextStyles.bodyBold.copyWith(
                       color: AppColors.ringPink,
                     ),
                   ),
@@ -94,7 +94,15 @@ class _DonutPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = stroke
         ..strokeCap = StrokeCap.round
-        ..color = AppColors.ringPink,
+        // Lighter pink that deepens around the ring.
+        ..shader = SweepGradient(
+          transform: const GradientRotation(-pi / 2),
+          colors: [
+            AppColors.ringPinkLight,
+            AppColors.ringPinkMid,
+            AppColors.ringPinkLight,
+          ],
+        ).createShader(rect),
     );
     // Sprinkles: seeded so the pattern is stable frame to frame.
     final rnd = Random(7);

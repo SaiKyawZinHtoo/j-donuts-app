@@ -8,6 +8,8 @@ class AppColors {
   static const Color primaryDisabled = Color(0xFFBCB2B6);
   static const Color accent = Color(0xFFE6197F); // pink
   static const Color ringCyan = Color(0xFFBCE9F6);
+  static const Color ringPinkLight = Color(0xFFFFB0D4);
+  static const Color ringPinkMid = Color(0xFFF77DB8);
   static const Color ringPink = Color(0xFFF259A1);
   static const Color background = Color(0xFFFFFBFD);
   static const Color surface = Color(0xFFFFFFFF);
