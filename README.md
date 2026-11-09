@@ -63,8 +63,24 @@ re-runs, verified idempotent under a cold/airplane-mode launch). The marker is n
 (`SeedKeys.seedVersion`): an existing install with an older marker has its seed tables wiped and
 reseeded, while auth users are kept. Every subsequent read — Home, Product
 detail, Rewards — goes through a DAO, never JSON or network directly. `connectivity_plus` reports
-online/offline for the Home offline banner; "refresh from network when back online" is a documented
-no-op hook since no mock server is in scope (see Known gaps).
+online/offline for the Home offline banner. When `API_BASE_URL` is set, `HomeBloc` also refreshes the
+database in the background (see **Mock server and sync**); without it the app is local-only.
+
+**Mock server and sync**: `tool/mock_server/` is a small `shelf` server for the brief's optional
+mock API (`GET /v1/products|banners|sections|shops`, `{data, error, meta}` envelope, ETag/304).
+
+```bash
+dart run tool/mock_server/bin/server.dart [--port 8080] [--delay 500] [--fail-rate 0.3]
+flutter run --dart-define=API_BASE_URL=http://localhost:8080
+```
+
+`API_BASE_URL` per target: Android emulator `http://10.0.2.2:8080`, iOS Simulator
+`http://localhost:8080`, physical device `http://<LAN-IP>:8080` (device and computer on the same
+network; cleartext HTTP may need to be allowed for debug builds). The sync runs on launch, on
+pull-to-refresh and when the network returns. Responses are validated, written in one Drift
+transaction (rolled back on any failure) and never blank the screen: on failure the old data stays.
+ETags and the last sync time live in the `Meta` table; Home's offline banner shows "Updated N min
+ago".
 
 **Animations**: every duration/curve is a named constant in `lib/core/theme/motion_tokens.dart`, and
 every animation honors Reduce Motion (`MediaQuery.disableAnimationsOf`) by jumping to its end state.
@@ -152,14 +168,13 @@ Full suite: 205 tests, all passing; `flutter analyze` reports no issues.
 From spec §11 plus items accumulated in the SDD progress log (`.superpowers/sdd/.../progress.md`),
 none of which block the flows above:
 
-- No real backend — local JSON seed into Drift is the full data source; "refresh from network when
-  back online" is a documented no-op hook, not a real call.
+- The backend is the local mock server only; member, auth and rewards data are never synced.
+  Replace-all writes are fine at this data size but would need delta sync at scale.
 - No persistent cart; Add to cart is visual-only feedback (spec marks this a bonus).
 - No real OAuth/social login or Terms/Privacy content — placeholders per spec.
 - A handful of deferred minors from earlier tasks: weak id generation in the fake auth datasource
   (acceptable for local-only/no-backend scope), rewards tier names are English-only (no l10n mapping
-  yet), pull-to-refresh blanks content via `HomeLoading` instead of staying visible during refetch,
-  no accessibility semantics on the product quantity stepper,. None are required by the brief's test lists.
+  yet), no accessibility semantics on the product quantity stepper,. None are required by the brief's test lists.
 - The five auth routes use a custom shared-axis transition, so the iOS edge-swipe-back gesture does
   not work there (intentional: it would skip the bloc's `BackRequested` on OTP/Name/DOB). Android
   system back on OTP/Name/DOB also skips `BackRequested` (pre-existing, no `PopScope`).
