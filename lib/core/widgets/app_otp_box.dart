@@ -139,6 +139,8 @@ class _AppOtpBoxState extends State<AppOtpBox> {
                       focusNode: _focusNodes[index],
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.number,
+                      autofillHints: const [AutofillHints.oneTimeCode],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       maxLength: widget.length,
                       style: AppTextStyles.h2,
                       decoration: InputDecoration(

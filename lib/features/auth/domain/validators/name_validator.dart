@@ -1,6 +1,7 @@
 part of '../../auth_import.dart';
 
-final RegExp _namePattern = RegExp(r'^[a-zA-Zက-႟\s]+$');
+// Myanmar block minus its digits (U+1040-1049) and punctuation (U+104A-104F).
+final RegExp _namePattern = RegExp(r'^[a-zA-Z\u1000-\u103F\u1050-\u109F\s]+$');
 
 /// First name: trimmed length 1-50, letters (incl. Myanmar) and spaces only.
 ValidationResult validateFirstName(String value) {

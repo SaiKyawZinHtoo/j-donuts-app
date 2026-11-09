@@ -9,6 +9,7 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final Widget? prefix;
+  final FocusNode? focusNode;
 
   const AppTextField({
     super.key,
@@ -20,12 +21,14 @@ class AppTextField extends StatelessWidget {
     this.keyboardType,
     this.onChanged,
     this.prefix,
+    this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      focusNode: focusNode,
       obscureText: obscureText,
       keyboardType: keyboardType,
       onChanged: onChanged,

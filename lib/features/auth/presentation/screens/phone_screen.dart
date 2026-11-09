@@ -15,11 +15,18 @@ class _PhoneScreenState extends State<PhoneScreen> {
   final _controller = TextEditingController();
   bool _isValid = false;
   String? _serverError;
+  String? _blurError;
+  final _focus = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(_onChanged);
+    _focus.addListener(() {
+      if (_focus.hasFocus || _controller.text.isEmpty) return;
+      final r = validatePhone(_national(_controller.text));
+      setState(() => _blurError = r is ValidationInvalid ? r.message : null);
+    });
   }
 
   void _onChanged() {
@@ -28,6 +35,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
       setState(() {
         _isValid = valid;
         _serverError = null;
+        if (valid) _blurError = null;
       });
     }
   }
@@ -41,6 +49,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -68,8 +77,14 @@ class _PhoneScreenState extends State<PhoneScreen> {
           trailing: widget.isLogin
               ? null
               : const RegistrationProgressRing(step: RegistrationStep.phone),
-          onTapTerms: () {},
-          onTapPrivacy: () {},
+          onTapTerms: () => AppSnackbar.showSuccess(
+            context,
+            l10n.legalPlaceholderSuffix('Terms of Use'),
+          ),
+          onTapPrivacy: () => AppSnackbar.showSuccess(
+            context,
+            l10n.legalPlaceholderSuffix('Privacy Policy'),
+          ),
           bottom: AppButton(
             key: const Key('continueButton'),
             label: widget.isLogin ? l10n.loginButton : l10n.continueButton,
@@ -94,6 +109,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
               AppTextField(
                 key: const Key('phoneNumberField'),
                 controller: _controller,
+                focusNode: _focus,
                 prefix: Text(
                   l10n.phoneCountryCode,
                   style: AppTextStyles.body.copyWith(
@@ -102,7 +118,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
                 ),
                 hintText: l10n.phoneHint,
                 keyboardType: TextInputType.phone,
-                errorText: _serverError,
+                errorText: _serverError ?? _blurError,
               ),
               if (state is PhoneNeedsRegistration && widget.isLogin) ...[
                 const SizedBox(height: AppSpacing.sm),

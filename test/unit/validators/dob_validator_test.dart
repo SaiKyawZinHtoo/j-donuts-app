@@ -6,6 +6,14 @@ void main() {
     test('rejects Feb 29 in a non-leap year', () {
       expect(validateDob(DateTime(2023, 2, 29)), isA<ValidationInvalid>());
     });
+    test('accepts Feb 29 in a leap year', () {
+      expect(validateDob(DateTime(2000, 2, 29)), isA<ValidationValid>());
+    });
+    test('accepts today minus 13 years only; today is invalid', () {
+      final n = DateTime.now();
+      expect(validateDob(DateTime(n.year, n.month, n.day)),
+          isA<ValidationInvalid>());
+    });
     test('rejects a date in the future (tomorrow)', () {
       final tomorrow = DateTime.now().add(const Duration(days: 1));
       expect(validateDob(tomorrow), isA<ValidationInvalid>());

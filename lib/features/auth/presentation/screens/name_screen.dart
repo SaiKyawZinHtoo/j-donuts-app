@@ -13,25 +13,49 @@ class _NameScreenState extends State<NameScreen> {
   final _firstController = TextEditingController();
   final _lastController = TextEditingController();
   bool _isValid = false;
+  final _firstFocus = FocusNode();
+  final _lastFocus = FocusNode();
+  String? _firstBlur;
+  String? _lastBlur;
 
   @override
   void initState() {
     super.initState();
     _firstController.addListener(_revalidate);
     _lastController.addListener(_revalidate);
+    _firstFocus.addListener(() {
+      if (_firstFocus.hasFocus || _firstController.text.isEmpty) return;
+      final r = validateFirstName(_firstController.text);
+      setState(() => _firstBlur = r is ValidationInvalid ? r.message : null);
+    });
+    _lastFocus.addListener(() {
+      if (_lastFocus.hasFocus) return;
+      final r = validateLastName(_lastController.text);
+      setState(() => _lastBlur = r is ValidationInvalid ? r.message : null);
+    });
   }
 
   void _revalidate() {
     final valid =
         validateFirstName(_firstController.text) is ValidationValid &&
         validateLastName(_lastController.text) is ValidationValid;
-    if (valid != _isValid) setState(() => _isValid = valid);
+    setState(() {
+      _isValid = valid;
+      if (validateFirstName(_firstController.text) is ValidationValid) {
+        _firstBlur = null;
+      }
+      if (validateLastName(_lastController.text) is ValidationValid) {
+        _lastBlur = null;
+      }
+    });
   }
 
   @override
   void dispose() {
     _firstController.dispose();
     _lastController.dispose();
+    _firstFocus.dispose();
+    _lastFocus.dispose();
     super.dispose();
   }
 
@@ -86,15 +110,17 @@ class _NameScreenState extends State<NameScreen> {
               AppTextField(
                 key: const Key('firstNameField'),
                 controller: _firstController,
+                focusNode: _firstFocus,
                 labelText: l10n.firstNameLabel,
-                errorText: firstError,
+                errorText: firstError ?? _firstBlur,
               ),
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 key: const Key('lastNameField'),
                 controller: _lastController,
+                focusNode: _lastFocus,
                 labelText: l10n.lastNameLabel,
-                errorText: lastError,
+                errorText: lastError ?? _lastBlur,
               ),
             ],
           ),
