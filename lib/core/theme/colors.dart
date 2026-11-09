@@ -36,6 +36,7 @@ class AppColors {
   static const Color navPill = Color(0xFFE8629F);
   static const Color tierBronze = Color(0xFFD9A06B);
   static const Color tierSilver = Color(0xFFC4C7CC);
+  static const Color avatarGold = Color(0xFFF7B84B);
   static const Color tierGold = Color(0xFFF0D27C);
   static const Color tierPlatinum = Color(0xFFBFE3F2);
   static const Color headerPeach = Color(0xFFFCE3D0);

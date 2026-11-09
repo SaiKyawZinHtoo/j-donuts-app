@@ -6,7 +6,6 @@ class MemberHeader extends StatelessWidget {
   final Member member;
   final VoidCallback? onBellTap;
   final int notificationCount;
-  final String? phone;
 
   /// Placed inside the peach area, flush with its bottom edge (the banner).
   final Widget? footer;
@@ -16,7 +15,6 @@ class MemberHeader extends StatelessWidget {
     required this.member,
     this.onBellTap,
     this.notificationCount = 0,
-    this.phone,
     this.footer,
   });
 
@@ -112,78 +110,77 @@ class MemberHeader extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                if (phone != null)
-                                  Text(
-                                    phone!,
-                                    key: const Key('memberHeader_phone'),
-                                    style: AppTextStyles.caption,
-                                  ),
                                 Text(
                                   l10n.memberTierCaption(member.tier),
-                                  style: AppTextStyles.caption,
+                                  style: AppTextStyles.bodyBold.copyWith(
+                                    fontSize: 18,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
-                          Material(
-                            color: AppColors.badge,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppSpacing.md,
-                              ),
-                              side: const BorderSide(
-                                color: AppColors.surface,
-                                width: AppSpacing.badgeBorder,
-                              ),
-                            ),
-                            child: InkWell(
-                              key: const Key('memberHeader_bellButton'),
-                              borderRadius: BorderRadius.circular(
-                                AppSpacing.md,
-                              ),
-                              onTap: onBellTap,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.sm,
-                                  vertical: AppSpacing.sm,
+                          Transform.translate(
+                            // Flush with the screen's right edge.
+                            offset: const Offset(AppSpacing.md, 0),
+                            child: Material(
+                              color: AppColors.badge,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: _bellRadius,
+                                side: const BorderSide(
+                                  color: AppColors.surface,
+                                  width: 2,
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.notifications_none,
-                                      color: AppColors.surface,
-                                    ),
-                                    if (notificationCount > 0)
-                                      const SizedBox(width: AppSpacing.xs),
-                                    if (notificationCount > 0)
-                                      AnimatedSwitcher(
-                                        duration:
-                                            MediaQuery.disableAnimationsOf(
-                                              context,
-                                            )
-                                            ? Duration.zero
-                                            : MotionTokens.kQtyChange,
-                                        child: Container(
-                                          key: ValueKey(notificationCount),
-                                          padding: const EdgeInsets.all(
-                                            AppSpacing.xs,
-                                          ),
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.surface,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Text(
-                                            '$notificationCount',
-                                            style: AppTextStyles.caption
-                                                .copyWith(
-                                                  color: AppColors.badge,
-                                                ),
+                              ),
+                              child: InkWell(
+                                key: const Key('memberHeader_bellButton'),
+                                borderRadius: _bellRadius,
+                                onTap: onBellTap,
+                                child: Padding(
+                                  // Extra right room: the bar bleeds past the page padding.
+                                  padding: const EdgeInsets.fromLTRB(
+                                    AppSpacing.md,
+                                    AppSpacing.sm,
+                                    AppSpacing.md + AppSpacing.md,
+                                    AppSpacing.sm,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.notifications_none,
+                                        color: AppColors.surface,
+                                      ),
+                                      if (notificationCount > 0)
+                                        const SizedBox(width: AppSpacing.xs),
+                                      if (notificationCount > 0)
+                                        AnimatedSwitcher(
+                                          duration:
+                                              MediaQuery.disableAnimationsOf(
+                                                context,
+                                              )
+                                              ? Duration.zero
+                                              : MotionTokens.kQtyChange,
+                                          child: Container(
+                                            key: ValueKey(notificationCount),
+                                            padding: const EdgeInsets.all(
+                                              AppSpacing.xs,
+                                            ),
+                                            decoration: const BoxDecoration(
+                                              color: AppColors.surface,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Text(
+                                              '$notificationCount',
+                                              style: AppTextStyles.caption
+                                                  .copyWith(
+                                                    color: AppColors.badge,
+                                                  ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -225,15 +222,19 @@ class MemberHeader extends StatelessWidget {
   }
 }
 
+const _bellRadius = BorderRadius.horizontal(
+  left: Radius.circular(AppSpacing.xl),
+);
+
 class _ArcRingPainter extends CustomPainter {
   const _ArcRingPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.badge
+      ..color = AppColors.avatarGold
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
+      ..strokeWidth = 5
       ..strokeCap = StrokeCap.round;
     canvas.drawArc(
       Offset.zero & size,

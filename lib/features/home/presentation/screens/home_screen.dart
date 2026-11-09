@@ -150,7 +150,6 @@ class _HomeContent extends StatelessWidget {
             removeTop: state.isOffline,
             child: MemberHeader(
               member: bundle.member,
-              phone: bundle.phone,
               notificationCount: bundle.openChallenges,
               onBellTap: () => context.go('/rewards'),
               // Peach background ends exactly at the banner's bottom edge.

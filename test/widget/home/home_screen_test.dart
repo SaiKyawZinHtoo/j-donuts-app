@@ -257,7 +257,6 @@ void main() {
             ),
             child: const Scaffold(
               body: MemberHeader(
-                phone: '0912345678',
                 notificationCount: 2,
                 member: Member(
                   id: 'm1',
@@ -274,7 +273,7 @@ void main() {
         ),
       );
       expect(find.text('Hania'), findsOneWidget);
-      expect(find.text('0912345678'), findsOneWidget);
+      expect(find.text('0912345678'), findsNothing);
       expect(find.text('Bronze member'), findsOneWidget);
       expect(
         find.descendant(
@@ -546,5 +545,6 @@ class _FakeSync implements SyncRepository {
   Future<DateTime?> lastSyncedAt() async => _at;
 
   @override
-  Future<Result<SyncOutcome>> refresh() async => const Result.ok(SyncOutcome.notModified);
+  Future<Result<SyncOutcome>> refresh() async =>
+      const Result.ok(SyncOutcome.notModified);
 }
