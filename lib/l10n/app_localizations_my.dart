@@ -127,6 +127,11 @@ class AppLocalizationsMy extends AppLocalizations {
       'သင်သည် အော့ဖ်လိုင်းဖြစ်နေသည်။ နောက်ဆုံးသိမ်းဆည်းထားသော အချက်အလက်များကို ပြသထားသည်။';
 
   @override
+  String homeOfflineBannerUpdated(int minutes) {
+    return 'သင်သည် အော့ဖ်လိုင်းဖြစ်နေသည်။ $minutes မိနစ်အလိုတွင် နောက်ဆုံးအပ်ဒိတ်လုပ်ခဲ့သည်။';
+  }
+
+  @override
   String get nothingHereYet => 'ဒီနေရာတွင် မရှိသေးပါ။';
 
   @override

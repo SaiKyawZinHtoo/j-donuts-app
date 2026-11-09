@@ -11,8 +11,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  // Lives above the BlocBuilder: a refresh passes through HomeLoading, which
-  // would dispose any controller owned by _HomeContent and replay the entrance.
+  // Lives above the BlocBuilder so the entrance is not replayed when the
+  // state is rebuilt (e.g. after a retry through HomeLoading).
   late final AnimationController _entrance = AnimationController(vsync: this);
   Duration _total = Duration.zero;
   bool _started = false;
@@ -62,8 +62,10 @@ class _HomeScreenState extends State<HomeScreen>
               _startOnce(context, state.data.sections.length + 3);
               return RefreshIndicator(
                 edgeOffset: MediaQuery.paddingOf(context).top,
-                onRefresh: () async {
-                  context.read<HomeBloc>().add(const HomeRefreshRequested());
+                onRefresh: () {
+                  final done = Completer<void>();
+                  context.read<HomeBloc>().add(HomeRefreshRequested(done: done));
+                  return done.future;
                 },
                 child: _HomeContent(
                   state: state,
@@ -76,6 +78,13 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
+}
+
+String _offlineText(BuildContext context, DateTime? syncedAt) {
+  final l10n = AppLocalizations.of(context)!;
+  if (syncedAt == null) return l10n.homeOfflineBanner;
+  final minutes = DateTime.now().difference(syncedAt).inMinutes;
+  return l10n.homeOfflineBannerUpdated(minutes < 0 ? 0 : minutes);
 }
 
 class _HomeSkeletonShape extends StatelessWidget {
@@ -126,7 +135,7 @@ class _HomeContent extends StatelessWidget {
               AppSpacing.sm,
             ),
             child: Text(
-              AppLocalizations.of(context)!.homeOfflineBanner,
+              _offlineText(context, state.lastSyncedAt),
               style: const TextStyle(color: AppColors.surface),
               textAlign: TextAlign.center,
             ),

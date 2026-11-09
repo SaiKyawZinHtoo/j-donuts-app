@@ -125,6 +125,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'You\'re offline. Showing the last saved data.';
 
   @override
+  String homeOfflineBannerUpdated(int minutes) {
+    return 'You\'re offline. Updated $minutes min ago.';
+  }
+
+  @override
   String get nothingHereYet => 'Nothing here yet.';
 
   @override

@@ -17,7 +17,15 @@ final class HomeLoaded extends HomeState {
   /// exists (currently `GetHomeUseCase` loads the whole bundle or nothing).
   final Map<String, String?> sectionErrors;
 
-  const HomeLoaded(this.data, this.isOffline, {this.sectionErrors = const {}});
+  /// When the local data was last refreshed from the server, if ever.
+  final DateTime? lastSyncedAt;
+
+  const HomeLoaded(
+    this.data,
+    this.isOffline, {
+    this.sectionErrors = const {},
+    this.lastSyncedAt,
+  });
 }
 
 final class HomeError extends HomeState {

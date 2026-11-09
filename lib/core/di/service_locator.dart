@@ -7,6 +7,8 @@ import 'package:j_donuts_app/data/local/daos/member_dao.dart';
 import 'package:j_donuts_app/data/local/daos/product_dao.dart';
 import 'package:j_donuts_app/data/local/daos/rewards_dao.dart';
 import 'package:j_donuts_app/data/local/database.dart' hide AuthUser;
+import 'package:j_donuts_app/data/remote/remote_data_source.dart';
+import 'package:j_donuts_app/features/home/data/repositories/sync_repository_impl.dart';
 import 'package:j_donuts_app/features/auth/auth_import.dart';
 import 'package:j_donuts_app/features/home/home_import.dart';
 import 'package:j_donuts_app/features/product/product_import.dart';
@@ -76,8 +78,22 @@ void setupServiceLocator() {
   );
 
   getIt.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
+  if (kApiBaseUrl.isNotEmpty) {
+    getIt.registerLazySingleton<SyncRepository>(
+      () => SyncRepositoryImpl(
+        remote: RemoteDataSource(buildDio(kApiBaseUrl)),
+        db: getIt(),
+      ),
+    );
+  }
   getIt.registerFactory<HomeBloc>(
-    () => HomeBloc(getHomeUseCase: getIt(), connectivity: getIt()),
+    () => HomeBloc(
+      getHomeUseCase: getIt(),
+      connectivity: getIt(),
+      syncRepository: getIt.isRegistered<SyncRepository>()
+          ? getIt<SyncRepository>()
+          : null,
+    ),
   );
 
   getIt.registerLazySingleton<ProductRepository>(

@@ -41,6 +41,10 @@
   "letsExploreButton": "လေ့လာကြည့်ရှုမည်",
 
   "homeOfflineBanner": "သင်သည် အော့ဖ်လိုင်းဖြစ်နေသည်။ နောက်ဆုံးသိမ်းဆည်းထားသော အချက်အလက်များကို ပြသထားသည်။",
+  "homeOfflineBannerUpdated": "သင်သည် အော့ဖ်လိုင်းဖြစ်နေသည်။ {minutes} မိနစ်အလိုတွင် နောက်ဆုံးအပ်ဒိတ်လုပ်ခဲ့သည်။",
+  "@homeOfflineBannerUpdated": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
   "nothingHereYet": "ဒီနေရာတွင် မရှိသေးပါ။",
   "noNearbyShopsFound": "အနီးအနားဆိုင်များ မတွေ့ပါ။",
   "noBannersRightNow": "ယခု ကြော်ငြာများ မရှိပါ။",

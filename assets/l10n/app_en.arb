@@ -56,6 +56,10 @@
   "letsExploreButton": "Let's explore",
 
   "homeOfflineBanner": "You're offline. Showing the last saved data.",
+  "homeOfflineBannerUpdated": "You're offline. Updated {minutes} min ago.",
+  "@homeOfflineBannerUpdated": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
   "nothingHereYet": "Nothing here yet.",
   "noNearbyShopsFound": "No nearby shops found.",
   "noBannersRightNow": "No banners right now.",

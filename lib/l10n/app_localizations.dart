@@ -302,6 +302,12 @@ abstract class AppLocalizations {
   /// **'You\'re offline. Showing the last saved data.'**
   String get homeOfflineBanner;
 
+  /// No description provided for @homeOfflineBannerUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline. Updated {minutes} min ago.'**
+  String homeOfflineBannerUpdated(int minutes);
+
   /// No description provided for @nothingHereYet.
   ///
   /// In en, this message translates to:

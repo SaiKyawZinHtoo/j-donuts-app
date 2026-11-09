@@ -152,6 +152,25 @@ void main() {
     expect(find.byKey(const Key('homeOfflineBanner')), findsOneWidget);
   });
 
+  testWidgets('offline banner shows minutes since last sync', (tester) async {
+    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => false);
+    when(() => mockGetHome.call())
+        .thenAnswer((_) async => Result.ok(testBundle));
+    final sync = _FakeSync(DateTime.now().subtract(const Duration(minutes: 7)));
+
+    final bloc = HomeBloc(
+      getHomeUseCase: mockGetHome,
+      connectivity: mockConnectivity,
+      syncRepository: sync,
+    )..add(const HomeRequested());
+
+    await tester.pumpWidget(makeTestableWidget(bloc));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.textContaining('Updated 7 min ago'), findsOneWidget);
+  });
+
   testWidgets(
     'does not show offline banner when HomeLoaded.isOffline is false',
     (tester) async {
@@ -517,4 +536,15 @@ void main() {
           .dx,
     );
   });
+}
+
+class _FakeSync implements SyncRepository {
+  _FakeSync(this._at);
+  final DateTime _at;
+
+  @override
+  Future<DateTime?> lastSyncedAt() async => _at;
+
+  @override
+  Future<Result<SyncOutcome>> refresh() async => const Result.ok(SyncOutcome.notModified);
 }
