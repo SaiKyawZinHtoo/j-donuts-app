@@ -1,7 +1,7 @@
+import 'package:j_donuts_app/core/core_import.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:j_donuts_app/features/auth/auth_import.dart';
-import 'package:j_donuts_app/l10n/app_localizations.dart';
 
 import 'test_helpers.dart';
 
@@ -71,5 +71,32 @@ void main() {
     );
     expect(mask, findsOneWidget);
     expect(tester.widget<ShaderMask>(mask).blendMode, BlendMode.dstIn);
+  });
+
+  testWidgets('title is centred and the button is narrower than the page', (
+    tester,
+  ) async {
+    const size = Size(375, 667);
+    tester.view.physicalSize = size;
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_app(size: size));
+    await tester.pumpAndSettle();
+    final l10n = AppLocalizations.of(
+      tester.element(find.byType(WelcomeScreen)),
+    )!;
+    final title = tester.widget<Text>(find.text(l10n.welcomeTitle));
+    expect(title.textAlign, TextAlign.center);
+    expect(
+      tester.getCenter(find.text(l10n.welcomeTitle)).dx,
+      closeTo(size.width / 2, 1),
+    );
+    final button = tester.getRect(find.byKey(const Key('letsExploreButton')));
+    final padded = size.width - 2 * AppSpacing.authHorizontalPadding;
+    expect(
+      button.width,
+      closeTo(padded * AppSpacing.welcomeButtonWidthFactor, 1),
+    );
+    expect(button.center.dx, closeTo(size.width / 2, 1));
   });
 }

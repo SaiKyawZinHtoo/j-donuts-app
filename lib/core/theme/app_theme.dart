@@ -27,6 +27,7 @@ class AppTheme {
       focusedBorder: _fieldBorder(AppColors.accent),
       errorBorder: _fieldBorder(AppColors.error),
       focusedErrorBorder: _fieldBorder(AppColors.error),
+      labelStyle: AppTextStyles.body.copyWith(color: AppColors.hint),
       floatingLabelStyle: const TextStyle(color: AppColors.accent),
     ),
     textButtonTheme: TextButtonThemeData(

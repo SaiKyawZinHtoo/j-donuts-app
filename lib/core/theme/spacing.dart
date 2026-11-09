@@ -78,4 +78,8 @@ class AppSpacing {
   static const double socialIconSize = 28;
   // Where the Onboarding donut cluster starts fading out (0..1 of its height).
   static const double onboardingFadeStart = 0.6;
+  // Gap between the status bar and the auth header row (back button / ring).
+  static const double authHeaderTopGap = 16;
+  // Share of the available width the Welcome button takes.
+  static const double welcomeButtonWidthFactor = 0.8;
 }

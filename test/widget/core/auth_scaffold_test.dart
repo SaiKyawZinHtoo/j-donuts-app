@@ -221,4 +221,29 @@ void main() {
     final off = await top(false);
     expect(on - off, AppSpacing.authTitleTopGap);
   });
+
+  testWidgets('header row sits authHeaderTopGap below the status bar', (
+    tester,
+  ) async {
+    _phone(tester);
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(padding: const EdgeInsets.only(top: 47)),
+          child: child!,
+        ),
+        home: AuthScaffold(
+          trailing: const SizedBox(key: Key('ring'), width: 40, height: 40),
+          child: const Text('x'),
+        ),
+      ),
+    );
+    final top = tester.getTopLeft(find.byKey(const Key('ring'))).dy;
+    // Row is backButtonSize tall; the 40 px ring is centred inside it.
+    final rowTop = top - (AppSpacing.backButtonSize - 40) / 2;
+    expect(rowTop, 47 + AppSpacing.authHeaderTopGap);
+  });
 }

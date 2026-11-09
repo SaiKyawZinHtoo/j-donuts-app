@@ -201,4 +201,16 @@ void main() {
     expect(find.bySemanticsLabel('Add, 5 MMK'), findsOneWidget);
     h.dispose();
   });
+
+  testWidgets('label is shown in capitals with the button text style', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(AppButton(label: "let's go", onPressed: () {})),
+    );
+    expect(find.text("LET'S GO"), findsOneWidget);
+    final text = tester.widget<Text>(find.text("LET'S GO"));
+    expect(text.style?.letterSpacing, 2);
+    expect(text.style?.fontWeight, FontWeight.w700);
+  });
 }

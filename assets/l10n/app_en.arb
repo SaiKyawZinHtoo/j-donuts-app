@@ -20,7 +20,7 @@
 
   "phoneScreenTitle": "Enter your phone number",
   "phoneCountryCode": "+95",
-  "phoneHint": "9xxxxxxxx",
+  "phoneHint": "09xxxxxxxx",
   "phoneNotFoundRegister": "We couldn't find this number. Register instead?",
   "continueButton": "Continue",
   "loginScreenTitle": "Welcome back, Login to your profile",

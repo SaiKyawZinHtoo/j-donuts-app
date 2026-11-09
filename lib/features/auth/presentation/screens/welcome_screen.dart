@@ -154,14 +154,24 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               const SizedBox(height: AppSpacing.lg),
               FadeTransition(
                 opacity: _controller,
-                child: Text(l10n.welcomeTitle, style: AppTextStyles.h1),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    l10n.welcomeTitle,
+                    style: AppTextStyles.h1,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ],
           ),
-          AppButton(
-            key: const Key('letsExploreButton'),
-            label: l10n.letsExploreButton,
-            onPressed: () => context.go('/home'),
+          FractionallySizedBox(
+            widthFactor: AppSpacing.welcomeButtonWidthFactor,
+            child: AppButton(
+              key: const Key('letsExploreButton'),
+              label: l10n.letsExploreButton,
+              onPressed: () => context.go('/home'),
+            ),
           ),
         ],
       ),

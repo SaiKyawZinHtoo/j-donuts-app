@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneCountryCode => '+95';
 
   @override
-  String get phoneHint => '9xxxxxxxx';
+  String get phoneHint => '09xxxxxxxx';
 
   @override
   String get phoneNotFoundRegister =>

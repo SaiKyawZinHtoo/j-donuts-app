@@ -44,7 +44,7 @@ class AuthScaffold extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: hPad,
+                padding: hPad.copyWith(top: AppSpacing.authHeaderTopGap),
                 child: SizedBox(
                   height: AppSpacing.backButtonSize,
                   child: Row(

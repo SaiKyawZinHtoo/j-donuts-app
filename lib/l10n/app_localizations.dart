@@ -173,7 +173,7 @@ abstract class AppLocalizations {
   /// No description provided for @phoneHint.
   ///
   /// In en, this message translates to:
-  /// **'9xxxxxxxx'**
+  /// **'09xxxxxxxx'**
   String get phoneHint;
 
   /// No description provided for @phoneNotFoundRegister.
