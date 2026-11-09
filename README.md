@@ -102,7 +102,8 @@ Full walkthrough, checks and troubleshooting: [Trying the mock server](#11-tryin
 8. **Airplane mode**: after the first launch, Home, Product detail and Rewards all render offline, images
    included, with a small offline banner on Home.
 
-Google, Apple, Facebook, Terms of Use and Privacy Policy show a placeholder snackbar (no real
+Google, Apple and Facebook use the icons in `assets/icon/` (shared `SocialSignInButton`, SVG via
+`flutter_svg`); they and Terms of Use / Privacy Policy show a "not implemented" placeholder dialog (no real
 integration). Explore, Wallet and the other bottom-nav icons open a simple placeholder.
 
 ## 3. What is built

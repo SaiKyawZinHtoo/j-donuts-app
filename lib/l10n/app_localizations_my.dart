@@ -242,4 +242,13 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String get logOut => 'ထွက်ရန်';
+
+  @override
+  String get continueWithGoogle => 'Google ဖြင့် ဆက်လက်ရန်';
+
+  @override
+  String get continueWithApple => 'Apple ဖြင့် ဆက်လက်ရန်';
+
+  @override
+  String get continueWithFacebook => 'Facebook ဖြင့် ဆက်လက်ရန်';
 }

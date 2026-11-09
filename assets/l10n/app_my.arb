@@ -81,5 +81,8 @@
   "walletTabLabel": "ပိုက်ဆံအိတ်",
   "settingsTabLabel": "ဆက်တင်များ",
   "comingSoon": "{label} မကြာမီလာမည်",
-  "logOut": "ထွက်ရန်"
+  "logOut": "ထွက်ရန်",
+  "continueWithGoogle": "Google ဖြင့် ဆက်လက်ရန်",
+  "continueWithApple": "Apple ဖြင့် ဆက်လက်ရန်",
+  "continueWithFacebook": "Facebook ဖြင့် ဆက်လက်ရန်"
 }

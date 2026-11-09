@@ -153,19 +153,22 @@ class _OnboardingActions extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
+              SocialSignInButton(
                 key: const Key('googleSignInButton'),
+                asset: AppAssets.googleIcon,
+                label: l10n.continueWithGoogle,
                 onPressed: () => _socialPlaceholder(context, 'Google'),
-                icon: const Text('G', style: AppTextStyles.socialGlyph),
               ),
-              IconButton(
+              SocialSignInButton(
                 key: const Key('appleSignInButton'),
-                icon: const Icon(Icons.apple),
+                asset: AppAssets.appleIcon,
+                label: l10n.continueWithApple,
                 onPressed: () => _socialPlaceholder(context, 'Apple'),
               ),
-              IconButton(
+              SocialSignInButton(
                 key: const Key('facebookSignInButton'),
-                icon: const Icon(Icons.facebook),
+                asset: AppAssets.facebookIcon,
+                label: l10n.continueWithFacebook,
                 onPressed: () => _socialPlaceholder(context, 'Facebook'),
               ),
             ],

@@ -110,5 +110,8 @@
   "@comingSoon": {
     "placeholders": { "label": { "type": "String" } }
   },
-  "logOut": "Log out"
+  "logOut": "Log out",
+  "continueWithGoogle": "Continue with Google",
+  "continueWithApple": "Continue with Apple",
+  "continueWithFacebook": "Continue with Facebook"
 }

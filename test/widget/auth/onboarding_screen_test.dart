@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:j_donuts_app/core/core_import.dart';
 import 'package:j_donuts_app/features/auth/auth_import.dart';
@@ -36,6 +37,22 @@ void main() {
       expect(find.byKey(Key(k)), findsOneWidget);
     }
     expect(find.byType(AppLegalFooter), findsOneWidget);
+  });
+
+  testWidgets('social buttons use the Google SVG, Apple PNG and Facebook SVG', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    expect(find.byType(SocialSignInButton), findsNWidgets(3));
+    expect(find.byType(SvgPicture), findsNWidgets(2));
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('appleSignInButton')),
+        matching: find.byType(Image),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('tiles start at slideFrom with opacity 0, end at rest', (

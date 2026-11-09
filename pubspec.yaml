@@ -52,6 +52,7 @@ dependencies:
   intl: ^0.20.2
   dio: ^5.11.1
   flutter_local_notifications: 19.5.0
+  flutter_svg: ^2.3.2
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +91,9 @@ flutter:
   assets:
     - assets/seed/
     - assets/images/seed/
+    - assets/icon/google.svg
+    - assets/icon/facebook.svg
+    - assets/icon/apple.png
 
 flutter_launcher_icons:
   android: true

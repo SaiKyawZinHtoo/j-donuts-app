@@ -41,10 +41,4 @@ class AppTextStyles {
     color: AppColors.surface,
   );
 
-  /// Letter glyph used as a social-sign-in icon.
-  static const TextStyle socialGlyph = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-    color: AppColors.textPrimary,
-  );
 }

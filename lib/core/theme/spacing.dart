@@ -75,4 +75,5 @@ class AppSpacing {
   static const double datePickerSheetHeight = 300;
   static const double skeletonPlaceholderHeight = 400;
   static const double inlineSpinnerSize = 20;
+  static const double socialIconSize = 28;
 }
