@@ -84,4 +84,61 @@ void main() {
     bloc.close(); // cancels the OTP countdown timer
     await tester.pump();
   });
+
+  group('OTP paste / autofill', () {
+    Future<AuthBloc> pumpOtp(WidgetTester tester) async {
+      final repo = MockAuthRepository();
+      when(() => repo.checkPhone(any()))
+          .thenAnswer((_) async => const Result.ok(false));
+      final bloc = buildAuthBloc(repository: repo);
+      bloc.add(const PhoneSubmitted('09123456789'));
+      await tester.pumpWidget(
+        makeTestableWidget(const OtpScreen(), bloc: bloc),
+      );
+      await tester.pump();
+      await tester.pump();
+      return bloc;
+    }
+
+    testWidgets('every box asks the OS for a one-time-code autofill', (
+      tester,
+    ) async {
+      final bloc = await pumpOtp(tester);
+      final fields = tester.widgetList<TextField>(find.byType(TextField));
+      expect(fields, hasLength(6));
+      for (final f in fields) {
+        expect(f.autofillHints, contains(AutofillHints.oneTimeCode));
+        expect(f.keyboardType, TextInputType.number);
+      }
+      bloc.close();
+    });
+
+    testWidgets('a full code delivered into one box fills all six and submits', (
+      tester,
+    ) async {
+      final bloc = await pumpOtp(tester);
+      await tester.enterText(find.byType(TextField).first, '123456');
+      await tester.pump();
+      final texts = tester
+          .widgetList<TextField>(find.byType(TextField))
+          .map((f) => f.controller!.text)
+          .toList();
+      expect(texts, ['1', '2', '3', '4', '5', '6']);
+      expect(bloc.state, isA<AwaitingName>());
+      bloc.close();
+    });
+
+    testWidgets('letters in a pasted code are dropped', (tester) async {
+      final bloc = await pumpOtp(tester);
+      await tester.enterText(find.byType(TextField).first, '12ab');
+      await tester.pump();
+      final texts = tester
+          .widgetList<TextField>(find.byType(TextField))
+          .map((f) => f.controller!.text)
+          .toList();
+      expect(texts.join(), '12');
+      expect(bloc.state, isA<OtpAwaiting>());
+      bloc.close();
+    });
+  });
 }

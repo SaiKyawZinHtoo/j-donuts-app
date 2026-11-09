@@ -73,4 +73,52 @@ void main() {
     expect(find.byKey(const Key('fingerprintButton')), findsNothing);
     expect(find.text('CONTINUE'), findsOneWidget);
   });
+
+  group('inline message on blur', () {
+    final field = find.byKey(const Key('phoneNumberField'));
+
+    Future<void> type(WidgetTester tester, String text) async {
+      await tester.tap(field);
+      await tester.enterText(field, text);
+      await tester.pump();
+    }
+
+    Future<void> blur(WidgetTester tester) async {
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pump();
+    }
+
+    testWidgets('invalid number shows message only after focus is lost', (
+      tester,
+    ) async {
+      await pump(tester);
+      await type(tester, '0912');
+      expect(find.textContaining('digits after the leading 9'), findsNothing);
+      await blur(tester);
+      expect(find.textContaining('digits after the leading 9'), findsOneWidget);
+      final button = tester.widget<ElevatedButton>(
+        find.descendant(
+          of: find.byKey(const Key('continueButton')),
+          matching: find.byType(ElevatedButton),
+        ),
+      );
+      expect(button.onPressed, isNull);
+    });
+
+    testWidgets('message clears once the number becomes valid', (tester) async {
+      await pump(tester);
+      await type(tester, '0912');
+      await blur(tester);
+      await type(tester, '09254135592');
+      expect(find.textContaining('digits after the leading 9'), findsNothing);
+    });
+
+    testWidgets('empty field shows no message on blur', (tester) async {
+      await pump(tester);
+      await tester.tap(field);
+      await tester.pump();
+      await blur(tester);
+      expect(find.textContaining('Phone number must'), findsNothing);
+    });
+  });
 }
