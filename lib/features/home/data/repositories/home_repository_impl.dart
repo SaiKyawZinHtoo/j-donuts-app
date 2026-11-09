@@ -56,6 +56,7 @@ class HomeRepositoryImpl implements HomeRepository {
     id: row.id,
     imageUrl: row.imageUrl,
     title: row.title,
+    badge: row.badge,
     deepLinkTarget: row.deepLinkTarget,
   );
 

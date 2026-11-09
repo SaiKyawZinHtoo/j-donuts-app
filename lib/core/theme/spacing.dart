@@ -16,6 +16,7 @@ class AppSpacing {
   static const double fieldRadius = 12;
   static const double backButtonSize = 44;
   static const double authHorizontalPadding = 24;
+  static const double badgeBorder = 1;
   static const double ringSize = 32;
   static const double ringStrokeRatio = 0.3;
   static const double appBarHeight = 56;
@@ -49,7 +50,7 @@ class AppSpacing {
   static const double navSelectedFlex =
       2.3; // selected slot width vs 1 for others
   static const double bannerViewportFraction = 0.88; // next banner peeks
-  static const double headerBadgeSize = 56;
+  static const double headerBadgeSize = 64;
   static const double rewardCardRadius = 28;
   static const double rewardArtSize = 96;
   static const double tierRowHeight = 96;

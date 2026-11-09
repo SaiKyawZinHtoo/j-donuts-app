@@ -113,23 +113,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ],
                       ),
                     ),
-                    if (product.isNew)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.badge,
-                          borderRadius: BorderRadius.circular(AppSpacing.sm),
-                        ),
-                        child: Text(
-                          l10n.newBadge,
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.surface,
-                          ),
-                        ),
-                      ),
+                    if (product.isNew) AppBadge(label: l10n.newBadge),
                   ],
                 ),
           const SizedBox(height: AppSpacing.md),

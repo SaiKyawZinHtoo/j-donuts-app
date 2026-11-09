@@ -153,15 +153,12 @@ class _HomeContent extends StatelessWidget {
               phone: bundle.phone,
               notificationCount: bundle.openChallenges,
               onBellTap: () => context.go('/rewards'),
+              // Peach background ends exactly at the banner's bottom edge.
+              footer: BannerCarousel(banners: bundle.banners),
             ),
           ),
         ),
-        // Banners overlap the header's bottom edge.
-        Transform.translate(
-          offset: const Offset(0, -AppSpacing.lg),
-          child: _entry(i++, BannerCarousel(banners: bundle.banners)),
-        ),
-        const SizedBox(height: AppSpacing.sectionGap - AppSpacing.lg),
+        const SizedBox(height: AppSpacing.sectionGap),
         for (final section in bundle.sections) ...[
           _entry(
             i++,

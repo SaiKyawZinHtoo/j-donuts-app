@@ -134,24 +134,7 @@ class _ProductCardState extends State<ProductCard> {
           Positioned(
             right: ProductCard._badgeInset,
             bottom: ProductCard._badgeInset,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: AppColors.badge,
-                borderRadius: BorderRadius.circular(AppSpacing.md),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                child: Text(
-                  widget.badgeLabel!,
-                  style: AppTextStyles.captionBold.copyWith(
-                    color: AppColors.surface,
-                  ),
-                ),
-              ),
-            ),
+            child: AppBadge(label: widget.badgeLabel!),
           ),
       ],
     );

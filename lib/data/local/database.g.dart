@@ -549,6 +549,15 @@ class $BannersTable extends Banners with TableInfo<$BannersTable, Banner> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _badgeMeta = const VerificationMeta('badge');
+  @override
+  late final GeneratedColumn<String> badge = GeneratedColumn<String>(
+    'badge',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _deepLinkTargetMeta = const VerificationMeta(
     'deepLinkTarget',
   );
@@ -562,7 +571,13 @@ class $BannersTable extends Banners with TableInfo<$BannersTable, Banner> {
     defaultValue: const Constant(''),
   );
   @override
-  List<GeneratedColumn> get $columns => [id, imageUrl, title, deepLinkTarget];
+  List<GeneratedColumn> get $columns => [
+    id,
+    imageUrl,
+    title,
+    badge,
+    deepLinkTarget,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -596,6 +611,12 @@ class $BannersTable extends Banners with TableInfo<$BannersTable, Banner> {
     } else if (isInserting) {
       context.missing(_titleMeta);
     }
+    if (data.containsKey('badge')) {
+      context.handle(
+        _badgeMeta,
+        badge.isAcceptableOrUnknown(data['badge']!, _badgeMeta),
+      );
+    }
     if (data.containsKey('deep_link_target')) {
       context.handle(
         _deepLinkTargetMeta,
@@ -626,6 +647,10 @@ class $BannersTable extends Banners with TableInfo<$BannersTable, Banner> {
         DriftSqlType.string,
         data['${effectivePrefix}title'],
       )!,
+      badge: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}badge'],
+      ),
       deepLinkTarget: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}deep_link_target'],
@@ -643,11 +668,13 @@ class Banner extends DataClass implements Insertable<Banner> {
   final String id;
   final String imageUrl;
   final String title;
+  final String? badge;
   final String deepLinkTarget;
   const Banner({
     required this.id,
     required this.imageUrl,
     required this.title,
+    this.badge,
     required this.deepLinkTarget,
   });
   @override
@@ -656,6 +683,9 @@ class Banner extends DataClass implements Insertable<Banner> {
     map['id'] = Variable<String>(id);
     map['image_url'] = Variable<String>(imageUrl);
     map['title'] = Variable<String>(title);
+    if (!nullToAbsent || badge != null) {
+      map['badge'] = Variable<String>(badge);
+    }
     map['deep_link_target'] = Variable<String>(deepLinkTarget);
     return map;
   }
@@ -665,6 +695,9 @@ class Banner extends DataClass implements Insertable<Banner> {
       id: Value(id),
       imageUrl: Value(imageUrl),
       title: Value(title),
+      badge: badge == null && nullToAbsent
+          ? const Value.absent()
+          : Value(badge),
       deepLinkTarget: Value(deepLinkTarget),
     );
   }
@@ -678,6 +711,7 @@ class Banner extends DataClass implements Insertable<Banner> {
       id: serializer.fromJson<String>(json['id']),
       imageUrl: serializer.fromJson<String>(json['imageUrl']),
       title: serializer.fromJson<String>(json['title']),
+      badge: serializer.fromJson<String?>(json['badge']),
       deepLinkTarget: serializer.fromJson<String>(json['deepLinkTarget']),
     );
   }
@@ -688,6 +722,7 @@ class Banner extends DataClass implements Insertable<Banner> {
       'id': serializer.toJson<String>(id),
       'imageUrl': serializer.toJson<String>(imageUrl),
       'title': serializer.toJson<String>(title),
+      'badge': serializer.toJson<String?>(badge),
       'deepLinkTarget': serializer.toJson<String>(deepLinkTarget),
     };
   }
@@ -696,11 +731,13 @@ class Banner extends DataClass implements Insertable<Banner> {
     String? id,
     String? imageUrl,
     String? title,
+    Value<String?> badge = const Value.absent(),
     String? deepLinkTarget,
   }) => Banner(
     id: id ?? this.id,
     imageUrl: imageUrl ?? this.imageUrl,
     title: title ?? this.title,
+    badge: badge.present ? badge.value : this.badge,
     deepLinkTarget: deepLinkTarget ?? this.deepLinkTarget,
   );
   Banner copyWithCompanion(BannersCompanion data) {
@@ -708,6 +745,7 @@ class Banner extends DataClass implements Insertable<Banner> {
       id: data.id.present ? data.id.value : this.id,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
       title: data.title.present ? data.title.value : this.title,
+      badge: data.badge.present ? data.badge.value : this.badge,
       deepLinkTarget: data.deepLinkTarget.present
           ? data.deepLinkTarget.value
           : this.deepLinkTarget,
@@ -720,13 +758,14 @@ class Banner extends DataClass implements Insertable<Banner> {
           ..write('id: $id, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('title: $title, ')
+          ..write('badge: $badge, ')
           ..write('deepLinkTarget: $deepLinkTarget')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, imageUrl, title, deepLinkTarget);
+  int get hashCode => Object.hash(id, imageUrl, title, badge, deepLinkTarget);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -734,6 +773,7 @@ class Banner extends DataClass implements Insertable<Banner> {
           other.id == this.id &&
           other.imageUrl == this.imageUrl &&
           other.title == this.title &&
+          other.badge == this.badge &&
           other.deepLinkTarget == this.deepLinkTarget);
 }
 
@@ -741,12 +781,14 @@ class BannersCompanion extends UpdateCompanion<Banner> {
   final Value<String> id;
   final Value<String> imageUrl;
   final Value<String> title;
+  final Value<String?> badge;
   final Value<String> deepLinkTarget;
   final Value<int> rowid;
   const BannersCompanion({
     this.id = const Value.absent(),
     this.imageUrl = const Value.absent(),
     this.title = const Value.absent(),
+    this.badge = const Value.absent(),
     this.deepLinkTarget = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -754,6 +796,7 @@ class BannersCompanion extends UpdateCompanion<Banner> {
     required String id,
     required String imageUrl,
     required String title,
+    this.badge = const Value.absent(),
     this.deepLinkTarget = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -763,6 +806,7 @@ class BannersCompanion extends UpdateCompanion<Banner> {
     Expression<String>? id,
     Expression<String>? imageUrl,
     Expression<String>? title,
+    Expression<String>? badge,
     Expression<String>? deepLinkTarget,
     Expression<int>? rowid,
   }) {
@@ -770,6 +814,7 @@ class BannersCompanion extends UpdateCompanion<Banner> {
       if (id != null) 'id': id,
       if (imageUrl != null) 'image_url': imageUrl,
       if (title != null) 'title': title,
+      if (badge != null) 'badge': badge,
       if (deepLinkTarget != null) 'deep_link_target': deepLinkTarget,
       if (rowid != null) 'rowid': rowid,
     });
@@ -779,6 +824,7 @@ class BannersCompanion extends UpdateCompanion<Banner> {
     Value<String>? id,
     Value<String>? imageUrl,
     Value<String>? title,
+    Value<String?>? badge,
     Value<String>? deepLinkTarget,
     Value<int>? rowid,
   }) {
@@ -786,6 +832,7 @@ class BannersCompanion extends UpdateCompanion<Banner> {
       id: id ?? this.id,
       imageUrl: imageUrl ?? this.imageUrl,
       title: title ?? this.title,
+      badge: badge ?? this.badge,
       deepLinkTarget: deepLinkTarget ?? this.deepLinkTarget,
       rowid: rowid ?? this.rowid,
     );
@@ -803,6 +850,9 @@ class BannersCompanion extends UpdateCompanion<Banner> {
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
+    if (badge.present) {
+      map['badge'] = Variable<String>(badge.value);
+    }
     if (deepLinkTarget.present) {
       map['deep_link_target'] = Variable<String>(deepLinkTarget.value);
     }
@@ -818,6 +868,7 @@ class BannersCompanion extends UpdateCompanion<Banner> {
           ..write('id: $id, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('title: $title, ')
+          ..write('badge: $badge, ')
           ..write('deepLinkTarget: $deepLinkTarget, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3434,6 +3485,7 @@ typedef $$BannersTableCreateCompanionBuilder = BannersCompanion Function({
   required String id,
   required String imageUrl,
   required String title,
+  Value<String?> badge,
   Value<String> deepLinkTarget,
   Value<int> rowid,
 });
@@ -3441,6 +3493,7 @@ typedef $$BannersTableUpdateCompanionBuilder = BannersCompanion Function({
   Value<String> id,
   Value<String> imageUrl,
   Value<String> title,
+  Value<String?> badge,
   Value<String> deepLinkTarget,
   Value<int> rowid,
 });
@@ -3466,6 +3519,11 @@ class $$BannersTableFilterComposer
 
   ColumnFilters<String> get title => $composableBuilder(
     column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get badge => $composableBuilder(
+    column: $table.badge,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3499,6 +3557,11 @@ class $$BannersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get badge => $composableBuilder(
+    column: $table.badge,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get deepLinkTarget => $composableBuilder(
     column: $table.deepLinkTarget,
     builder: (column) => ColumnOrderings(column),
@@ -3522,6 +3585,9 @@ class $$BannersTableAnnotationComposer
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get badge =>
+      $composableBuilder(column: $table.badge, builder: (column) => column);
 
   GeneratedColumn<String> get deepLinkTarget => $composableBuilder(
     column: $table.deepLinkTarget,
@@ -3560,12 +3626,14 @@ class $$BannersTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> imageUrl = const Value.absent(),
                 Value<String> title = const Value.absent(),
+                Value<String?> badge = const Value.absent(),
                 Value<String> deepLinkTarget = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BannersCompanion(
                 id: id,
                 imageUrl: imageUrl,
                 title: title,
+                badge: badge,
                 deepLinkTarget: deepLinkTarget,
                 rowid: rowid,
               ),
@@ -3574,12 +3642,14 @@ class $$BannersTableTableManager
                 required String id,
                 required String imageUrl,
                 required String title,
+                Value<String?> badge = const Value.absent(),
                 Value<String> deepLinkTarget = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BannersCompanion.insert(
                 id: id,
                 imageUrl: imageUrl,
                 title: title,
+                badge: badge,
                 deepLinkTarget: deepLinkTarget,
                 rowid: rowid,
               ),

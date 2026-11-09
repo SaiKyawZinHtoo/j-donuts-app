@@ -6,7 +6,7 @@ class SeedKeys {
   // meta
   static const seededFlagKey = 'seeded';
   // Bump when assets/seed/*.json change so existing installs reseed.
-  static const seedVersion = '2';
+  static const seedVersion = '3';
 
   // products.json
   static const id = 'id';
@@ -21,6 +21,7 @@ class SeedKeys {
   // banners.json
   static const title = 'title';
   static const deepLinkTarget = 'deepLinkTarget';
+  static const badge = 'badge';
 
   // sections.json
   static const productIds = 'productIds';

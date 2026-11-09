@@ -4,6 +4,7 @@ class Banners extends Table {
   TextColumn get id => text()();
   TextColumn get imageUrl => text()();
   TextColumn get title => text()();
+  TextColumn get badge => text().nullable()();
   TextColumn get deepLinkTarget => text().withDefault(const Constant(''))();
 
   @override

@@ -111,6 +111,7 @@ class SyncRepositoryImpl implements SyncRepository {
               id: x.id,
               imageUrl: x.imageUrl,
               title: x.title,
+              badge: Value(x.badge),
               deepLinkTarget: Value(x.deepLinkTarget),
             ),
           );

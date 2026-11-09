@@ -93,6 +93,7 @@ class SeedLoader {
             id: json[SeedKeys.id] as String,
             imageUrl: json[SeedKeys.imageUrl] as String,
             title: json[SeedKeys.title] as String,
+            badge: Value(json[SeedKeys.badge] as String?),
             deepLinkTarget: Value(json[SeedKeys.deepLinkTarget] as String? ?? ''),
           ),
         ),

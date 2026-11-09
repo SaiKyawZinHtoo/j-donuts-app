@@ -341,7 +341,7 @@ abstract class AppLocalizations {
   /// No description provided for @nearbyShopsTitle.
   ///
   /// In en, this message translates to:
-  /// **'There are {count} J\'Donut shops'**
+  /// **'There are {count} J\'Donut shops near you. 😋'**
   String nearbyShopsTitle(int count);
 
   /// No description provided for @memberTierCaption.

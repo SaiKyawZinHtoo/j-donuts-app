@@ -148,7 +148,7 @@ class AppLocalizationsMy extends AppLocalizations {
 
   @override
   String nearbyShopsTitle(int count) {
-    return 'ဂျေဒိုနပ် ဆိုင် $count ခု ရှိပါသည်';
+    return 'ဂျေဒိုနပ် ဆိုင် $count ခု ရှိပါသည် 😋';
   }
 
   @override

@@ -146,7 +146,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String nearbyShopsTitle(int count) {
-    return 'There are $count J\'Donut shops';
+    return 'There are $count J\'Donut shops near you. 😋';
   }
 
   @override

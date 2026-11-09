@@ -88,6 +88,14 @@ class _BannerCarouselState extends State<BannerCarousel> {
                       width: double.infinity,
                     ),
                   ),
+                  if (banner.badge != null)
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: AppSpacing.sm),
+                        child: AppBadge(label: banner.badge!),
+                      ),
+                    ),
                   // Artwork keeps its left half empty for this headline.
                   Padding(
                     padding: const EdgeInsets.all(AppSpacing.md),

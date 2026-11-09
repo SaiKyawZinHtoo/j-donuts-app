@@ -97,7 +97,7 @@ void main() {
       final marker = await (db.select(
         db.meta,
       )..where((m) => m.key.equals('seeded'))).getSingle();
-      expect(marker.value, '2');
+      expect(marker.value, '3');
       expect(await db.select(db.authUsers).get(), hasLength(1));
     },
   );

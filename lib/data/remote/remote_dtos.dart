@@ -73,8 +73,9 @@ class ProductDto {
 }
 
 class BannerDto {
-  const BannerDto({required this.id, required this.imageUrl, required this.title, required this.deepLinkTarget});
+  const BannerDto({required this.id, required this.imageUrl, required this.title, required this.deepLinkTarget, this.badge});
   final String id, imageUrl, title, deepLinkTarget;
+  final String? badge;
 
   static BannerDto? tryParse(Map<String, dynamic> j) {
     final id = _str(j, SeedKeys.id);
@@ -85,6 +86,7 @@ class BannerDto {
       id: id,
       imageUrl: image,
       title: title,
+      badge: j[SeedKeys.badge] is String ? j[SeedKeys.badge] as String : null,
       deepLinkTarget: j[SeedKeys.deepLinkTarget] is String ? j[SeedKeys.deepLinkTarget] as String : '',
     );
   }
