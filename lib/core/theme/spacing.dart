@@ -50,7 +50,7 @@ class AppSpacing {
   static const double navSelectedFlex =
       2.3; // selected slot width vs 1 for others
   static const double bannerViewportFraction = 0.88; // next banner peeks
-  static const double headerBadgeSize = 64;
+  static const double headerBadgeSize = 150;
   static const double rewardCardRadius = 28;
   static const double rewardArtSize = 96;
   static const double tierRowHeight = 96;

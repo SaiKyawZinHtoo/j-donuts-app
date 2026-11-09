@@ -43,161 +43,183 @@ class MemberHeader extends StatelessWidget {
           bottom: Radius.circular(AppSpacing.headerRadius),
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.md,
-                0,
+      child: Stack(
+        children: [
+          // Large decorative hexagon behind the bell; clipped by the header.
+          Positioned(
+            top: AppSpacing.xl,
+            right: -AppSpacing.xl,
+            child: CustomPaint(
+              size: const Size.square(AppSpacing.headerBadgeSize),
+              painter: const _BigHexPainter(),
+              child: const SizedBox.square(
+                dimension: AppSpacing.headerBadgeSize,
+                // Below the bell, like the reference.
+                child: Align(
+                  alignment: Alignment(-0.1, 0.5),
+                  child: Icon(
+                    Icons.star,
+                    size: AppSpacing.headerBadgeSize / 3,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            ),
+          ),
+          SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomPaint(
-                        painter: const _ArcRingPainter(),
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.xs),
-                          child: ClipOval(
-                            child: AppSmartImage(
-                              url: member.photoUrl,
-                              width: avatar,
-                              height: avatar,
-                              fit: BoxFit.cover,
-                              errorWidget: (context) =>
-                                  const SizedBox(width: avatar, height: avatar),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              member.name,
-                              style: AppTextStyles.h1,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            if (phone != null)
-                              Text(
-                                phone!,
-                                key: const Key('memberHeader_phone'),
-                                style: AppTextStyles.caption,
-                              ),
-                            Text(
-                              l10n.memberTierCaption(member.tier),
-                              style: AppTextStyles.caption,
-                            ),
-                          ],
-                        ),
-                      ),
-                      ClipPath(
-                        clipper: const _HexClipper(),
-                        child: Container(
-                          width: AppSpacing.headerBadgeSize,
-                          height: AppSpacing.headerBadgeSize,
-                          color: AppColors.pageGrey,
-                          child: const Icon(
-                            Icons.star,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Material(
-                        color: AppColors.badge,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppSpacing.md),
-                          side: const BorderSide(
-                            color: AppColors.surface,
-                            width: AppSpacing.badgeBorder,
-                          ),
-                        ),
-                        child: InkWell(
-                          key: const Key('memberHeader_bellButton'),
-                          borderRadius: BorderRadius.circular(AppSpacing.md),
-                          onTap: onBellTap,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm,
-                              vertical: AppSpacing.sm,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.notifications_none,
-                                  color: AppColors.surface,
-                                ),
-                                if (notificationCount > 0)
-                                  const SizedBox(width: AppSpacing.xs),
-                                if (notificationCount > 0)
-                                  AnimatedSwitcher(
-                                    duration:
-                                        MediaQuery.disableAnimationsOf(context)
-                                        ? Duration.zero
-                                        : MotionTokens.kQtyChange,
-                                    child: Container(
-                                      key: ValueKey(notificationCount),
-                                      padding: const EdgeInsets.all(
-                                        AppSpacing.xs,
-                                      ),
-                                      decoration: const BoxDecoration(
-                                        color: AppColors.surface,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Text(
-                                        '$notificationCount',
-                                        style: AppTextStyles.caption.copyWith(
-                                          color: AppColors.badge,
-                                        ),
-                                      ),
-                                    ),
+                      Row(
+                        children: [
+                          CustomPaint(
+                            painter: const _ArcRingPainter(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppSpacing.xs),
+                              child: ClipOval(
+                                child: AppSmartImage(
+                                  url: member.photoUrl,
+                                  width: avatar,
+                                  height: avatar,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context) => const SizedBox(
+                                    width: avatar,
+                                    height: avatar,
                                   ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  member.name,
+                                  style: AppTextStyles.h1,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (phone != null)
+                                  Text(
+                                    phone!,
+                                    key: const Key('memberHeader_phone'),
+                                    style: AppTextStyles.caption,
+                                  ),
+                                Text(
+                                  l10n.memberTierCaption(member.tier),
+                                  style: AppTextStyles.caption,
+                                ),
                               ],
                             ),
                           ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Material(
+                            color: AppColors.badge,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.md,
+                              ),
+                              side: const BorderSide(
+                                color: AppColors.surface,
+                                width: AppSpacing.badgeBorder,
+                              ),
+                            ),
+                            child: InkWell(
+                              key: const Key('memberHeader_bellButton'),
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.md,
+                              ),
+                              onTap: onBellTap,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.sm,
+                                  vertical: AppSpacing.sm,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.notifications_none,
+                                      color: AppColors.surface,
+                                    ),
+                                    if (notificationCount > 0)
+                                      const SizedBox(width: AppSpacing.xs),
+                                    if (notificationCount > 0)
+                                      AnimatedSwitcher(
+                                        duration:
+                                            MediaQuery.disableAnimationsOf(
+                                              context,
+                                            )
+                                            ? Duration.zero
+                                            : MotionTokens.kQtyChange,
+                                        child: Container(
+                                          key: ValueKey(notificationCount),
+                                          padding: const EdgeInsets.all(
+                                            AppSpacing.xs,
+                                          ),
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.surface,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Text(
+                                            '$notificationCount',
+                                            style: AppTextStyles.caption
+                                                .copyWith(
+                                                  color: AppColors.badge,
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Container(
+                        key: const Key('memberHeader_pointsChip'),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(AppSpacing.md),
+                        ),
+                        child: Text(
+                          l10n.memberPointsLeft(
+                            pointsToNext,
+                            _nextTier(member.tier),
+                          ),
+                          style: AppTextStyles.bodyBold.copyWith(fontSize: 14),
                         ),
                       ),
                     ],
                   ),
+                ),
+                if (footer != null) ...[
                   const SizedBox(height: AppSpacing.md),
-                  Container(
-                    key: const Key('memberHeader_pointsChip'),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(AppSpacing.md),
-                    ),
-                    child: Text(
-                      l10n.memberPointsLeft(
-                        pointsToNext,
-                        _nextTier(member.tier),
-                      ),
-                      style: AppTextStyles.bodyBold.copyWith(fontSize: 14),
-                    ),
-                  ),
+                  footer!,
                 ],
-              ),
+              ],
             ),
-            if (footer != null) ...[
-              const SizedBox(height: AppSpacing.md),
-              footer!,
-            ],
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -219,6 +241,36 @@ class _ArcRingPainter extends CustomPainter {
       math.pi * 1.5,
       false,
       paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _BigHexPainter extends CustomPainter {
+  const _BigHexPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = const _HexClipper().getClip(size);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.surface, AppColors.pageGrey],
+        ).createShader(Offset.zero & size)
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = AppColors.badge.withValues(alpha: 0.45)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 4
+        ..strokeJoin = StrokeJoin.round,
     );
   }
 

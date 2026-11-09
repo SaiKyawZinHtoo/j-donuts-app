@@ -70,7 +70,10 @@ class _BannerCarouselState extends State<BannerCarousel> {
               right: AppSpacing.xs,
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+              // Square bottom: the header's rounded edge clips it.
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.cardRadius),
+              ),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
