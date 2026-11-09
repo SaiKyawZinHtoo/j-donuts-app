@@ -1,99 +1,289 @@
 # J'Donuts
 
-A Flutter app implementing the J'Donuts PDF design spec: 6 auth screens, Home, Product detail,
-Rewards, and 3 placeholder bottom-nav tabs, backed by a local Drift database seeded from bundled
-JSON. See `docs/superpowers/specs/2026-11-08-j-donuts-app-design.md` for the full design spec and
-`.superpowers/sdd/2026-11-08-j-donuts-app/` for the task-by-task implementation plan and progress log.
+A Flutter implementation of the **J'Donuts customer app** code test: fake login and registration with
+real validation (Task 1), an offline-first Home and Product detail (Task 2) and an animated Rewards
+screen (Task 3), across the 10 designed screens. Everything runs on local data (Drift/SQLite seeded
+from bundled JSON); the mock server is optional.
 
-## Running it
+| | |
+| --- | --- |
+| **Fake OTP code** | **`123456`** (also shown as a demo "SMS" local notification) |
+| **Flutter / Dart** | Flutter **3.47.7** (stable) / Dart **3.13.5** (`sdk: ^3.13.4` in `pubspec.yaml`) |
+| **State management** | BLoC (`flutter_bloc`) |
+| **Platforms** | Android and iOS (profile-mode checks on a physical Android phone; iOS Simulator) |
+| **App id / name** | `com.example.j_donuts_app` / **J'Donuts** |
+
+## Contents
+
+1. [Run it](#1-run-it)
+2. [Try the app](#2-try-the-app-demo-script)
+3. [What is built](#3-what-is-built)
+4. [Architecture and folder map](#4-architecture-and-folder-map)
+5. [State management: why BLoC](#5-state-management-why-bloc)
+6. [Offline strategy](#6-offline-strategy)
+7. [Validation rules](#7-validation-rules)
+8. [Animations](#8-animations)
+9. [Performance: 60 fps on a real Android phone](#9-performance-60-fps-on-a-real-android-phone)
+10. [Tests, lints and CI](#10-tests-lints-and-ci)
+11. [Trying the mock server](#11-trying-the-mock-server)
+12. [Build the deliverables](#12-build-the-deliverables)
+13. [Design decisions and assumptions](#13-design-decisions-and-assumptions)
+14. [Known gaps](#14-known-gaps)
+15. [Time spent](#15-time-spent)
+
+## 1. Run it
+
+Prerequisites: Flutter 3.47.x (Dart 3.13.x), plus Android Studio/an emulator and/or Xcode with an iOS
+Simulator. Check with `flutter doctor`.
 
 ```bash
+git clone https://github.com/SaiKyawZinHtoo/j-donuts-app.git
+cd j-donuts-app
 flutter pub get
-dart run build_runner build   # generates lib/data/local/database.g.dart (Drift) and l10n
-flutter run
+flutter run            # pick an emulator, simulator or device
 ```
 
-To try the optional mock server and background sync, see [Trying the mock server](#trying-the-mock-server).
+That is all you need: the Drift (`*.g.dart`) files and the generated localizations (`lib/l10n`) are
+committed, and `flutter run` / `flutter build` regenerate the localizations from `assets/l10n/*.arb`
+(`generate: true`). Run the code generator only if you change a Drift table or DAO:
 
-Built and verified with:
-
+```bash
+dart run build_runner build --delete-conflicting-outputs
 ```
-Flutter 3.47.5 • channel stable (framework 6a19cca564, 2026-09-17)
-Dart 3.13.4 (stable) (Tue Sep 15 01:01:15 2026 -0700) on "macos_x64"
+
+Other commands:
+
+```bash
+flutter analyze        # no issues
+flutter test           # 266 tests (unit, widget, one integration flow)
 ```
 
-The fake OTP code for registration/login is **`123456`** (`kFakeOtpCode` in
-`lib/core/constants/app_constants.dart`).
+The app starts with **no backend**. To also try the optional mock server see
+[Trying the mock server](#11-trying-the-mock-server).
 
-## Architecture
+## 2. Try the app (demo script)
 
-Clean 3-layer split, presentation → domain → data, per feature (`auth`, `home`, `product`,
-`rewards`), plus a `shell` feature for the bottom-nav scaffold:
+1. First launch opens the splash, then **Onboarding** -> **Let's get started**.
+2. **Phone**: type e.g. `912345678` (or `09254135592`; spaces, dashes, one leading `0` or a pasted
+   `+95` are normalised to `+959...`). **Continue** stays disabled until the number is valid.
+3. **OTP**: type or paste **`123456`**. A wrong code shakes and clears the boxes; three wrong codes
+   lock entry until **Resend** (countdown from 5:00). On a phone the code also arrives as a local
+   notification (Android 13+ asks for the notification permission; denying it changes nothing).
+4. **Name** (first name required, last name optional), then **Date of birth** (month/day/year) ->
+   **Welcome** -> **Let's explore** -> **Home**.
+5. **Home**: banners, Seasonal specials / Popular / Order again, nearby shops; pull down to refresh.
+   Tap a product for **Product detail** (quantity stepper, live total, **ADD TO CART**).
+6. **Rewards** (bottom nav): points ring, tier ladder, Earn / Gift tabs, challenge cards.
+7. **Settings** tab -> **Log out** returns to Onboarding. On Onboarding use **Log In** with the same
+   number: Phone -> OTP -> Home. A number that never registered shows an inline message with a link to
+   register. Relaunching while logged in opens Home; logged out opens Onboarding.
+8. **Airplane mode**: after the first launch, Home, Product detail and Rewards all render offline, images
+   included, with a small offline banner on Home.
+
+Google, Apple, Facebook, Terms of Use and Privacy Policy show a placeholder snackbar (no real
+integration). Explore, Wallet and the other bottom-nav icons open a simple placeholder.
+
+## 3. What is built
+
+| # | Screen | Task | Notes |
+| --- | --- | --- | --- |
+| 1 | Onboarding | 1 | donut tiles, Let's get started, Log in, Google / Apple / Facebook placeholders |
+| 2 | Phone number | 1 | fixed `+95` prefix, normalisation, ring at 25% |
+| 3 | Verify number | 1 | 6 boxes (auto-advance, backspace, paste, numeric keyboard, autofill hint), 5:00 resend, shake, 3-attempt lock |
+| 4-5 | Name (empty / filled) | 1 | first name required, last optional, Myanmar script allowed, no digits |
+| 6 | Date of birth | 1 | real calendar date, not in the future, age >= 13; the ring becomes a check |
+| 7 | Welcome | 2 | staggered donut tiles, title fade-up, Let's explore |
+| 8 | Home | 2 | member header (tier, points to next tier, bell with count), banner carousel, three product sections, nearby shops, bottom nav, skeletons, per-section empty and error states |
+| 9 | Product detail | 2 | code, name, price in MMK with thousands separators, New badge, image, "What's this?", quantity stepper, ADD TO CART with live total |
+| 10 | Rewards | 3 | points ring, tier ladder, Earn / Gift tabs, challenge cards with progress art |
+
+Also: splash with motion, login with the "register instead" link, log out, session kept across relaunch
+(`flutter_secure_storage`), Burmese locale (bonus), optional mock server with background sync (bonus),
+and a demo OTP notification.
+
+One member record feeds every screen (Home and Rewards read the same local row, so tier and points
+always agree).
+
+## 4. Architecture and folder map
+
+Clean architecture, **feature-first**, three layers per feature (presentation -> domain -> data). The
+domain layer is pure Dart (no Flutter or Drift imports; checked with `grep` over `lib/features/*/domain`).
 
 ```
 lib/
-  core/            theme, shared widgets (AppButton/AppTextField/AppOtpBox/...), constants,
-                   Result<T> type, go_router config + auth redirect guard, get_it DI
+  main.dart                    entry: DI setup, seed, runApp
+  core/
+    theme/                     colors, spacing, text styles, motion tokens, AppTheme (design tokens)
+    widgets/                   shared UI: AppButton, AppTextField, AppOtpBox, ProductCard,
+                               SectionHeader, AppBottomNav, AuthScaffold, AppSkeleton, ...
+    router/                    go_router config, auth redirect guard, page transitions
+    di/                        get_it service locator
+    result/                    Result<T> (typed failures, no swallowed exceptions)
+    services/                  ConnectivityService, FakeSmsNotifier
+    constants/                 named constants (fake OTP, age limit, resend seconds, ...)
+  data/
+    local/                     Drift database, tables, DAOs, SeedLoader (reads assets/seed once)
+    remote/                    Dio client (timeouts, retry, logging) + sync for the optional server
   features/
-    auth/          onboarding, phone, OTP, name, DOB, welcome screens + AuthBloc
-    home/          peach member header, banner carousel, product section lists (shared ProductCard), nearby shops
-    product/       product detail screen + bloc
-    rewards/       points ring, tier ladder, challenge cards, Earn/Gift tabs
-    shell/         5-tab floating bottom nav (Home/Rewards real; Explore/Wallet/Settings placeholders)
-  data/local/      Drift database, tables, DAOs, SeedLoader (reads assets/seed/*.json once)
+    auth/                      onboarding, phone, OTP, name, DOB, welcome + AuthBloc
+      domain/                  entities, AuthRepository interface, use cases, validators (pure functions)
+      data/                    fake AuthRepository impl (1 s delay), local user store, secure session
+      presentation/            screens, widgets, bloc
+    home/                      member header, banners, product sections, shops
+    product/                   product detail screen + bloc
+    rewards/                   points ring, tier ladder, tabs, challenge cards
+    shell/                     splash, bottom-nav shell, Settings (Log out), placeholder tabs
+  l10n/                        generated localizations (source: assets/l10n/app_en.arb, app_my.arb)
 assets/
-  seed/            products/banners/sections/shops/member JSON, loaded into Drift on first launch
-  images/seed/     bundled product/banner/avatar images (offline fallback)
-  l10n/            app_en.arb, app_my.arb (English + Burmese)
-test/
-  unit/, widget/   per-feature validator/usecase/bloc/widget tests
-  integration/     register_to_product_test.dart (full app flow, see below)
+  seed/                        products, banners, sections, shops, member JSON (loaded into Drift)
+  images/seed/                 bundled images (offline first launch, placeholder/error fallback)
+tool/mock_server/              optional shelf server (/v1/...)
+test/                          unit/, widget/, integration/, mock_server/
+integration_test/              on-device frame-timing test (see section 9)
 ```
 
-Each feature is a `part`-based barrel (`<feature>_import.dart` holds every import; every other file
-in the feature is `part of` it), so there are no relative-import chains and no feature reaches into
-another feature's internals.
+- **Dependency injection**: `get_it` (`lib/core/di/service_locator.dart`); no service is created inside a widget.
+- **Navigation**: `go_router` with an auth **redirect guard** (session -> Home, none -> Onboarding) and a
+  `/product/:id` route; the bottom-nav shell hosts Home and Rewards.
+- **Part-based barrels**: each feature has one `<feature>_import.dart` holding all imports; every other
+  file in the feature is `part of` it, so there are no relative-import chains.
+- **Models**: immutable `const` classes and Dart 3 **sealed** event/state classes (no codegen for models).
+- **Errors**: use cases return `Result<T>`; every screen has loading, error and empty states.
+- **Theme**: colours, type, spacing and motion are tokens (`lib/core/theme/`); widgets read tokens, not literals.
+- **Text**: all strings live in ARB files (English + Burmese) through gen-l10n.
+- **Layout**: portrait phones 4.7-6.9 in; text scale up to 1.3 is covered by a widget test.
 
-**State management: BLoC** (`flutter_bloc`). Chosen for explicit, testable state transitions per
-screen (`AuthBloc`, `HomeBloc`, `ProductDetailBloc`, `RewardsBloc`) with sealed event/state classes —
-a good fit for a spec with many named states (loading/loaded/error, OTP locked/invalid, registration
-steps) that unit tests can drive directly without touching widgets.
+## 5. State management: why BLoC
 
-**Offline strategy** (spec §5.1): the UI only ever reads the local Drift database. On first launch,
-`SeedLoader` copies `assets/seed/*.json` into Drift tables once (a seed version marker guards
-re-runs, verified idempotent under a cold/airplane-mode launch). The marker is now `'2'`
-(`SeedKeys.seedVersion`): an existing install with an older marker has its seed tables wiped and
-reseeded, while auth users are kept. Every subsequent read — Home, Product
-detail, Rewards — goes through a DAO, never JSON or network directly. `connectivity_plus` reports
-online/offline for the Home offline banner. When `API_BASE_URL` is set, `HomeBloc` also refreshes the
-database in the background (see **Mock server and sync**); without it the app is local-only.
+BLoC (`flutter_bloc`) was chosen because this spec is mostly named states and transitions: loading /
+loaded / error, OTP waiting / invalid / locked, four registration steps, quantity changes. Each screen
+gets a bloc (`AuthBloc`, `HomeBloc`, `ProductDetailBloc`, `RewardsBloc`) with sealed events and states,
+so the rules can be unit-tested by feeding events and asserting the state sequence without building a
+widget (`bloc_test`). The explicit event log also keeps double-taps and the "3 wrong codes" lockout
+simple to reason about. Riverpod would also have worked; BLoC's event/state split was the better fit
+for validation-heavy flows.
 
-**Mock server and sync**: an optional `shelf` server (`tool/mock_server/`) serves the public data
-(`/v1/products|banners|sections|shops`). The app refreshes its local database from it in the
-background; see [Trying the mock server](#trying-the-mock-server).
+## 6. Offline strategy
 
-**Animations**: every duration/curve is a named constant in `lib/core/theme/motion_tokens.dart`, and
-every animation honors Reduce Motion (`MediaQuery.disableAnimationsOf`) by jumping to its end state.
-Exception: the `/product/:id` push/pop and its Hero flight use the platform-default `CupertinoPage`
-timing, to keep iOS edge-swipe back.
-Built:
+- **The UI reads only the local Drift database.** On first launch `SeedLoader` copies
+  `assets/seed/*.json` into the tables inside one transaction. A seed-version marker (`'2'`, in the `Meta`
+  table) makes re-runs no-ops; an install with an older marker has its seed tables wiped and reseeded
+  while registered users are kept.
+- Home, Product detail and Rewards all read through DAOs, never JSON or the network directly, so they
+  work in airplane mode.
+- **Images**: `AppSmartImage` uses `cached_network_image` (disk cache, placeholder, error widget) for
+  URLs and `Image.asset` for the bundled seed images, so the first launch without network still shows images.
+- **Connectivity**: `connectivity_plus` drives the Home offline banner ("You're offline. Updated N min
+  ago."). When the network returns, Home refreshes in the background; pull-to-refresh does the same.
+- **Optional server**: with `--dart-define=API_BASE_URL=...` the app refreshes the same database from the
+  mock server (one transaction, ETags, timeouts, retry). Without it the app is local-only.
+- **Session**: `flutter_secure_storage`; the registered users live in the local database.
 
-- Splash: logo pops in, eight donuts scatter around it, then four settle into the Onboarding layout while the rest drift off; hands off to Onboarding (which skips its tile entrance) or Home.
-- Onboarding: donut tiles drift in, title and button stagger in.
-- Shared-axis step transitions (fade + 30px slide) on `/phone`, `/otp`, `/name`, `/dob`, `/welcome`.
-- Registration progress ring animating 25 -> 50 -> 75 -> 100% and morphing to a check.
-- `AppButton`: press-scale (`Listener`-driven) and Continue -> spinner loading morph.
-- OTP shake on error, with each box's border easing to the error colour and the error text fading/sizing in (`kFieldStateDuration`); text fields use the theme's animated focus/error borders; Welcome tile stagger.
-- Home: staggered section entrance (once, on first load); skeleton shimmer.
-- Product detail: entrance (`kDetailEntrance`), quantity change (`kQtyChange`) and description
-  expand/collapse with fade (`kDescriptionExpand`).
-- Section-scoped Hero (tag `product-<sectionId>-<productId>`) from product tile to detail.
-- Bottom-nav sliding pill (single-driver animation, icon + label inside the pill) and a fade between tab contents; Earn/Gift tab pill.
-- Rewards entrance (replayed each time the tab is shown): points ring sweep + counter (starts when the tab becomes active), tier-ladder
-  highlight, staggered challenge cards with per-card progress art, badge.
-- Home banner autoplay.
+## 7. Validation rules
 
-## Trying the mock server
+Pure functions in `lib/features/auth/domain/validators/`, each with unit tests in `test/unit/validators/`.
+
+| Field | Rule | When it fails |
+| --- | --- | --- |
+| Phone | after `+95`: strip spaces, dashes and one leading `0`; must be `9` + 7-9 digits (`09254135592` -> `+959254135592`) | Continue disabled; inline message when the field loses focus |
+| OTP | 6 digits; `123456` passes (`kFakeOtpCode`) | boxes shake and clear, message under the boxes, 3 wrong codes (`kOtpMaxAttempts`) lock entry until Resend |
+| OTP input | auto-advance, backspace goes back, paste fills all 6, numeric keyboard, autofill hint | - |
+| Resend | countdown from 5:00 (`kOtpResendSeconds` = 300), active at 0:00, restarts | - |
+| First name | required, 1-50 characters after trimming, letters/spaces/Myanmar script, no digits | inline message |
+| Last name | optional, same character rules | inline message |
+| Date of birth | real calendar date (no 31 April, 29 Feb only in leap years), not future, age >= 13 (`kMinAgeYears`) | inline message, Continue disabled |
+| Every step | Continue shows a loading state during the 1 s fake call (`kFakeNetworkDelay`); a double tap sends one request | - |
+
+Auth sits behind an `AuthRepository` interface with a fake implementation, so a real API can replace it
+without touching the UI.
+
+## 8. Animations
+
+All durations and curves are named constants in `lib/core/theme/motion_tokens.dart`. Every animation
+checks `MediaQuery.disableAnimationsOf` and shortens or skips itself (Reduce Motion). The only exception
+is the platform-default push/pop timing of `/product/:id` (a `CupertinoPage`, kept so iOS edge-swipe back works).
+
+| Where | What |
+| --- | --- |
+| Splash | logo pops in, donuts scatter and settle into the Onboarding layout, hands off to Onboarding or Home |
+| Onboarding | donut circles drift in; title and buttons enter staggered |
+| Registration steps | shared-axis transition (fade + 30 px slide); progress ring animates 25 -> 50 -> 75 -> 100% and morphs into the check |
+| Inputs | animated focus/error borders; OTP boxes shake on a wrong code, error text fades in |
+| Buttons | scale on press; Continue morphs into a spinner while loading |
+| Welcome | rounded donut tiles slide in staggered, then the title fades up |
+| Home | skeleton shimmer, sections enter staggered once, banner carousel autoplays |
+| Product tile -> detail | section-scoped **Hero** on the product image (`product-<sectionId>-<productId>`); quantity number animates; description expands and collapses; price in the button animates |
+| Tab switch | bottom-nav pill slides with its label; fade between tab contents |
+| Rewards | points ring sweeps with a counter, tier ladder highlights, challenge cards enter staggered with progress art, Earn / Gift pill slides (replays each time the tab is shown) |
+
+
+## 9. Performance: 60 fps on a real Android phone
+
+**Method.** Flutter frame timing recorded on a real device in **profile mode** (never debug): a
+`flutter drive` integration test (`integration_test/perf_test.dart`) drives the app and writes per-segment
+build and raster frame times through `traceAction` + `TimelineSummary`.
+
+- Device: Samsung Galaxy A17 (SM-A176B), 1080x2340, Impeller (Vulkan), display mode **60 Hz**
+  (budget **16.7 ms** per frame; the phone also supports 90 Hz = 11.1 ms, not measured).
+- A "missed" frame is one over the 16.7 ms budget on the UI (build) or raster thread.
+
+| Segment | Frames | Avg build | Worst build | Build misses | Avg raster | Worst raster | Raster misses |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Splash -> Onboarding | 6 | 6.8 ms | 11.7 | 0 | 11.1 ms | 16.2 | 1 |
+| Home entrance | 8 | 6.1 ms | 9.7 | 0 | 12.2 ms | 22.0 | 2 |
+| Home scroll (3x down/up) | 90 | 4.9 ms | 18.3 | 3 | 7.0 ms | 18.4 | 3 |
+| Pull to refresh | 55 | 1.9 ms | 8.1 | 0 | 6.6 ms | 11.9 | 0 |
+| Product detail, 1st visit (Hero, +/-, description) | 30 | 7.2 ms | 25.0 | 4 | 7.4 ms | **43.0** | 1 |
+| Product detail, 2nd visit | 31 | 7.0 ms | 26.3 | 4 | 5.4 ms | 9.2 | **0** |
+| Bottom-nav tabs (5 taps) | 24 | 7.8 ms | 16.6 | 1 | 8.9 ms | 17.8 | 2 |
+
+**Reading the results (honest summary).**
+
+- Typical frames are well inside the budget (average build 2-8 ms, average raster 5-12 ms). Misses are a
+  few isolated frames per segment, not sustained jank.
+- The one large spike (43 ms raster) happens **only the first time** Product detail is drawn: the
+  trace shows Impeller creating a Vulkan pipeline (`PipelineVK::Create`, about 40 ms). The second visit
+  has no raster misses. Removing the description's `ShaderMask` and an `IntrinsicHeight` (done) did not
+  remove it, so it is a one-off first-use cost.
+- Build time still has about four 20-26 ms frames per Product detail visit (opening the page, data arriving,
+  returning to Home). No single widget dominates (the per-widget trace is spread over text layout,
+  semantics and images), and part of it is test overhead (the test pumps long gaps and runs with semantics on).
+- **Not measured**: the registration steps, Welcome and Rewards on the phone, and 90 Hz. Numbers vary a few
+  percent between runs. Treat this as evidence of "smooth with occasional first-use hitches", not a
+  guarantee of zero dropped frames on every mid-range device.
+
+**Reproduce.** The test starts from Home, so register one user on the device first (OTP `123456`):
+
+```bash
+flutter run --profile -d <device-id>        # register once, then stop it
+flutter drive --driver=test_driver/perf_driver.dart \
+  --target=integration_test/perf_test.dart --profile --no-dds --keep-app-running -d <device-id>
+```
+
+Results land in `build/*.timeline_summary.json` (`average_frame_build_time_millis`,
+`worst_frame_rasterizer_time_millis`, `missed_frame_build_budget_count`, ...). For a manual check, open
+DevTools -> Performance while the app runs in profile mode, or enable "Profile HWUI rendering" in the
+phone's developer options.
+
+## 10. Tests, lints and CI
+
+| Kind | Where | What it covers |
+| --- | --- | --- |
+| Unit | `test/unit/` (22 files) | validators (every rule), use cases, repositories, blocs (`bloc_test`), seed loader, `Result`, router |
+| Widget | `test/widget/` (23 files) | login and registration validation, OTP box, auth chrome, Home (sections, badges, offline banner, status-bar inset, bottom padding), Product detail (quantity, total, description, Hero, back), `ProductCard`, bottom nav, Welcome, Rewards, text scale 1.3, Reduce Motion |
+| Integration | `test/integration/register_to_product_test.dart` | Register -> Home -> Product detail -> Rewards through the real app tree (also `test/mock_server/` for the server) |
+| On-device | `integration_test/perf_test.dart` | frame timing, see section 9 |
+
+```bash
+flutter test                           # all 266 tests
+flutter test test/unit/validators      # e.g. only the validators
+flutter analyze                        # flutter_lints, clean
+```
+
+**CI** (`.github/workflows/ci.yml`) runs `flutter pub get`, the code generator, `flutter analyze` and
+`flutter test` on every push and pull request.
+
+## 11. Trying the mock server
 
 The app works fully **without** the server (offline-first, data from the bundled seed). The server is
 the brief's optional mock API: when the app is started with `API_BASE_URL`, it refreshes the local
@@ -172,121 +362,75 @@ time in the `Meta` table, so a failed or partial refresh never leaves half-updat
 a 5 s timeout and retry network errors and 5xx responses twice. Server flags:
 `--port`, `--delay <ms>`, `--fail-rate <0..1>`.
 
-## UI / theme
-
-- `AppTheme` plus token files in `lib/core/theme/`: `colors.dart`, `spacing.dart`, `motion_tokens.dart`,
-  `text_styles.dart`.
-- `AppGradientBackground` paints the pink-to-white gradient (`AppColors.gradientColors` /
-  `gradientStops`, stops `0, .3, .5, .7, 1`); used by `AuthScaffold`, Welcome and Onboarding.
-- `AuthScaffold` (`lib/core/widgets/auth_scaffold.dart`): pinned header (back button + trailing),
-  scrolling body, optional pinned `bottom` action that rises with the keyboard, legal footer hidden
-  while the keyboard is open; `onBack`, `showFooter`, `titleGap` params.
-- Phone field: fixed `+95` prefix (rendered as `prefixIcon` so it shows when unfocused); the user types
-  the national number, and a leading `0` or pasted `+95` is accepted and normalized.
-- `AppButton` is a pill; `AppProgressRing` / `RegistrationProgressRing` draw the rings.
-- Splash is route `/splash` (the router's `initialLocation`).
-- New tokens: `AppColors.badge` / `pageGrey` / `headerPeach`; card, section, header and welcome-layout
-  tokens in `AppSpacing`; `MotionTokens.kQtyChange` / `kDescriptionExpand` / `kDetailEntrance`.
-- Shared widgets in `lib/core/widgets`: `ProductCard` (`ProductCardImageMode.photo` / `cutout`) and
-  `SectionHeader`.
-- Home: peach `MemberHeader` (bell with count, points chip), banner cards overlapping the header,
-  `SectionHeader` sections, a nearby-shops block over a backdrop image, and bottom padding that
-  clears the floating nav. The bell count `2` is a constant, not real notifications.
-- Bottom nav: floating, with border, shadow and a new icon set (`Icons.workspace_premium_outlined`
-  crown for Explore, `Icons.radio_button_checked` for the centre Rewards tab). The shell uses
-  `extendBody: true`.
-- Product detail: grey page with a white card, an overlapping quantity pill, a "What's this?" row
-  that fades/expands the description, and an `ADD TO CART | total` button (`AppButton.trailingLabel`).
-  The loading and loaded states share one widget tree so the Hero stays stable; the back arrow uses
-  `Navigator.maybePop`.
-- Welcome: staggered rounded tile grid that bleeds off the screen edges with a bottom fade.
-- Seed data: member is Hania (Bronze); seasonal box products added.
-- Assets: `seasonal_1.png` / `seasonal_2.png` are real jdonuts.com photos. `shop_1.png`, `shop_2.png`,
-  `banner_new_shop.png`, `banner_hot.png`, `shops_backdrop.png` and `member_avatar.png` are
-  locally generated **placeholders** (the site has no such images); replace them by file name in
-  `assets/images/seed/`.
-- New Home/Product/Nav strings were written by the implementers in `app_my.arb` and need native
-  Burmese review.
-
-## Testing
+## 12. Build the deliverables
 
 ```bash
-flutter analyze
-flutter test                                              # full suite: unit + widget + integration
-flutter test test/integration/register_to_product_test.dart   # just the end-to-end flow
+# Android release APK -> build/app/outputs/flutter-apk/app-release.apk
+flutter build apk --release
+
+# iOS Simulator app (macOS + Xcode), zipped for sending
+flutter build ios --simulator
+cd build/ios/iphonesimulator && zip -r J-Donuts-simulator.zip Runner.app
 ```
 
-The integration test (`integration_test` package, run via the normal `flutter test` runner — no
-simulator/emulator needed) drives the real app widget tree through: onboarding → phone entry → OTP
-(`123456`) → name → DOB → welcome → Home (asserts `MemberHeader`) → tap a product tile → Product
-detail → back → Rewards tab. It stubs the three platform channels that have no implementation under
-`flutter test` (`path_provider`, `flutter_secure_storage`, `connectivity_plus`) with minimal in-memory
-fakes so the real `AppDatabase`/`SessionDataSource`/`ConnectivityService` code runs unmodified; the
-fake auth layer's `kFakeNetworkDelay` (1s) means each step after a tap waits on real wall-clock time
-rather than just pumping frames.
+Install on a booted simulator with `xcrun simctl install booted Runner.app`, then launch it. For the
+Android emulator or a phone, `adb install -r app-release.apk`.
 
-As part of this task, the bundled seed PNGs (`assets/images/seed/*.png`) were replaced — they were
-66-byte stub files with invalid PNG data that failed to decode (confirmed with Pillow, not just a
-test-environment artifact); they're now valid, decodable 500×500 PNGs. This would have failed
-to render on a real device too, not only under `flutter test`.
+| Deliverable | Status |
+| --- | --- |
+| Public Git repository with readable commits | this repository |
+| Release `.apk` and zipped simulator `.app` | built with the commands above |
+| 2-4 minute screen recording (register, log out, log in, Home, Product detail, Rewards, then the same in airplane mode) | recorded separately |
+| README (run, versions, architecture, folder map, state management, offline strategy, animations, fake OTP, known gaps, time spent) | this file |
+| Optional: mock server and CI | `tool/mock_server/`, `.github/workflows/ci.yml` |
 
-Full suite: 205 tests, all passing; `flutter analyze` reports no issues.
+The design screenshots from the brief are **not** committed to this repository.
 
-## Known gaps
+## 13. Design decisions and assumptions
 
-From spec §11 plus items accumulated in the SDD progress log (`.superpowers/sdd/.../progress.md`),
-none of which block the flows above:
+- **One member record** for Home and Rewards (the brief's mock-ups disagree: Bronze / 1,290 points vs
+  Silver / 500), so both screens read the same row. The seeded member is Bronze tier; after registering, Home shows the name you entered.
+- **Fake auth is local**: registered users are stored in the local database; "log in" succeeds only for a
+  number that registered on this device.
+- **Seed data and images are local.** The seasonal box photos come from the public jdonuts.com site;
+  other images are generated placeholders (see known gaps).
+- **Bell count** (`2`) is a constant, not real notifications.
+- **Add to cart** gives visual feedback only (a persistent cart is a bonus in the brief).
+- **Product detail back arrow** uses `Navigator.maybePop`, so it never throws when there is nothing to pop.
+- **Impeller** is the renderer on both platforms; the iOS Simulator can show harmless ghosting on
+  Onboarding that is a simulator artifact.
+- **Package ids** keep the default `com.example.j_donuts_app`; only the display name is J'Donuts.
 
-- The backend is the local mock server only; member, auth and rewards data are never synced.
-  Replace-all writes are fine at this data size but would need delta sync at scale.
-- No persistent cart; Add to cart is visual-only feedback (spec marks this a bonus).
-- No real OAuth/social login or Terms/Privacy content — placeholders per spec.
-- A handful of deferred minors from earlier tasks: weak id generation in the fake auth datasource
-  (acceptable for local-only/no-backend scope), rewards tier names are English-only (no l10n mapping
-  yet), no accessibility semantics on the product quantity stepper,. None are required by the brief's test lists.
-- The five auth routes use a custom shared-axis transition, so the iOS edge-swipe-back gesture does
-  not work there (intentional: it would skip the bloc's `BackRequested` on OTP/Name/DOB). Android
-  system back on OTP/Name/DOB also skips `BackRequested` (pre-existing, no `PopScope`).
-- `AppBottomNav`'s item list and `AppShellScreen`'s tab list aren't structurally linked (a length
-  mismatch wouldn't be caught at compile time) — no current caller hits this.
-- Brand logo is only 120px (`assets/images/seed/brand_logo.png`) / 64px (`assets/icon/app_icon.png`),
-  so the splash/onboarding logo looks soft; a 512px+ file is needed.
-- Fingerprint button on login is visual only (shows a "not implemented" snackbar).
-- Typeface is not matched to the reference font; the reference's 5th orange onboarding tile circle is
-  not built; onboarding tiles under-overlap on small phones (375x667).
-- Low contrast: phone hint text (~2:1) and inactive bottom-nav labels (70% white).
-- `ChallengeCard`'s outer press-scale stacks with `AppButton`'s (0.9 x 0.97).
-- `AuthScaffold.onBack` was added during implementation and is not in the original spec §6 list
-  (spec updated).
-- Impeller ghosting seen on Onboarding in some iOS simulators is a simulator artifact, not seen as an
-  app bug.
-- Translation is incomplete beyond tier names and the strings added in this pass — most user-facing
-  copy only has an English/Myanmar pair for what earlier tasks and this review explicitly touched,
-  not a full audit of every string in the app.
-- The Home offline banner's `connectivity_plus` check is a coarse "any connection" reachability
-  signal (no actual ping/HTTP check that the backend, if one existed, is reachable).
-- `talker`/`talker_dio_logger` are dependencies but unused — no logging call sites exist yet.
-- `BlocProvider` placement is inconsistent across features: `AuthBloc` is provided once for the whole
-  auth `ShellRoute`, while `HomeBloc`/`RewardsBloc` are each created per-route in `app_router.dart`.
-  Both work for the app's current navigation shape, but it's not a single consistent convention.
-- Domain purity (no Flutter/Drift imports in `domain/`) is convention-only, not enforced by linting
-  or a layer-boundary tool.
-- Test coverage: the OTP lockout/resend and phone-normalization bloc paths added in this pass have
-  unit tests; broader coverage (e.g. every `RegistrationStepInvalid` branch, `AppOtpBox`'s paste-fill
-  edge cases) is not exhaustive.
+## 14. Known gaps
 
-- Home, Product detail, bottom nav and Welcome were verified by widget tests only, not compared
-  visually against the reference on a device or simulator.
-- Welcome tile shapes and photos only approximate the reference.
-- The placeholder images listed under UI / theme are not final art.
+Stated plainly so nobody has to find them:
 
-## Deliverables status
+- **Visual fidelity is not pixel-verified.** Welcome and Home were checked by eye on an Android phone
+  after the last changes; Product detail, Rewards and the bottom nav were checked mainly by widget tests.
+  The iOS Simulator was not re-run after the latest UI work.
+- **Placeholder art**: `shops_backdrop.png`, `shop_1.png`, `shop_2.png`, `banner_new_shop.png`,
+  `banner_hot.png` and `member_avatar.png` are locally generated stand-ins (the public site has no such
+  images). Replace the files under the same names for final art. The brand logo is small (120 px), so it looks soft.
+- **Burmese strings** added during the UI passes were written by the author/assistant and are not yet
+  reviewed by a native reader.
+- **Connectivity** uses `connectivity_plus` only; there is **no active reachability probe** (a connected
+  Wi-Fi with no internet still counts as online). Failed refreshes are retried and leave local data untouched.
+- **Database migrations**: `schemaVersion` is 1 with an `onCreate` strategy. No upgrade path has been needed
+  yet; data changes are versioned through the seed marker instead.
+- **Performance gaps**: see section 9 (first-use 43 ms raster hitch on Product detail, a few 20-26 ms build
+  frames, registration/Welcome/Rewards and 90 Hz not measured).
+- **No persistent cart**, no real Google/Apple/Facebook login, Terms and Privacy are placeholders, and the
+  fingerprint button on login shows a "not implemented" snackbar.
+- The five auth routes use a custom shared-axis transition, so the iOS edge-swipe-back gesture is off there
+  on purpose (it would skip the bloc's `BackRequested`). Android system back on OTP/Name/DOB also skips it.
+- Translations cover the strings in the screens; a full copy audit of every string was not done.
+- Domain purity (no Flutter/Drift imports in `domain/`) is a convention checked by `grep`, not enforced by a tool.
 
-- Mock server (optional bonus): included in `tool/mock_server/` with step-by-step checks in [Trying the mock server](#trying-the-mock-server); verified end to end on a physical Android device.
-- Release Android build: `flutter build apk --release` (output `build/app/outputs/flutter-apk/app-release.apk`).
-- iOS Simulator `.app` (`flutter build ios --simulator`, then zip `build/ios/iphonesimulator/Runner.app`)
-  and the 2-4 minute screen recording (register, log out, log in, Home, Product detail, Rewards, then
-  the same flow in airplane mode) are produced on a Mac with a device attached.
-- CI: `.github/workflows/ci.yml` runs `flutter analyze` and `flutter test` on every push.
-- Time spent: built incrementally in 12 planned tasks, followed by UI-fidelity passes (nav, Home,
-  Welcome, Rewards, splash) and a requirements audit against the brief.
+## 15. Time spent
+
+About **2 days** in total. Roughly in order: the base build (auth with validators, offline Home and
+Product detail, Rewards, DI/routing/tests), a second pass to match the designs (theme, gradient, splash,
+onboarding, step transitions, progress ring), a third pass on Home, Product detail, bottom nav and Welcome,
+the optional mock server with sync, an Android real-device performance pass, and this documentation.
+
+AI coding assistance (Claude Code) was used throughout; the author reviews and can explain the code.
