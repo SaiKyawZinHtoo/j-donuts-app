@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:j_donuts_app/core/core_import.dart';
 import 'package:j_donuts_app/core/router/app_page_transitions.dart';
+import 'package:j_donuts_app/features/auth/auth_import.dart';
 import 'package:j_donuts_app/features/shell/shell_import.dart';
 
 int landings = 0;
@@ -51,6 +52,20 @@ void main() {
     await t.pump(const Duration(seconds: 3));
     expect(find.text('landed'), findsOneWidget);
     expect(landings, 1);
+  });
+
+  testWidgets('animated: four donut tiles burst around the logo, then handoff flag set', (
+    t,
+  ) async {
+    await t.pumpWidget(_app(reduce: false));
+    await t.pump(const Duration(milliseconds: 1500));
+    expect(find.byType(Image), findsNWidgets(5)); // 4 tiles + logo
+    expect(t.takeException(), isNull);
+    await t.pump(const Duration(seconds: 3));
+    await t.pumpAndSettle();
+    expect(find.text('landed'), findsOneWidget);
+    expect(OnboardingScreen.skipTileEntrance, isTrue);
+    OnboardingScreen.skipTileEntrance = false;
   });
 
   group('sharedAxisX', () {

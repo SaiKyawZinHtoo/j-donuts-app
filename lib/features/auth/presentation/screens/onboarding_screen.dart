@@ -4,8 +4,8 @@ part of '../../auth_import.dart';
 /// (min of screen width and cluster height); [cx] a fraction of the screen
 /// width and [cy] of the cluster height (circle centre). Listed in paint
 /// order, so the hero is last.
-class _TileSpec {
-  const _TileSpec(
+class TileSpec {
+  const TileSpec(
     this.asset,
     this.color,
     this.size,
@@ -21,8 +21,8 @@ class _TileSpec {
   final Offset slideFrom;
 }
 
-const _tiles = [
-  _TileSpec(
+const kOnboardingTiles = [
+  TileSpec(
     'assets/images/seed/tile_1.png',
     AppColors.tileCyan,
     0.62,
@@ -30,7 +30,7 @@ const _tiles = [
     0.30,
     Offset(-0.5, 0),
   ),
-  _TileSpec(
+  TileSpec(
     'assets/images/seed/tile_2.png',
     AppColors.tileBlue,
     0.55,
@@ -38,7 +38,7 @@ const _tiles = [
     0.22,
     Offset(0.5, 0),
   ),
-  _TileSpec(
+  TileSpec(
     'assets/images/seed/tile_3.png',
     AppColors.tilePurple,
     0.50,
@@ -46,7 +46,7 @@ const _tiles = [
     0.80,
     Offset(-0.5, 0.3),
   ),
-  _TileSpec(
+  TileSpec(
     'assets/images/seed/donut_strawberry.png',
     AppColors.tileBeige,
     0.64,
@@ -56,10 +56,21 @@ const _tiles = [
   ),
 ];
 
+/// Height of the donut cluster for a screen of [maxHeight]; shared with the
+/// splash so its last frame lines up with this screen.
+double onboardingClusterHeight(double maxHeight) =>
+    (maxHeight - AppSpacing.onboardingContentHeight).clamp(
+      AppSpacing.onboardingTilesMinFraction * maxHeight,
+      AppSpacing.onboardingTilesFraction * maxHeight,
+    );
+
 /// PDF screen 1: decorative art, title, primary CTA, log-in link, social
 /// row (placeholders), Terms/Privacy (placeholder).
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
+
+  /// Set by the splash, whose final frame already shows the tiles and logo.
+  static bool skipTileEntrance = false;
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -75,6 +86,16 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     duration: _total,
   );
   bool _started = false;
+  final bool _skipTiles = OnboardingScreen.skipTileEntrance;
+
+  @override
+  void initState() {
+    super.initState();
+    OnboardingScreen.skipTileEntrance = false;
+  }
+
+  Animation<double> _tile(int i) =>
+      _skipTiles ? const AlwaysStoppedAnimation(1.0) : _tileAnims[i];
 
   @override
   void didChangeDependencies() {
@@ -98,7 +119,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   late final List<CurvedAnimation> _tileAnims = [
-    for (var i = 0; i < _tiles.length; i++) _stage(i),
+    for (var i = 0; i < kOnboardingTiles.length; i++) _stage(i),
   ];
   late final CurvedAnimation _titleAnim = _stage(2);
   late final CurvedAnimation _buttonAnim = _stage(3);
@@ -142,21 +163,16 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         body: LayoutBuilder(
           builder: (context, constraints) {
             final w = constraints.maxWidth;
-            final clusterH =
-                (constraints.maxHeight - AppSpacing.onboardingContentHeight)
-                    .clamp(
-                      AppSpacing.onboardingTilesMinFraction *
-                          constraints.maxHeight,
-                      AppSpacing.onboardingTilesFraction *
-                          constraints.maxHeight,
-                    );
+            final clusterH = onboardingClusterHeight(constraints.maxHeight);
             final unit = math.min(w, clusterH);
             return Stack(
               children: [
                 Positioned.fill(
                   child: IgnorePointer(
                     child: FadeTransition(
-                      opacity: _controller,
+                      opacity: _skipTiles
+                          ? const AlwaysStoppedAnimation(1.0)
+                          : _controller,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -197,20 +213,33 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   child: ClipRect(
                                     child: Stack(
                                       children: [
-                                        for (var i = 0; i < _tiles.length; i++)
+                                        for (
+                                          var i = 0;
+                                          i < kOnboardingTiles.length;
+                                          i++
+                                        )
                                           Positioned(
                                             left:
-                                                _tiles[i].cx * w -
-                                                _tiles[i].size * unit / 2,
+                                                kOnboardingTiles[i].cx * w -
+                                                kOnboardingTiles[i].size *
+                                                    unit /
+                                                    2,
                                             top:
-                                                _tiles[i].cy * clusterH -
-                                                _tiles[i].size * unit / 2,
+                                                kOnboardingTiles[i].cy *
+                                                    clusterH -
+                                                kOnboardingTiles[i].size *
+                                                    unit /
+                                                    2,
                                             child: DonutTile(
-                                              asset: _tiles[i].asset,
-                                              circleColor: _tiles[i].color,
-                                              size: _tiles[i].size * unit,
-                                              animation: _tileAnims[i],
-                                              slideFrom: _tiles[i].slideFrom,
+                                              asset: kOnboardingTiles[i].asset,
+                                              circleColor:
+                                                  kOnboardingTiles[i].color,
+                                              size:
+                                                  kOnboardingTiles[i].size *
+                                                  unit,
+                                              animation: _tile(i),
+                                              slideFrom:
+                                                  kOnboardingTiles[i].slideFrom,
                                             ),
                                           ),
                                       ],

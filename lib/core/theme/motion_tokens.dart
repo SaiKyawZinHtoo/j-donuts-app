@@ -20,7 +20,9 @@ class MotionTokens {
 
   static const Duration kSplashLogoDuration = Duration(milliseconds: 900);
   static const Duration kSplashHoldDuration = Duration(milliseconds: 700);
-  static const Duration kSplashExitDuration = Duration(milliseconds: 500);
+  static const Duration kSplashTilesStart = Duration(milliseconds: 500);
+  static const Duration kSplashTileDuration = Duration(milliseconds: 700);
+  static const Duration kSplashRiseDuration = Duration(milliseconds: 900);
   static const Duration kTileDriftDuration = Duration(milliseconds: 900);
   static const Duration kStepTransitionDuration = Duration(milliseconds: 350);
   static const Duration kRingStepDuration = Duration(milliseconds: 400);

@@ -56,16 +56,25 @@ class _AppShellScreenState extends State<AppShellScreen> {
         onTap: (index) => setState(() => _currentIndex = index),
         items: [
           BottomNavigationBarItem(
-              icon: const Icon(Icons.home_outlined), label: l10n.homeTabLabel),
+            icon: const Icon(Icons.home_outlined),
+            label: l10n.homeTabLabel,
+          ),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.workspace_premium_outlined), label: l10n.rewardsTabLabel),
+            icon: const Icon(Icons.workspace_premium_outlined),
+            label: l10n.rewardsTabLabel,
+          ),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.radio_button_checked), label: l10n.exploreTabLabel),
+            icon: const Icon(Icons.radio_button_checked),
+            label: l10n.exploreTabLabel,
+          ),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.account_balance_wallet_outlined),
-              label: l10n.walletTabLabel),
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            label: l10n.walletTabLabel,
+          ),
           BottomNavigationBarItem(
-              icon: const Icon(Icons.settings_outlined), label: l10n.settingsTabLabel),
+            icon: const Icon(Icons.settings_outlined),
+            label: l10n.settingsTabLabel,
+          ),
         ],
       ),
     );
