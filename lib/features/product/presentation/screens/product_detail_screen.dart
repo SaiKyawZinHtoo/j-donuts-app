@@ -113,7 +113,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ],
                       ),
                     ),
-                    if (product.isNew) AppBadge(label: l10n.newBadge),
+                    if (product.isNew)
+                      AppBadge(label: l10n.newBadge, large: true),
                   ],
                 ),
           const SizedBox(height: AppSpacing.md),

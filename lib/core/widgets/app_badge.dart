@@ -5,7 +5,10 @@ part of '../core_import.dart';
 class AppBadge extends StatelessWidget {
   final String label;
 
-  const AppBadge({super.key, required this.label});
+  /// Larger variant (product detail).
+  final bool large;
+
+  const AppBadge({super.key, required this.label, this.large = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +22,14 @@ class AppBadge extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.xs + 2,
+        padding: EdgeInsets.symmetric(
+          horizontal: large ? AppSpacing.lg : AppSpacing.md,
+          vertical: large ? AppSpacing.sm : AppSpacing.xs + 2,
         ),
         child: Text(
           label,
           style: AppTextStyles.bodyBold.copyWith(
-            fontSize: 14,
+            fontSize: large ? 20 : 14,
             color: AppColors.surface,
           ),
         ),
