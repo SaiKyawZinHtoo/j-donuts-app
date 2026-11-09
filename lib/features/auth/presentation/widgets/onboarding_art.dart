@@ -147,9 +147,9 @@ class _OnboardingActions extends StatelessWidget {
                 onTap: () => context.push('/phone', extra: 'login'),
                 child: Text(
                   l10n.loginLink,
-                  style: AppTextStyles.bodyBold.copyWith(
-                    color: AppColors.accent,
-                  ),
+                  style: AppTextStyles.bodyBold
+                      .copyWith(color: AppColors.accent)
+                      .embolden(),
                 ),
               ),
             ],

@@ -45,7 +45,9 @@ class NearbyShopsRow extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: Text(
                   l10n.nearbyShopsTitle(shops.length),
-                  style: AppTextStyles.h2.copyWith(color: AppColors.surface),
+                  style: AppTextStyles.h2
+                      .copyWith(color: AppColors.surface)
+                      .embolden(),
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -58,7 +60,9 @@ class NearbyShopsRow extends StatelessWidget {
                     foregroundColor: AppColors.primary,
                     shape: const StadiumBorder(),
                     // Same face, size and spacing as every other button.
-                    textStyle: AppTextStyles.button,
+                    textStyle: AppTextStyles.button
+                        .copyWith(color: AppColors.primary)
+                        .embolden(),
                   ),
                   onPressed: () => AppSnackbar.showSuccess(
                     context,
@@ -130,9 +134,9 @@ class NearbyShopsRow extends StatelessWidget {
                             const Spacer(),
                             Text(
                               l10n.orderOnline,
-                              style: AppTextStyles.bodyBold.copyWith(
-                                color: AppColors.accent,
-                              ),
+                              style: AppTextStyles.bodyBold
+                                  .copyWith(color: AppColors.accent)
+                                  .embolden(),
                             ),
                           ],
                         ),

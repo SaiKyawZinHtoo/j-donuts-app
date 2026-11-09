@@ -176,7 +176,8 @@ class MemberHeader extends StatelessWidget {
                                                   .copyWith(
                                                     color:
                                                         AppColors.textPrimary,
-                                                  ),
+                                                  )
+                                                  .embolden(),
                                             ),
                                           ),
                                         ),

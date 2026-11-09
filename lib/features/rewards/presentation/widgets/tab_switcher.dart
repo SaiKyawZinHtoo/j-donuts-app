@@ -38,10 +38,11 @@ class TabSwitcher extends StatelessWidget {
           ),
           child: AnimatedDefaultTextStyle(
             duration: duration,
-            style: (active ? AppTextStyles.bodyBold : AppTextStyles.body)
-                .copyWith(
-                  color: active ? AppColors.surface : AppColors.textSecondary,
-                ),
+            style: active
+                ? AppTextStyles.bodyBold
+                      .copyWith(color: AppColors.surface)
+                      .embolden()
+                : AppTextStyles.body.copyWith(color: AppColors.textSecondary),
             child: Text(label),
           ),
         ),

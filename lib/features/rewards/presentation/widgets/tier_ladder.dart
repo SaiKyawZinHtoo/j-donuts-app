@@ -167,11 +167,13 @@ class TierBadge extends StatelessWidget {
                     ),
                   Text(
                     tier[0],
-                    style: AppTextStyles.bodyBold.copyWith(
-                      fontSize: size * 0.42,
-                      height: 1.1,
-                      color: AppColors.tierMark,
-                    ),
+                    style: AppTextStyles.bodyBold
+                        .copyWith(
+                          fontSize: size * 0.42,
+                          height: 1.1,
+                          color: AppColors.tierMark,
+                        )
+                        .embolden(),
                   ),
                 ],
               ),

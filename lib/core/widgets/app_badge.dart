@@ -28,10 +28,9 @@ class AppBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: AppTextStyles.bodyBold.copyWith(
-            fontSize: large ? 20 : 14,
-            color: AppColors.surface,
-          ),
+          style: AppTextStyles.bodyBold
+              .copyWith(fontSize: large ? 20 : 14, color: AppColors.surface)
+              .embolden(),
         ),
       ),
     );

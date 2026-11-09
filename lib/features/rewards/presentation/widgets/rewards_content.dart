@@ -44,9 +44,9 @@ class _RewardsBadge extends StatelessWidget {
             children: [
               Text(
                 AppLocalizations.of(context)!.rewardsBadgeLabel,
-                style: AppTextStyles.bodyBold.copyWith(
-                  color: AppColors.surface,
-                ),
+                style: AppTextStyles.bodyBold
+                    .copyWith(color: AppColors.surface)
+                    .embolden(),
               ),
               const SizedBox(width: AppSpacing.sm),
               Container(
@@ -57,9 +57,9 @@ class _RewardsBadge extends StatelessWidget {
                 ),
                 child: Text(
                   '$count',
-                  style: AppTextStyles.captionBold.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
+                  style: AppTextStyles.captionBold
+                      .copyWith(color: AppColors.textPrimary)
+                      .embolden(),
                 ),
               ),
             ],

@@ -486,8 +486,9 @@ Stated plainly so nobody has to find them:
   images). Replace the files under the same names for final art. The brand logo is small (120 px), so it looks soft.
 - **Fonts**: **Mija** is a commercial typeface (Latinotype, all rights reserved). It is included only so this test
   builds and matches the designs; get your own licence before reusing it (`assets/fonts/NOTICE.md`). Only the
-  Regular weight of Mija and Inter Display is bundled, so bold text is not heavier than regular (no true Mija
-  Bold file). Neither font has Myanmar glyphs, so Burmese text uses the system Myanmar font.
+  Regular weight of Mija and Inter Display is bundled (no true Mija Bold file), so bold text is **faked** with
+  four 0.35px text shadows in the text colour (`FauxBold`/`embolden()` in `lib/core/theme/text_styles.dart`).
+  Bundle Mija Bold and delete the shadows to get the real weight. Neither font has Myanmar glyphs, so Burmese text uses the system Myanmar font.
 - **Burmese strings** added during the UI passes were written by the author/assistant and are not yet
   reviewed by a native reader.
 - **Connectivity** uses `connectivity_plus` only; there is **no active reachability probe** (a connected

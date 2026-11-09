@@ -58,9 +58,9 @@ class _DobScreenState extends State<DobScreen> {
                 onPressed: () => Navigator.of(sheet).pop(temp),
                 child: Text(
                   MaterialLocalizations.of(sheet).okButtonLabel,
-                  style: AppTextStyles.bodyBold.copyWith(
-                    color: AppColors.accent,
-                  ),
+                  style: AppTextStyles.bodyBold
+                      .copyWith(color: AppColors.accent)
+                      .embolden(),
                 ),
               ),
             ),

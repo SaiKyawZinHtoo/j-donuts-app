@@ -40,13 +40,15 @@ class PointsDonut extends StatelessWidget {
                 children: [
                   Text(
                     l10n.totalPointsLabel,
-                    style: AppTextStyles.bodyBold.copyWith(
-                      color: AppColors.ringPink,
-                    ),
+                    style: AppTextStyles.bodyBold
+                        .copyWith(color: AppColors.ringPink)
+                        .embolden(),
                   ),
                   Text(
                     _format((animation.value * totalPoints).round()),
-                    style: AppTextStyles.h1.copyWith(color: AppColors.ringPink),
+                    style: AppTextStyles.h1
+                        .copyWith(color: AppColors.ringPink)
+                        .embolden(),
                   ),
                 ],
               ),
