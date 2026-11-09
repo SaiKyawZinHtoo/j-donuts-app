@@ -39,29 +39,33 @@ class AppBottomNav extends StatelessWidget {
     final duration = MediaQuery.disableAnimationsOf(context)
         ? Duration.zero
         : MotionTokens.kNavPillDuration;
-    return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.navBar,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSpacing.navBarTopRadius),
+    // Side inset so the bar floats clear of the screen edges.
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: AppColors.navBar,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppSpacing.navBarTopRadius),
+          ),
+          border: Border(top: BorderSide(color: AppColors.surface)),
         ),
-        border: Border(top: BorderSide(color: AppColors.surface)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: SizedBox(
-            height: AppSpacing.navBarHeight,
-            // One animated position `p` drives slot widths, pill and labels so
-            // they can never disagree mid-transition.
-            child: TweenAnimationBuilder<double>(
-              tween: Tween(end: currentIndex.toDouble()),
-              duration: duration,
-              curve: MotionTokens.kEmphasizedCurve,
-              builder: (context, p, _) => LayoutBuilder(
-                builder: (context, constraints) =>
-                    _buildBar(p, constraints.maxWidth),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: SizedBox(
+              height: AppSpacing.navBarHeight,
+              // One animated position `p` drives slot widths, pill and labels so
+              // they can never disagree mid-transition.
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(end: currentIndex.toDouble()),
+                duration: duration,
+                curve: MotionTokens.kEmphasizedCurve,
+                builder: (context, p, _) => LayoutBuilder(
+                  builder: (context, constraints) =>
+                      _buildBar(p, constraints.maxWidth),
+                ),
               ),
             ),
           ),
