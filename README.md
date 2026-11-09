@@ -11,7 +11,7 @@ from bundled JSON); the mock server is optional.
 | **Flutter / Dart** | Flutter **3.47.7** (stable) / Dart **3.13.5** (`sdk: ^3.13.4` in `pubspec.yaml`) |
 | **State management** | BLoC (`flutter_bloc`) |
 | **Platforms** | Android and iOS (profile-mode checks on a physical Android phone; iOS Simulator) |
-| **App id / name** | `com.example.j_donuts_app` / **J'Donuts** |
+| **App id / name** | Android `com.example.j_donuts_app`, iOS `com.example.jDonutsApp` / **J'Donuts** |
 
 ## Contents
 
@@ -373,8 +373,9 @@ flutter build ios --simulator
 cd build/ios/iphonesimulator && zip -r J-Donuts-simulator.zip Runner.app
 ```
 
-Install on a booted simulator with `xcrun simctl install booted Runner.app`, then launch it. For the
-Android emulator or a phone, `adb install -r app-release.apk`.
+Install and launch on a booted simulator with `xcrun simctl install booted Runner.app` and
+`xcrun simctl launch booted com.example.jDonutsApp` (the iOS bundle id). For the Android emulator or a
+phone, `adb install -r app-release.apk`. Both builds were checked from a fresh clone of this repository.
 
 | Deliverable | Status |
 | --- | --- |
@@ -399,7 +400,8 @@ The design screenshots from the brief are **not** committed to this repository.
 - **Product detail back arrow** uses `Navigator.maybePop`, so it never throws when there is nothing to pop.
 - **Impeller** is the renderer on both platforms; the iOS Simulator can show harmless ghosting on
   Onboarding that is a simulator artifact.
-- **Package ids** keep the default `com.example.j_donuts_app`; only the display name is J'Donuts.
+- **Package ids** keep the defaults (`com.example.j_donuts_app` on Android, `com.example.jDonutsApp` on iOS);
+  only the display name is J'Donuts.
 
 ## 14. Known gaps
 
