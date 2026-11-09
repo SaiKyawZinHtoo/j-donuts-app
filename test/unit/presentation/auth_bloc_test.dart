@@ -7,6 +7,12 @@ import 'package:j_donuts_app/features/auth/auth_import.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
 
+class FakeSmsRecorder implements FakeSmsNotifier {
+  final codes = <String>[];
+  @override
+  Future<void> showOtp(String code) async => codes.add(code);
+}
+
 void main() {
   late MockAuthRepository mockAuthRepo;
   late LoginUseCase loginUseCase;
@@ -30,7 +36,8 @@ void main() {
         .thenAnswer((_) async => const Result.ok(null));
   });
 
-  AuthBloc build() => AuthBloc(
+  AuthBloc build({FakeSmsNotifier? sms}) => AuthBloc(
+    smsNotifier: sms,
     loginUseCase: loginUseCase,
     registerUseCase: registerUseCase,
     getSessionUseCase: getSessionUseCase,
@@ -324,5 +331,38 @@ void main() {
       act: (bloc) => bloc.add(const LogoutRequested()),
       expect: () => [isA<AuthInitial>()],
     );
+  });
+
+  group('fake SMS notification', () {
+    test('OTP start and resend each notify with the fake code', () async {
+      when(() => mockAuthRepo.checkPhone(any()))
+          .thenAnswer((_) async => const Result.ok(false));
+      final sms = FakeSmsRecorder();
+      final bloc = build(sms: sms);
+      bloc.add(const PhoneSubmitted('09123456789'));
+      await bloc.stream.firstWhere((s) => s is OtpAwaiting);
+      expect(sms.codes, [kFakeOtpCode]);
+
+      for (var i = 0; i < 3; i++) {
+        bloc.add(const OtpDigitEntered('000000'));
+      }
+      await bloc.stream.firstWhere((s) => s is OtpLocked);
+      bloc.add(const OtpResendRequested());
+      await bloc.stream.firstWhere((s) => s is OtpAwaiting);
+      expect(sms.codes, [kFakeOtpCode, kFakeOtpCode]);
+      await bloc.close();
+    });
+
+    test('login with an unknown number starts no OTP, so no notification',
+        () async {
+      when(() => mockAuthRepo.checkPhone(any()))
+          .thenAnswer((_) async => const Result.ok(false));
+      final sms = FakeSmsRecorder();
+      final bloc = build(sms: sms);
+      bloc.add(const PhoneSubmitted('09123456789', isLogin: true));
+      await bloc.stream.firstWhere((s) => s is PhoneNeedsRegistration);
+      expect(sms.codes, isEmpty);
+      await bloc.close();
+    });
   });
 }

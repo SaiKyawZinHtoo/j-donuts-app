@@ -74,9 +74,11 @@ void setupServiceLocator() {
       registerUseCase: getIt(),
       getSessionUseCase: getIt(),
       authRepository: getIt(),
+      smsNotifier: getIt(),
     ),
   );
 
+  getIt.registerLazySingleton<FakeSmsNotifier>(() => FakeSmsNotifier());
   getIt.registerLazySingleton<ConnectivityService>(() => ConnectivityService());
   if (kApiBaseUrl.isNotEmpty) {
     getIt.registerLazySingleton<SyncRepository>(

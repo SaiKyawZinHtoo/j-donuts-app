@@ -6,6 +6,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUseCase registerUseCase;
   final GetSessionUseCase getSessionUseCase;
   final AuthRepository authRepository;
+  final FakeSmsNotifier? smsNotifier;
 
   int _attempts = 0;
   int _secondsLeft = 0;
@@ -23,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.registerUseCase,
     required this.getSessionUseCase,
     required this.authRepository,
+    this.smsNotifier,
   }) : super(const AuthInitial()) {
     on<PhoneSubmitted>(_onPhoneSubmitted);
     on<OtpDigitEntered>(_onOtpDigitEntered);
@@ -97,6 +99,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _secondsLeft = kOtpResendSeconds;
     _currentStep = RegistrationStep.otp;
     emit(OtpAwaiting(_secondsLeft, draft: _draft));
+    unawaited(smsNotifier?.showOtp(kFakeOtpCode));
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!isClosed) add(const _OtpTick());

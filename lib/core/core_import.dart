@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:j_donuts_app/l10n/app_localizations.dart';
@@ -36,3 +37,4 @@ part 'widgets/auth_scaffold.dart';
 part 'widgets/product_card.dart';
 part 'widgets/section_header.dart';
 part 'services/connectivity_service.dart';
+part 'services/fake_sms_notifier.dart';

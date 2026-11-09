@@ -51,6 +51,7 @@ dependencies:
   talker_dio_logger: ^5.2.0
   intl: ^0.20.2
   dio: ^5.11.1
+  flutter_local_notifications: 19.5.0
 
 dev_dependencies:
   flutter_test:
