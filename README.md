@@ -460,7 +460,8 @@ The design screenshots from the brief are **not** committed to this repository.
   number that registered on this device.
 - **Seed data and images are local.** The seasonal box photos come from the public jdonuts.com site;
   other images are generated placeholders (see known gaps).
-- **Bell count** (`2`) is a constant, not real notifications.
+- **Bell count** is the number of unfinished challenges in the local database (`HomeRepositoryImpl`, `openChallenges`),
+  so it comes from data, not from a widget constant. There is no real notification feature behind it.
 - **Add to cart** gives visual feedback only (a persistent cart is a bonus in the brief).
 - **Product detail back arrow** uses `Navigator.maybePop`, so it never throws when there is nothing to pop.
 - **Impeller** is the renderer on both platforms; the iOS Simulator can show harmless ghosting on
