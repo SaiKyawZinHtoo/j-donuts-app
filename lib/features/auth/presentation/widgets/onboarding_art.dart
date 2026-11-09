@@ -1,6 +1,6 @@
 part of '../../auth_import.dart';
 
-/// Donut cluster plus the overlapping logo circle at its bottom edge.
+/// Donut cluster that fades out into the page gradient at its bottom edge.
 class _OnboardingArt extends StatelessWidget {
   const _OnboardingArt({
     required this.width,
@@ -33,43 +33,46 @@ class _OnboardingArt extends StatelessWidget {
             bottom: -unit,
             child: ExcludeSemantics(
               child: ClipRect(
-                child: Stack(
-                  children: [
-                    for (var i = 0; i < kOnboardingTiles.length; i++)
-                      Positioned(
-                        left:
-                            kOnboardingTiles[i].cx * w -
-                            kOnboardingTiles[i].size * unit / 2,
-                        top:
-                            kOnboardingTiles[i].cy * clusterH -
-                            kOnboardingTiles[i].size * unit / 2,
-                        child: DonutTile(
-                          asset: kOnboardingTiles[i].asset,
-                          circleColor: kOnboardingTiles[i].color,
-                          size: kOnboardingTiles[i].size * unit,
-                          animation: tileAnimation(i),
-                          slideFrom: kOnboardingTiles[i].slideFrom,
+                // Fade the circles into the page gradient (no mismatched overlay
+                // colour), as in the reference design.
+                child: ShaderMask(
+                  blendMode: BlendMode.dstIn,
+                  // The mask rect also covers the overhang below the cluster, so
+                  // the fade is measured against the cluster height itself.
+                  shaderCallback: (rect) {
+                    final end = (clusterH / rect.height).clamp(0.0, 1.0);
+                    return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0, AppSpacing.onboardingFadeStart * end, end],
+                      colors: [
+                        AppColors.surface,
+                        AppColors.surface,
+                        AppColors.surface.withValues(alpha: 0),
+                      ],
+                    ).createShader(rect);
+                  },
+                  child: Stack(
+                    children: [
+                      for (var i = 0; i < kOnboardingTiles.length; i++)
+                        Positioned(
+                          left:
+                              kOnboardingTiles[i].cx * w -
+                              kOnboardingTiles[i].size * unit / 2,
+                          top:
+                              kOnboardingTiles[i].cy * clusterH -
+                              kOnboardingTiles[i].size * unit / 2,
+                          child: DonutTile(
+                            asset: kOnboardingTiles[i].asset,
+                            circleColor: kOnboardingTiles[i].color,
+                            size: kOnboardingTiles[i].size * unit,
+                            animation: tileAnimation(i),
+                            slideFrom: kOnboardingTiles[i].slideFrom,
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: (w - AppSpacing.logoCircleSize) / 2,
-            bottom: -AppSpacing.logoCircleSize / 2,
-            child: Container(
-              width: AppSpacing.logoCircleSize,
-              height: AppSpacing.logoCircleSize,
-              padding: const EdgeInsets.all(AppSpacing.logoCirclePadding),
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
-                shape: BoxShape.circle,
-              ),
-              child: Image.asset(
-                'assets/images/seed/brand_logo.png',
-                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -111,7 +114,7 @@ class _OnboardingActions extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
-        AppSpacing.logoCircleSize / 2 + AppSpacing.md,
+        AppSpacing.lg,
         AppSpacing.lg,
         AppSpacing.lg,
       ),
@@ -144,7 +147,9 @@ class _OnboardingActions extends StatelessWidget {
                 onTap: () => context.push('/phone', extra: 'login'),
                 child: Text(
                   l10n.loginLink,
-                  style: AppTextStyles.body.copyWith(color: AppColors.accent),
+                  style: AppTextStyles.bodyBold.copyWith(
+                    color: AppColors.accent,
+                  ),
                 ),
               ),
             ],
@@ -175,6 +180,9 @@ class _OnboardingActions extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           AppLegalFooter(
+            textStyle: AppTextStyles.body.copyWith(
+              color: AppColors.textSecondary,
+            ),
             onTapTerms: () => _legalPlaceholder(context, 'Terms of Use'),
             onTapPrivacy: () => _legalPlaceholder(context, 'Privacy Policy'),
           ),

@@ -8,10 +8,14 @@ class AppLegalFooter extends StatelessWidget {
     super.key,
     required this.onTapTerms,
     required this.onTapPrivacy,
+    this.textStyle = AppTextStyles.caption,
   });
 
   final VoidCallback onTapTerms;
   final VoidCallback onTapPrivacy;
+
+  /// Base style of the sentence; the two links keep it and turn accent-coloured.
+  final TextStyle textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class AppLegalFooter extends StatelessWidget {
     final notice = l10n.termsPrivacyNotice;
     final termsOfUse = l10n.termsOfUse;
     final privacyPolicy = l10n.privacyPolicy;
-    final linkStyle = AppTextStyles.caption.copyWith(color: AppColors.accent);
+    final linkStyle = textStyle.copyWith(color: AppColors.accent);
 
     final spans = <InlineSpan>[];
     var remaining = notice;
@@ -46,7 +50,7 @@ class AppLegalFooter extends StatelessWidget {
     if (remaining.isNotEmpty) spans.add(TextSpan(text: remaining));
 
     return Text.rich(
-      TextSpan(style: AppTextStyles.caption, children: spans),
+      TextSpan(style: textStyle, children: spans),
       textAlign: TextAlign.center,
     );
   }

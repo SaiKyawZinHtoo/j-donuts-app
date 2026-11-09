@@ -43,7 +43,7 @@ class AppSpacing {
   static const double logoCirclePadding = 12;
   static const double onboardingTilesFraction = 0.55;
   static const double onboardingTilesMinFraction = 0.45;
-  static const double onboardingContentHeight = 490;
+  static const double onboardingContentHeight = 520;
   static const double navBarHeight = 64;
   static const double navItemSize = 24;
   static const double navSelectedFlex =
@@ -76,4 +76,6 @@ class AppSpacing {
   static const double skeletonPlaceholderHeight = 400;
   static const double inlineSpinnerSize = 20;
   static const double socialIconSize = 28;
+  // Where the Onboarding donut cluster starts fading out (0..1 of its height).
+  static const double onboardingFadeStart = 0.6;
 }

@@ -39,6 +39,65 @@ void main() {
     expect(find.byType(AppLegalFooter), findsOneWidget);
   });
 
+  testWidgets('the Log In link is bold (Mija bold style, accent colour)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    final link = tester.widget<Text>(
+      find.descendant(
+        of: find.byKey(const Key('loginLinkButton')),
+        matching: find.byType(Text),
+      ),
+    );
+    expect(link.style?.fontWeight, FontWeight.w700);
+    expect(link.style?.fontFamily, AppFonts.heading);
+    expect(link.style?.color, AppColors.accent);
+  });
+
+  testWidgets('the donut header fades out with a gradient mask', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    final mask = tester.widget<ShaderMask>(
+      find.ancestor(
+        of: find.byType(DonutTile).first,
+        matching: find.byType(ShaderMask),
+      ),
+    );
+    expect(mask.blendMode, BlendMode.dstIn);
+  });
+
+  testWidgets('there is no logo circle above the title', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    final logos = find.byWidgetPredicate(
+      (w) =>
+          w is Image &&
+          w.image is AssetImage &&
+          (w.image as AssetImage).assetName.contains('brand_logo'),
+    );
+    expect(logos, findsNothing);
+  });
+
+  testWidgets('legal footer is body size in the secondary text colour', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    final footer = tester.widget<AppLegalFooter>(find.byType(AppLegalFooter));
+    expect(footer.textStyle.fontSize, AppTextStyles.body.fontSize);
+    expect(footer.textStyle.color, AppColors.textSecondary);
+    final loginLine = tester.widget<Text>(
+      find.text(
+        AppLocalizations.of(tester.element(find.byType(OnboardingScreen)))!
+            .alreadyHaveAccount,
+      ),
+    );
+    expect(footer.textStyle.fontSize, loginLine.style?.fontSize);
+  });
+
   testWidgets('social buttons use the Google SVG, Apple PNG and Facebook SVG', (
     tester,
   ) async {
