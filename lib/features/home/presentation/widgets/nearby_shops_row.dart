@@ -68,7 +68,7 @@ class NearbyShopsRow extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               SizedBox(
                 // shortcut: fixed height sized for text scale up to 1.3 (spec's max).
-                height: 270,
+                height: AppSpacing.shopsListHeight,
                 child: ListView.separated(
                   key: const Key('nearbyShopsRow'),
                   scrollDirection: Axis.horizontal,
@@ -82,7 +82,7 @@ class NearbyShopsRow extends StatelessWidget {
                     final shop = shops[index];
                     return Container(
                       key: Key('shopCard_${shop.id}'),
-                      width: 260,
+                      width: AppSpacing.shopCardWidth,
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
                         color: AppColors.surface,
@@ -95,7 +95,7 @@ class NearbyShopsRow extends StatelessWidget {
                         children: [
                           Image.asset(
                             _photos[index % _photos.length],
-                            height: 120,
+                            height: AppSpacing.shopCardImageHeight,
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),

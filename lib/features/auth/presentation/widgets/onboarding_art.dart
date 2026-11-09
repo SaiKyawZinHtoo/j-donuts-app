@@ -156,14 +156,7 @@ class _OnboardingActions extends StatelessWidget {
               IconButton(
                 key: const Key('googleSignInButton'),
                 onPressed: () => _socialPlaceholder(context, 'Google'),
-                icon: const Text(
-                  'G',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+                icon: const Text('G', style: AppTextStyles.socialGlyph),
               ),
               IconButton(
                 key: const Key('appleSignInButton'),

@@ -92,7 +92,7 @@ class _HomeSkeletonShape extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(height: 400);
+    return const SizedBox(height: AppSpacing.skeletonPlaceholderHeight);
   }
 }
 

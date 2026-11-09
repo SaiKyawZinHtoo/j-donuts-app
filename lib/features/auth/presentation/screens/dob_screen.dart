@@ -47,7 +47,7 @@ class _DobScreenState extends State<DobScreen> {
     return showCupertinoModalPopup<DateTime>(
       context: context,
       builder: (sheet) => Container(
-        height: 300,
+        height: AppSpacing.datePickerSheetHeight,
         color: AppColors.surface,
         child: Column(
           children: [

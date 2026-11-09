@@ -71,7 +71,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox.shrink(),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -86,9 +85,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   final stackH = screenH * AppSpacing.welcomeStackFraction;
                   final tileW = screenW * AppSpacing.welcomeTileWidthFraction;
                   const off = AppSpacing.welcomeTileOffset;
+                  // Reference aspect, capped so row 1 plus the visible part of
+                  // row 2 (and one gap) fit in the stack before the fade.
+                  const gap = AppSpacing.xl;
                   final tileH = math.max(
                     0.0,
-                    (stackH - off - AppSpacing.md) / 2,
+                    math.min(
+                      tileW * AppSpacing.welcomeTileAspect,
+                      (stackH - gap) / (1 + AppSpacing.welcomeSecondRowVisible),
+                    ),
                   );
                   final leftX = -tileW * AppSpacing.welcomeTileBleedFraction;
                   final rx = screenW * AppSpacing.welcomeRightColumnFraction;
@@ -121,22 +126,22 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           // gradient shows through (no mismatched overlay colour).
                           child: ShaderMask(
                             blendMode: BlendMode.dstIn,
-                            shaderCallback: (rect) => const LinearGradient(
+                            shaderCallback: (rect) => LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
-                              stops: [0, 0.6, 1],
+                              stops: const [0, 0.6, 1],
                               colors: [
-                                Color(0xFFFFFFFF),
-                                Color(0xFFFFFFFF),
-                                Color(0x00FFFFFF),
+                                AppColors.surface,
+                                AppColors.surface,
+                                AppColors.surface.withValues(alpha: 0),
                               ],
                             ).createShader(rect),
                             child: Stack(
                               children: [
                                 tile(0, leftX, 0),
                                 tile(1, rx, off),
-                                tile(2, leftX, tileH + AppSpacing.md),
-                                tile(3, rx, off + tileH + AppSpacing.md),
+                                tile(2, leftX, tileH + gap),
+                                tile(3, rx, off + tileH + gap),
                               ],
                             ),
                           ),

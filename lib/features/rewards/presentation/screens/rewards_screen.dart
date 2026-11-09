@@ -74,7 +74,7 @@ class _RewardsScreenState extends State<RewardsScreen>
             case RewardsLoading():
               return const AppSkeleton(
                 isLoading: true,
-                child: SizedBox(height: 400),
+                child: SizedBox(height: AppSpacing.skeletonPlaceholderHeight),
               );
             case RewardsError(message: final message):
               return AppErrorState(

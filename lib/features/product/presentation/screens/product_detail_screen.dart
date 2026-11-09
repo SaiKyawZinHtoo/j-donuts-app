@@ -135,14 +135,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           const SizedBox(height: AppSpacing.md),
           _maybeHero(
             SizedBox(
-              height: 280,
+              height: AppSpacing.productImageHeight,
               width: double.infinity,
               child: product == null
                   ? const AppSkeleton(isLoading: true, child: SizedBox.expand())
                   : AppSmartImage(
                       url: product.imageUrl,
                       fit: BoxFit.contain,
-                      height: 280,
+                      height: AppSpacing.productImageHeight,
                       width: double.infinity,
                       placeholder: (context) => const AppSkeleton(
                         isLoading: true,
@@ -151,7 +151,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       errorWidget: (context) => Image.asset(
                         'assets/images/seed/product_placeholder.png',
                         fit: BoxFit.contain,
-                        height: 280,
+                        height: AppSpacing.productImageHeight,
                         width: double.infinity,
                       ),
                     ),

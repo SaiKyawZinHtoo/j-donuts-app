@@ -33,4 +33,18 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.surface,
   );
+
+  /// Banner headline on a coloured card.
+  static const TextStyle bannerTitle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    color: AppColors.surface,
+  );
+
+  /// Letter glyph used as a social-sign-in icon.
+  static const TextStyle socialGlyph = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textPrimary,
+  );
 }

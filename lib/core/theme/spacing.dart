@@ -30,13 +30,16 @@ class AppSpacing {
   static const double entranceRise = 16;
   static const double logoCircleSize = 72;
   // Welcome tile grid: right column drop, tile radius, stack height fraction.
-  static const double welcomeTileOffset = 90;
+  static const double welcomeTileOffset = 48;
   static const double welcomeTileRadius = 28;
-  static const double welcomeStackFraction = 0.52;
+  static const double welcomeStackFraction = 0.6;
   // Tile width and right-column x as screen-width fractions; left bleed as tile-width fraction.
-  static const double welcomeTileWidthFraction = 0.52;
-  static const double welcomeRightColumnFraction = 0.6;
-  static const double welcomeTileBleedFraction = 0.05;
+  static const double welcomeTileWidthFraction = 0.53;
+  static const double welcomeRightColumnFraction = 0.62;
+  static const double welcomeTileBleedFraction = 0;
+  // Reference tile height / width, and how much of the 2nd row shows before the fade.
+  static const double welcomeTileAspect = 1.46;
+  static const double welcomeSecondRowVisible = 0.82;
   static const double logoCirclePadding = 12;
   static const double onboardingTilesFraction = 0.55;
   static const double onboardingTilesMinFraction = 0.45;
@@ -62,4 +65,14 @@ class AppSpacing {
   static const double cardPhotoAspect = 1.5; // w/h
   static const double cardCutoutAspect = 0.67; // w/h
   static const double chevronButtonSize = 40;
+
+  // Fixed content sizes (were literals in widgets).
+  static const double productImageHeight = 280;
+  static const double shopsListHeight = 270;
+  static const double shopCardWidth = 260;
+  static const double shopCardImageHeight = 120;
+  static const double bannerHeight = 160;
+  static const double datePickerSheetHeight = 300;
+  static const double skeletonPlaceholderHeight = 400;
+  static const double inlineSpinnerSize = 20;
 }

@@ -57,7 +57,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
     }
     return SizedBox(
       key: const Key('bannerCarousel'),
-      height: 160,
+      height: AppSpacing.bannerHeight,
       child: PageView.builder(
         controller: _controller,
         padEnds: false,
@@ -99,10 +99,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
                           banner.title,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.h1.copyWith(
-                            color: AppColors.surface,
-                            fontSize: 18,
-                          ),
+                          style: AppTextStyles.bannerTitle,
                         ),
                       ),
                     ),

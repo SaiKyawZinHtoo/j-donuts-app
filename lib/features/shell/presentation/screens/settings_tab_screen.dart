@@ -30,8 +30,8 @@ class _SettingsTabScreenState extends State<SettingsTabScreen> {
         onTap: _loggingOut ? null : _logout,
         trailing: _loggingOut
             ? const SizedBox(
-                width: 20,
-                height: 20,
+                width: AppSpacing.inlineSpinnerSize,
+                height: AppSpacing.inlineSpinnerSize,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             : null,
