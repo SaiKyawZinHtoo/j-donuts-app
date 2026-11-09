@@ -17,7 +17,11 @@ void main() {
     });
     test('rejects someone one day short of 13', () {
       final now = DateTime.now();
-      final oneDayShort = DateTime(now.year - 13, now.month, now.day).add(const Duration(days: 1));
+      final oneDayShort = DateTime(
+        now.year - 13,
+        now.month,
+        now.day,
+      ).add(const Duration(days: 1));
       expect(validateDob(oneDayShort), isA<ValidationInvalid>());
     });
   });

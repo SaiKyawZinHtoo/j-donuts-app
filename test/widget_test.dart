@@ -22,8 +22,7 @@ class _FakeSecureStorage extends FlutterSecureStoragePlatform {
   Future<String?> read({
     required String key,
     required Map<String, String> options,
-  }) async =>
-      null;
+  }) async => null;
 
   @override
   Future<void> delete({
@@ -35,8 +34,7 @@ class _FakeSecureStorage extends FlutterSecureStoragePlatform {
   Future<bool> containsKey({
     required String key,
     required Map<String, String> options,
-  }) async =>
-      false;
+  }) async => false;
 
   @override
   Future<void> deleteAll({required Map<String, String> options}) async {}
@@ -44,8 +42,7 @@ class _FakeSecureStorage extends FlutterSecureStoragePlatform {
   @override
   Future<Map<String, String>> readAll({
     required Map<String, String> options,
-  }) async =>
-      {};
+  }) async => {};
 }
 
 void main() {

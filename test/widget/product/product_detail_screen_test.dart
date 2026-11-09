@@ -15,8 +15,7 @@ const _product = Product(
   isNew: true,
   discountPercent: 0,
   imageUrl: 'https://example.com/img.png',
-  description:
-      'Enjoy our scrumptious donuts, soft, sweet, and satisfying in every bite. Choose from classic glazed, rich chocolate, or fun sprinkles. Dive into deliciousness now! Every box is baked fresh each morning with love.',
+  description: 'Enjoy our scrumptious donuts, soft, sweet, and satisfying in every bite. Choose from classic glazed, rich chocolate, or fun sprinkles. Dive into deliciousness now! Every box is baked fresh each morning with love.',
 );
 
 class _StubProductRepository implements ProductRepository {
@@ -62,13 +61,25 @@ void main() {
     expect(find.byKey(const Key('productDetailScreen')), findsOneWidget);
     expect(find.text('ADD TO CART'), findsOneWidget);
     expect(find.text('1,500 MMK'), findsWidgets);
-    expect(find.descendant(of: find.byKey(const Key('quantityPill')), matching: find.text('1')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('quantityPill')),
+        matching: find.text('1'),
+      ),
+      findsOneWidget,
+    );
 
     await tester.tap(find.byKey(const Key('quantityIncrement')));
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('3,000 MMK'), findsOneWidget);
-    expect(find.descendant(of: find.byKey(const Key('quantityPill')), matching: find.text('2')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('quantityPill')),
+        matching: find.text('2'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('description toggle expands', (tester) async {
@@ -77,8 +88,9 @@ void main() {
     addTearDown(tester.view.reset);
     await load(tester, app());
     final size = find.descendant(
-        of: find.byKey(const Key('descriptionToggle')),
-        matching: find.byType(AnimatedSize));
+      of: find.byKey(const Key('descriptionToggle')),
+      matching: find.byType(AnimatedSize),
+    );
     final before = tester.getSize(size).height;
     await tester.tap(find.byKey(const Key('descriptionToggle')));
     await tester.pump();
@@ -86,7 +98,9 @@ void main() {
     expect(tester.getSize(size).height, greaterThan(before));
   });
 
-  testWidgets('pill straddles card edge and lower half is tappable', (tester) async {
+  testWidgets('pill straddles card edge and lower half is tappable', (
+    tester,
+  ) async {
     await load(tester, app());
     final pill = tester.getRect(find.byKey(const Key('quantityPill')));
     final card = tester.getRect(find.byKey(const Key('productCard')));
@@ -97,11 +111,16 @@ void main() {
     expect(find.text('3,000 MMK'), findsOneWidget);
   });
 
-  testWidgets('reduce motion renders final state on first frame', (tester) async {
+  testWidgets('reduce motion renders final state on first frame', (
+    tester,
+  ) async {
     await tester.pumpWidget(app(reduce: true));
     await tester.pump();
     await tester.pump();
-    expect(tester.widget<Opacity>(find.byKey(const Key('detailEntrance'))).opacity, 1.0);
+    expect(
+      tester.widget<Opacity>(find.byKey(const Key('detailEntrance'))).opacity,
+      1.0,
+    );
   });
 
   testWidgets('text scale 1.3 does not overflow', (tester) async {
@@ -117,11 +136,13 @@ void main() {
         getProductUseCase: GetProductUseCase(_SlowRepository(gate.future)),
       ),
     );
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const ProductDetailScreen(productId: 'p1', heroTag: 'h'),
-    ));
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const ProductDetailScreen(productId: 'p1', heroTag: 'h'),
+      ),
+    );
     await tester.pump();
     final before = tester.element(find.byType(Hero));
     gate.complete();
@@ -132,17 +153,22 @@ void main() {
   });
 
   testWidgets('back arrow pops a pushed route', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Builder(
-        builder: (c) => TextButton(
-          onPressed: () => Navigator.of(c).push(MaterialPageRoute<void>(
-              builder: (_) => const ProductDetailScreen(productId: 'p1'))),
-          child: const Text('open'),
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (c) => TextButton(
+            onPressed: () => Navigator.of(c).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const ProductDetailScreen(productId: 'p1'),
+              ),
+            ),
+            child: const Text('open'),
+          ),
         ),
       ),
-    ));
+    );
     await tester.tap(find.text('open'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));

@@ -25,11 +25,10 @@ void main() {
     expect(member.nextTierPoints - member.points, 500);
 
     final sections = await db.select(db.sections).get();
-    expect(sections.map((s) => s.id), containsAll(<String>[
-      'seasonal_specials',
-      'popular',
-      'order_again',
-    ]));
+    expect(
+      sections.map((s) => s.id),
+      containsAll(<String>['seasonal_specials', 'popular', 'order_again']),
+    );
 
     final shops = await db.select(db.shops).get();
     expect(shops.length, 4);
@@ -58,34 +57,48 @@ void main() {
     expect(home.sections.first.products, isNotEmpty);
   });
 
-  test('old seed marker triggers wipe and reseed, keeping auth users', () async {
-    final db = AppDatabase.forTesting(NativeDatabase.memory());
-    await db.into(db.meta).insert(
-        MetaCompanion.insert(key: 'seeded', value: 'true'));
-    await db.into(db.products).insert(ProductsCompanion.insert(
-        id: 'p_stale',
-        code: 'X',
-        name: 'Stale',
-        priceMmk: 1,
-        imageUrl: 'x'));
-    await db.into(db.authUsers).insert(AuthUsersCompanion.insert(
-        id: 'u1',
-        phone: '0900',
-        firstName: 'A',
-        lastName: 'B',
-        dob: DateTime(2000),
-        createdAt: DateTime(2020)));
+  test(
+    'old seed marker triggers wipe and reseed, keeping auth users',
+    () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      await db
+          .into(db.meta)
+          .insert(MetaCompanion.insert(key: 'seeded', value: 'true'));
+      await db
+          .into(db.products)
+          .insert(
+            ProductsCompanion.insert(
+              id: 'p_stale',
+              code: 'X',
+              name: 'Stale',
+              priceMmk: 1,
+              imageUrl: 'x',
+            ),
+          );
+      await db
+          .into(db.authUsers)
+          .insert(
+            AuthUsersCompanion.insert(
+              id: 'u1',
+              phone: '0900',
+              firstName: 'A',
+              lastName: 'B',
+              dob: DateTime(2000),
+              createdAt: DateTime(2020),
+            ),
+          );
 
-    await SeedLoader(db).seedIfNeeded();
+      await SeedLoader(db).seedIfNeeded();
 
-    final ids = (await db.select(db.products).get()).map((p) => p.id);
-    expect(ids, isNot(contains('p_stale')));
-    expect(ids, contains('p_box_romance'));
-    expect((await db.select(db.member).getSingle()).tier, 'Bronze');
-    final marker = await (db.select(db.meta)
-          ..where((m) => m.key.equals('seeded')))
-        .getSingle();
-    expect(marker.value, '2');
-    expect(await db.select(db.authUsers).get(), hasLength(1));
-  });
+      final ids = (await db.select(db.products).get()).map((p) => p.id);
+      expect(ids, isNot(contains('p_stale')));
+      expect(ids, contains('p_box_romance'));
+      expect((await db.select(db.member).getSingle()).tier, 'Bronze');
+      final marker = await (db.select(
+        db.meta,
+      )..where((m) => m.key.equals('seeded'))).getSingle();
+      expect(marker.value, '2');
+      expect(await db.select(db.authUsers).get(), hasLength(1));
+    },
+  );
 }

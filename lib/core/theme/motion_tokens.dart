@@ -31,6 +31,7 @@ class MotionTokens {
   static const Duration kNavPillDuration = Duration(milliseconds: 250);
   static const Duration kOtpErrorHold = Duration(milliseconds: 1500);
   static const Duration kEmptyStateEntrance = Duration(milliseconds: 300);
+  static const Duration kFieldStateDuration = Duration(milliseconds: 180);
   static const Duration kQtyChange = Duration(milliseconds: 150);
   static const Duration kDescriptionExpand = Duration(milliseconds: 250);
   static const Duration kDetailEntrance = Duration(milliseconds: 400);

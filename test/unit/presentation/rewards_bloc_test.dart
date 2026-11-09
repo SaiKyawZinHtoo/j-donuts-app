@@ -21,7 +21,14 @@ void main() {
       totalPoints: 100,
     ),
     challenges: const [
-      Challenge(id: 'c1', title: 'Buy 3', current: 3, target: 3, rewardPts: 50, artType: 'donut'),
+      Challenge(
+        id: 'c1',
+        title: 'Buy 3',
+        current: 3,
+        target: 3,
+        rewardPts: 50,
+        artType: 'donut',
+      ),
     ],
   );
 
@@ -34,7 +41,8 @@ void main() {
   blocTest<RewardsBloc, RewardsState>(
     'emits RewardsLoading then RewardsLoaded on RewardsRequested',
     setUp: () {
-      when(() => mockGetRewards.call()).thenAnswer((_) async => Result.ok(testBundle));
+      when(() => mockGetRewards.call())
+          .thenAnswer((_) async => Result.ok(testBundle));
     },
     build: build,
     act: (bloc) => bloc.add(const RewardsRequested()),
@@ -44,7 +52,8 @@ void main() {
   blocTest<RewardsBloc, RewardsState>(
     'emits RewardsLoading then RewardsError when the use case fails',
     setUp: () {
-      when(() => mockGetRewards.call()).thenAnswer((_) async => const Result.err('boom'));
+      when(() => mockGetRewards.call())
+          .thenAnswer((_) async => const Result.err('boom'));
     },
     build: build,
     act: (bloc) => bloc.add(const RewardsRequested()),
@@ -54,7 +63,8 @@ void main() {
   blocTest<RewardsBloc, RewardsState>(
     'TabChanged updates activeTab without refetching',
     setUp: () {
-      when(() => mockGetRewards.call()).thenAnswer((_) async => Result.ok(testBundle));
+      when(() => mockGetRewards.call())
+          .thenAnswer((_) async => Result.ok(testBundle));
     },
     build: build,
     act: (bloc) async {
@@ -68,7 +78,11 @@ void main() {
     expect: () => [
       isA<RewardsLoading>(),
       isA<RewardsLoaded>(),
-      isA<RewardsLoaded>().having((s) => s.activeTab, 'activeTab', RewardsTab.gift),
+      isA<RewardsLoaded>().having(
+        (s) => s.activeTab,
+        'activeTab',
+        RewardsTab.gift,
+      ),
     ],
   );
 }

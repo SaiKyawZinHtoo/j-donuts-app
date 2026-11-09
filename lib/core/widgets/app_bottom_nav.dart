@@ -4,7 +4,10 @@ part of '../core_import.dart';
 /// Explore, Wallet, Settings. Pass [items] to override.
 const List<BottomNavigationBarItem> kDefaultBottomNavItems = [
   BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-  BottomNavigationBarItem(icon: Icon(Icons.workspace_premium_outlined), label: 'Rewards'),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.workspace_premium_outlined),
+    label: 'Rewards',
+  ),
   BottomNavigationBarItem(
     icon: Icon(Icons.radio_button_checked),
     label: 'Explore',

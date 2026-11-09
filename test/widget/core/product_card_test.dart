@@ -17,22 +17,27 @@ Widget _host(Widget child, {double scale = 1}) => MaterialApp(
 void main() {
   for (final mode in ProductCardImageMode.values) {
     testWidgets('$mode renders title and image', (t) async {
-      await t.pumpWidget(_host(
-          ProductCard(imageUrl: _img, title: 'Glazed', mode: mode)));
+      await t.pumpWidget(
+        _host(ProductCard(imageUrl: _img, title: 'Glazed', mode: mode)),
+      );
       expect(find.text('Glazed'), findsOneWidget);
       expect(find.byType(Image), findsWidgets);
     });
 
-    testWidgets('$mode title wraps to 2 lines within budget at 1.3x', (t) async {
-      const long = 'Glazed Strawberry Sprinkle Donut With Extra Cream Filling '
+    testWidgets('$mode title wraps to 2 lines within budget at 1.3x', (
+      t,
+    ) async {
+      const long =
+          'Glazed Strawberry Sprinkle Donut With Extra Cream Filling '
           'And Chocolate Drizzle On Top Deluxe Edition';
       final titleFinder = find.text(long);
-      await t.pumpWidget(_host(
-          ProductCard(imageUrl: _img, title: long, mode: mode),
-          scale: 1.3));
+      await t.pumpWidget(
+        _host(ProductCard(imageUrl: _img, title: long, mode: mode), scale: 1.3),
+      );
       expect(t.takeException(), isNull);
       final ctx = t.element(find.byType(ProductCard));
-      final imageH = ProductCard.widthFor(mode) /
+      final imageH =
+          ProductCard.widthFor(mode) /
           (mode == ProductCardImageMode.photo
               ? AppSpacing.cardPhotoAspect
               : AppSpacing.cardCutoutAspect);
@@ -45,56 +50,93 @@ void main() {
     });
 
     testWidgets('$mode Hero only when heroTag set', (t) async {
-      await t.pumpWidget(_host(
-          ProductCard(imageUrl: _img, title: 'a', mode: mode, heroTag: 'h')));
+      await t.pumpWidget(
+        _host(
+          ProductCard(imageUrl: _img, title: 'a', mode: mode, heroTag: 'h'),
+        ),
+      );
       expect(find.byType(Hero), findsOneWidget);
       await t.pumpWidget(
-          _host(ProductCard(imageUrl: _img, title: 'a', mode: mode)));
+        _host(ProductCard(imageUrl: _img, title: 'a', mode: mode)),
+      );
       expect(find.byType(Hero), findsNothing);
     });
   }
 
-  testWidgets('cutout Hero wraps only the image, not the white card', (t) async {
-    await t.pumpWidget(_host(const ProductCard(
-        imageUrl: _img,
-        title: 'a',
-        mode: ProductCardImageMode.cutout,
-        heroTag: 'h')));
+  testWidgets('cutout Hero wraps only the image, not the white card', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      _host(
+        const ProductCard(
+          imageUrl: _img,
+          title: 'a',
+          mode: ProductCardImageMode.cutout,
+          heroTag: 'h',
+        ),
+      ),
+    );
     expect(
-        find.descendant(of: find.byType(Hero), matching: find.byType(DecoratedBox)),
-        findsNothing);
+      find.descendant(
+        of: find.byType(Hero),
+        matching: find.byType(DecoratedBox),
+      ),
+      findsNothing,
+    );
     expect(
-        find.descendant(of: find.byType(Hero), matching: find.byType(Image)),
-        findsOneWidget);
+      find.descendant(of: find.byType(Hero), matching: find.byType(Image)),
+      findsOneWidget,
+    );
   });
 
   testWidgets('badge shown only when label set', (t) async {
-    await t.pumpWidget(_host(const ProductCard(
-        imageUrl: _img,
-        title: 'a',
-        mode: ProductCardImageMode.photo,
-        badgeLabel: '50% off')));
+    await t.pumpWidget(
+      _host(
+        const ProductCard(
+          imageUrl: _img,
+          title: 'a',
+          mode: ProductCardImageMode.photo,
+          badgeLabel: '50% off',
+        ),
+      ),
+    );
     expect(find.text('50% off'), findsOneWidget);
-    await t.pumpWidget(_host(const ProductCard(
-        imageUrl: _img, title: 'a', mode: ProductCardImageMode.photo)));
+    await t.pumpWidget(
+      _host(
+        const ProductCard(
+          imageUrl: _img,
+          title: 'a',
+          mode: ProductCardImageMode.photo,
+        ),
+      ),
+    );
     expect(find.text('50% off'), findsNothing);
   });
 
   testWidgets('tap calls onTap once', (t) async {
     var n = 0;
-    await t.pumpWidget(_host(ProductCard(
-        imageUrl: _img,
-        title: 'tap me',
-        mode: ProductCardImageMode.photo,
-        onTap: () => n++)));
+    await t.pumpWidget(
+      _host(
+        ProductCard(
+          imageUrl: _img,
+          title: 'tap me',
+          mode: ProductCardImageMode.photo,
+          onTap: () => n++,
+        ),
+      ),
+    );
     await t.tap(find.text('tap me'));
     expect(n, 1);
   });
 
   test('widthFor tokens', () {
-    expect(ProductCard.widthFor(ProductCardImageMode.photo),
-        AppSpacing.cardPhotoWidth);
-    expect(ProductCard.widthFor(ProductCardImageMode.cutout),
-        AppSpacing.cardCutoutWidth);
+    expect(
+      ProductCard.widthFor(ProductCardImageMode.photo),
+      AppSpacing.cardPhotoWidth,
+    );
+    expect(
+      ProductCard.widthFor(ProductCardImageMode.cutout),
+      AppSpacing.cardCutoutWidth,
+    );
   });
 }

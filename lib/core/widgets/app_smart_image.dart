@@ -21,7 +21,8 @@ class AppSmartImage extends StatelessWidget {
     this.errorWidget,
   });
 
-  bool get _isNetwork => url.startsWith('http://') || url.startsWith('https://');
+  bool get _isNetwork =>
+      url.startsWith('http://') || url.startsWith('https://');
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +32,12 @@ class AppSmartImage extends StatelessWidget {
         fit: fit,
         width: width,
         height: height,
-        placeholder: placeholder == null ? null : (context, _) => placeholder!(context),
-        errorWidget: errorWidget == null ? null : (context, _, _) => errorWidget!(context),
+        placeholder: placeholder == null
+            ? null
+            : (context, _) => placeholder!(context),
+        errorWidget: errorWidget == null
+            ? null
+            : (context, _, _) => errorWidget!(context),
       );
     }
     return Image.asset(
@@ -40,7 +45,9 @@ class AppSmartImage extends StatelessWidget {
       fit: fit,
       width: width,
       height: height,
-      errorBuilder: errorWidget == null ? null : (context, _, _) => errorWidget!(context),
+      errorBuilder: errorWidget == null
+          ? null
+          : (context, _, _) => errorWidget!(context),
     );
   }
 }

@@ -4,7 +4,11 @@ part of '../core_import.dart';
 /// Policy spans, shown at the bottom of every auth screen per the reference
 /// design.
 class AppLegalFooter extends StatelessWidget {
-  const AppLegalFooter({super.key, required this.onTapTerms, required this.onTapPrivacy});
+  const AppLegalFooter({
+    super.key,
+    required this.onTapTerms,
+    required this.onTapPrivacy,
+  });
 
   final VoidCallback onTapTerms;
   final VoidCallback onTapPrivacy;

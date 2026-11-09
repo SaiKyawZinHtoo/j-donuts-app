@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:j_donuts_app/core/core_import.dart' show AppOtpBox;
 import 'package:j_donuts_app/core/result/result.dart';
 import 'package:j_donuts_app/features/auth/auth_import.dart';
 
@@ -9,7 +10,8 @@ import 'test_helpers.dart';
 void main() {
   testWidgets('3 wrong OTP codes locks entry', (tester) async {
     final repo = MockAuthRepository();
-    when(() => repo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+    when(() => repo.checkPhone(any()))
+        .thenAnswer((_) async => const Result.ok(false));
     final bloc = buildAuthBloc(repository: repo);
     bloc.add(const PhoneSubmitted('09123456789'));
     await tester.pumpWidget(makeTestableWidget(const OtpScreen(), bloc: bloc));
@@ -40,8 +42,46 @@ void main() {
     expect(bloc.state, isA<OtpLocked>());
 
     await tester.pump();
-    expect(find.text('Too many attempts. Please resend the code.'), findsOneWidget);
+    expect(
+      find.text('Too many attempts. Please resend the code.'),
+      findsOneWidget,
+    );
 
     bloc.close();
+  });
+
+  testWidgets('wrong OTP code shakes the boxes sideways then settles', (
+    tester,
+  ) async {
+    final repo = MockAuthRepository();
+    when(() => repo.checkPhone(any()))
+        .thenAnswer((_) async => const Result.ok(false));
+    final bloc = buildAuthBloc(repository: repo);
+    bloc.add(const PhoneSubmitted('09123456789'));
+    await tester.pumpWidget(makeTestableWidget(const OtpScreen(), bloc: bloc));
+    await tester.pump();
+    await tester.pump();
+
+    final fields = find.byType(TextField);
+    for (var i = 0; i < 6; i++) {
+      await tester.enterText(fields.at(i), '0');
+    }
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    double dx() => tester
+        .widgetList<Transform>(
+          find.ancestor(
+            of: find.byType(AppOtpBox),
+            matching: find.byType(Transform),
+          ),
+        )
+        .map((t) => t.transform.getTranslation().x)
+        .fold<double>(0, (a, b) => a.abs() > b.abs() ? a : b);
+    expect(dx().abs(), greaterThan(0));
+    await tester.pump(const Duration(seconds: 1));
+    expect(dx(), 0);
+    await tester.pumpWidget(const SizedBox());
+    bloc.close(); // cancels the OTP countdown timer
+    await tester.pump();
   });
 }

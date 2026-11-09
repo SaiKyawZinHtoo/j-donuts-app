@@ -27,8 +27,7 @@ class FakeSecureStorage extends FlutterSecureStoragePlatform {
   Future<String?> read({
     required String key,
     required Map<String, String> options,
-  }) async =>
-      _store[key];
+  }) async => _store[key];
 
   @override
   Future<void> delete({
@@ -42,8 +41,7 @@ class FakeSecureStorage extends FlutterSecureStoragePlatform {
   Future<bool> containsKey({
     required String key,
     required Map<String, String> options,
-  }) async =>
-      _store.containsKey(key);
+  }) async => _store.containsKey(key);
 
   @override
   Future<void> deleteAll({required Map<String, String> options}) async {
@@ -53,8 +51,7 @@ class FakeSecureStorage extends FlutterSecureStoragePlatform {
   @override
   Future<Map<String, String>> readAll({
     required Map<String, String> options,
-  }) async =>
-      Map.of(_store);
+  }) async => Map.of(_store);
 }
 
 void main() {
@@ -79,22 +76,25 @@ void main() {
     expect(result, isA<Err<AuthUser>>());
   }, timeout: const Timeout(Duration(seconds: 5)));
 
-  test('completeRegistration persists the user and saves the session',
-      () async {
-    final result = await repo.completeRegistration(
-      phone: '+959111111111',
-      firstName: 'Shan',
-      dob: DateTime(1999, 5, 1),
-    );
-    expect(result, isA<Ok<AuthUser>>());
+  test(
+    'completeRegistration persists the user and saves the session',
+    () async {
+      final result = await repo.completeRegistration(
+        phone: '+959111111111',
+        firstName: 'Shan',
+        dob: DateTime(1999, 5, 1),
+      );
+      expect(result, isA<Ok<AuthUser>>());
 
-    final session = await repo.getSession();
-    expect(session, isA<Ok<AuthUser?>>());
-    expect((session as Ok<AuthUser?>).value?.phone, '+959111111111');
+      final session = await repo.getSession();
+      expect(session, isA<Ok<AuthUser?>>());
+      expect((session as Ok<AuthUser?>).value?.phone, '+959111111111');
 
-    final login = await repo.login('+959111111111');
-    expect(login, isA<Ok<AuthUser>>());
-  }, timeout: const Timeout(Duration(seconds: 5)));
+      final login = await repo.login('+959111111111');
+      expect(login, isA<Ok<AuthUser>>());
+    },
+    timeout: const Timeout(Duration(seconds: 5)),
+  );
 
   test('logout clears the session', () async {
     await repo.completeRegistration(

@@ -46,8 +46,9 @@ void main() {
   testWidgets('only active label visible', (t) async {
     await t.pumpWidget(_host(1, (_) {}));
     double opacity(String l) => t
-        .widget<Opacity>(find.ancestor(
-            of: find.text(l), matching: find.byType(Opacity)))
+        .widget<Opacity>(
+          find.ancestor(of: find.text(l), matching: find.byType(Opacity)),
+        )
         .opacity;
     expect(opacity('Rewards'), 1);
     expect(opacity('Home'), 0);

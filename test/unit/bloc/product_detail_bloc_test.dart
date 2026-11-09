@@ -27,7 +27,8 @@ void main() {
 
   setUp(() {
     repo = MockProductRepository();
-    when(() => repo.getProduct('p1')).thenAnswer((_) async => const Result.ok(_product));
+    when(() => repo.getProduct('p1'))
+        .thenAnswer((_) async => const Result.ok(_product));
   });
 
   blocTest<ProductDetailBloc, ProductDetailState>(
@@ -50,6 +51,9 @@ void main() {
     'ProductRequested loads the product at quantity 1',
     build: () => _buildBloc(repository: repo),
     act: (bloc) => bloc.add(const ProductRequested('p1')),
-    expect: () => [const ProductLoading(), const ProductLoaded(_product, 1, 1500)],
+    expect: () => [
+      const ProductLoading(),
+      const ProductLoaded(_product, 1, 1500),
+    ],
   );
 }

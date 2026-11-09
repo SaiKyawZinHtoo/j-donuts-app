@@ -45,12 +45,8 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<GetSessionUseCase>(
     () => GetSessionUseCase(getIt()),
   );
-  getIt.registerLazySingleton<LoginUseCase>(
-    () => LoginUseCase(getIt()),
-  );
-  getIt.registerLazySingleton<RegisterUseCase>(
-    () => RegisterUseCase(getIt()),
-  );
+  getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt()));
+  getIt.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(getIt()));
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(
       homeDao: getIt(),
@@ -60,14 +56,15 @@ void setupServiceLocator() {
         final r = await getIt<GetSessionUseCase>().call();
         final u = r is Ok<AuthUser?> ? r.value : null;
         if (u == null) return null;
-        final name = [u.firstName, u.lastName].whereType<String>().join(' ').trim();
+        final name = [
+          u.firstName,
+          u.lastName,
+        ].whereType<String>().join(' ').trim();
         return (name: name, phone: u.phone);
       },
     ),
   );
-  getIt.registerLazySingleton<GetHomeUseCase>(
-    () => GetHomeUseCase(getIt()),
-  );
+  getIt.registerLazySingleton<GetHomeUseCase>(() => GetHomeUseCase(getIt()));
 
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(

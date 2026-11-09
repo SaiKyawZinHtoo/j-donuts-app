@@ -43,7 +43,9 @@ class _AppButtonState extends State<AppButton> {
       key: const ValueKey('label'),
       mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(child: Text(widget.label.toUpperCase(), style: AppTextStyles.button)),
+        Flexible(
+          child: Text(widget.label.toUpperCase(), style: AppTextStyles.button),
+        ),
         Container(
           width: 1,
           height: AppSpacing.md,

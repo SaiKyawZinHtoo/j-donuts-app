@@ -14,8 +14,10 @@ class AppSnackbar {
   static void _show(BuildContext context, String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message,
-            style: AppTextStyles.body.copyWith(color: AppColors.surface)),
+        content: Text(
+          message,
+          style: AppTextStyles.body.copyWith(color: AppColors.surface),
+        ),
         backgroundColor: color,
       ),
     );

@@ -86,7 +86,10 @@ class _ProductCardState extends State<ProductCard> {
     Widget area;
     if (cutout) {
       area = DecoratedBox(
-        decoration: BoxDecoration(color: AppColors.surface, borderRadius: radius),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: radius,
+        ),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -95,7 +98,8 @@ class _ProductCardState extends State<ProductCard> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
                 child: Container(
-                  width: ProductCard.widthFor(widget.mode) *
+                  width:
+                      ProductCard.widthFor(widget.mode) *
                       ProductCard._shadowWidthFraction,
                   height: ProductCard._shadowHeight,
                   decoration: const BoxDecoration(

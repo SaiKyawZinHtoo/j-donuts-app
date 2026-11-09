@@ -17,10 +17,14 @@ Widget makeTestableWidget(HomeBloc bloc) {
   final router = GoRouter(
     initialLocation: '/__test__',
     routes: [
-      GoRoute(path: '/__test__', builder: (context, state) => const HomeScreen()),
+      GoRoute(
+        path: '/__test__',
+        builder: (context, state) => const HomeScreen(),
+      ),
       GoRoute(
         path: '/product/:id',
-        builder: (context, state) => Scaffold(body: Text('Product ${state.pathParameters['id']}')),
+        builder: (context, state) =>
+            Scaffold(body: Text('Product ${state.pathParameters['id']}')),
       ),
     ],
   );
@@ -28,7 +32,8 @@ Widget makeTestableWidget(HomeBloc bloc) {
     routerConfig: router,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
-    builder: (context, child) => BlocProvider<HomeBloc>.value(value: bloc, child: child!),
+    builder: (context, child) =>
+        BlocProvider<HomeBloc>.value(value: bloc, child: child!),
   );
 }
 
@@ -112,22 +117,33 @@ void main() {
       ),
     ],
     shops: const [
-      Shop(id: 'sh1', name: 'Downtown', address: '123 Main St', distanceLabel: '1.2 km'),
+      Shop(
+        id: 'sh1',
+        name: 'Downtown',
+        address: '123 Main St',
+        distanceLabel: '1.2 km',
+      ),
     ],
   );
 
   setUp(() {
     mockGetHome = MockGetHomeUseCase();
     mockConnectivity = MockConnectivityService();
-    when(() => mockConnectivity.onStatusChanged).thenAnswer((_) => const Stream<bool>.empty());
+    when(() => mockConnectivity.onStatusChanged)
+        .thenAnswer((_) => const Stream<bool>.empty());
   });
 
-  testWidgets('shows offline banner when HomeLoaded.isOffline is true', (tester) async {
+  testWidgets('shows offline banner when HomeLoaded.isOffline is true', (
+    tester,
+  ) async {
     when(() => mockConnectivity.isOnline()).thenAnswer((_) async => false);
-    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
+    when(() => mockGetHome.call())
+        .thenAnswer((_) async => Result.ok(testBundle));
 
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
+    final bloc = HomeBloc(
+      getHomeUseCase: mockGetHome,
+      connectivity: mockConnectivity,
+    )..add(const HomeRequested());
 
     await tester.pumpWidget(makeTestableWidget(bloc));
     await tester.pump();
@@ -136,26 +152,37 @@ void main() {
     expect(find.byKey(const Key('homeOfflineBanner')), findsOneWidget);
   });
 
-  testWidgets('does not show offline banner when HomeLoaded.isOffline is false', (tester) async {
+  testWidgets(
+    'does not show offline banner when HomeLoaded.isOffline is false',
+    (tester) async {
+      when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
+      when(() => mockGetHome.call())
+          .thenAnswer((_) async => Result.ok(testBundle));
+
+      final bloc = HomeBloc(
+        getHomeUseCase: mockGetHome,
+        connectivity: mockConnectivity,
+      )..add(const HomeRequested());
+
+      await tester.pumpWidget(makeTestableWidget(bloc));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byKey(const Key('homeOfflineBanner')), findsNothing);
+    },
+  );
+
+  testWidgets('tapping a product tile navigates to /product/:id', (
+    tester,
+  ) async {
     when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
-    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
+    when(() => mockGetHome.call())
+        .thenAnswer((_) async => Result.ok(testBundle));
 
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
-
-    await tester.pumpWidget(makeTestableWidget(bloc));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
-
-    expect(find.byKey(const Key('homeOfflineBanner')), findsNothing);
-  });
-
-  testWidgets('tapping a product tile navigates to /product/:id', (tester) async {
-    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
-    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
-
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
+    final bloc = HomeBloc(
+      getHomeUseCase: mockGetHome,
+      connectivity: mockConnectivity,
+    )..add(const HomeRequested());
 
     await tester.pumpWidget(makeTestableWidget(bloc));
     await tester.pump();
@@ -168,14 +195,19 @@ void main() {
     expect(find.text('Product p1'), findsOneWidget);
   });
 
-  testWidgets('badges: discount, new wins; card widths per mode', (tester) async {
+  testWidgets('badges: discount, new wins; card widths per mode', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(800, 3000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
-    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
+    when(() => mockGetHome.call())
+        .thenAnswer((_) async => Result.ok(testBundle));
+    final bloc = HomeBloc(
+      getHomeUseCase: mockGetHome,
+      connectivity: mockConnectivity,
+    )..add(const HomeRequested());
     await tester.pumpWidget(makeTestableWidget(bloc));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -183,207 +215,306 @@ void main() {
     expect(find.text('50% off'), findsWidgets);
     expect(find.text('New'), findsNWidgets(2));
     expect(find.text('20% off'), findsNothing);
-    expect(tester.getSize(find.byKey(const Key('productTile_p1'))).width,
-        AppSpacing.cardCutoutWidth);
+    expect(
+      tester.getSize(find.byKey(const Key('productTile_p1'))).width,
+      AppSpacing.cardCutoutWidth,
+    );
     final seasonal = find.byKey(const Key('productTile_p5'));
     await tester.ensureVisible(seasonal);
     expect(tester.getSize(seasonal).width, AppSpacing.cardPhotoWidth);
   });
 
-  testWidgets('MemberHeader shows name, tier, points chip and bell badge at 1.3x text', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: MediaQuery(
-        data: const MediaQueryData(size: Size(375, 812), textScaler: TextScaler.linear(1.3)),
-        child: const Scaffold(
+  testWidgets(
+    'MemberHeader shows name, tier, points chip and bell badge at 1.3x text',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: Size(375, 812),
+              textScaler: TextScaler.linear(1.3),
+            ),
+            child: const Scaffold(
+              body: MemberHeader(
+                phone: '0912345678',
+                notificationCount: 2,
+                member: Member(
+                  id: 'm1',
+                  name: 'Hania',
+                  photoUrl: 'assets/images/seed/member_avatar.png',
+                  tier: 'Bronze',
+                  points: 710,
+                  nextTierPoints: 2000,
+                  totalPoints: 710,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.text('Hania'), findsOneWidget);
+      expect(find.text('0912345678'), findsOneWidget);
+      expect(find.text('Bronze member'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('memberHeader_pointsChip')),
+          matching: find.text('1290 points left to become Gold Member'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('memberHeader_bellButton')),
+          matching: find.text('2'),
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('MemberHeader bell: no badge at 0 and tap fires', (tester) async {
+    var taps = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
           body: MemberHeader(
-            phone: '0912345678',
-            notificationCount: 2,
-            member: Member(
+            onBellTap: () => taps++,
+            member: const Member(
               id: 'm1',
-              name: 'Hania',
-              photoUrl: 'assets/images/seed/member_avatar.png',
+              name: 'A',
+              photoUrl: 'x',
               tier: 'Bronze',
-              points: 710,
-              nextTierPoints: 2000,
-              totalPoints: 710,
+              points: 1,
+              nextTierPoints: 2,
+              totalPoints: 1,
             ),
           ),
         ),
       ),
-    ));
-    expect(find.text('Hania'), findsOneWidget);
-    expect(find.text('0912345678'), findsOneWidget);
-    expect(find.text('Bronze member'), findsOneWidget);
-    expect(find.descendant(
-        of: find.byKey(const Key('memberHeader_pointsChip')),
-        matching: find.text('1290 points left to become Gold Member')), findsOneWidget);
-    expect(find.descendant(
-        of: find.byKey(const Key('memberHeader_bellButton')), matching: find.text('2')), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('MemberHeader bell: no badge at 0 and tap fires', (tester) async {
-    var taps = 0;
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: MemberHeader(
-          onBellTap: () => taps++,
-          member: const Member(
-            id: 'm1', name: 'A', photoUrl: 'x', tier: 'Bronze',
-            points: 1, nextTierPoints: 2, totalPoints: 1,
-          ),
-        ),
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('memberHeader_bellButton')),
+        matching: find.text('0'),
       ),
-    ));
-    expect(find.descendant(
-        of: find.byKey(const Key('memberHeader_bellButton')), matching: find.text('0')), findsNothing);
+      findsNothing,
+    );
     await tester.tap(find.byKey(const Key('memberHeader_bellButton')));
     expect(taps, 1);
   });
 
-  testWidgets('BannerCarousel exposes key and no autoplay timer under Reduce Motion', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const MediaQuery(
-        data: MediaQueryData(disableAnimations: true),
-        child: Scaffold(
-          body: BannerCarousel(banners: [
-            BannerItem(id: 'b1', imageUrl: 'assets/images/seed/banner_seasonal.png', title: 't', deepLinkTarget: ''),
-            BannerItem(id: 'b2', imageUrl: 'assets/images/seed/banner_seasonal.png', title: 't', deepLinkTarget: ''),
-          ]),
+  testWidgets(
+    'BannerCarousel exposes key and no autoplay timer under Reduce Motion',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const MediaQuery(
+            data: MediaQueryData(disableAnimations: true),
+            child: Scaffold(
+              body: BannerCarousel(
+                banners: [
+                  BannerItem(
+                    id: 'b1',
+                    imageUrl: 'assets/images/seed/banner_seasonal.png',
+                    title: 't',
+                    deepLinkTarget: '',
+                  ),
+                  BannerItem(
+                    id: 'b2',
+                    imageUrl: 'assets/images/seed/banner_seasonal.png',
+                    title: 't',
+                    deepLinkTarget: '',
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
-    ));
-    expect(find.byKey(const Key('bannerCarousel')), findsOneWidget);
-    await tester.pump(const Duration(minutes: 1));
-  });
-
-  testWidgets('shops block clears floating nav; grey page; explore + order texts', (tester) async {
-    tester.view.physicalSize = const Size(800, 1600);
-    tester.view.devicePixelRatio = 2;
-    addTearDown(tester.view.reset);
-    when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
-    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(padding: const EdgeInsets.only(bottom: 34)),
-        child: child!,
-      ),
-      home: BlocProvider<HomeBloc>.value(
-        value: bloc,
-        child: AppShellScreen(
-          homeTab: const HomeScreen(),
-          rewardsTab: (_) => const SizedBox(),
-        ),
-      ),
-    ));
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 2));
-
-    final scaffold = tester.widget<Scaffold>(find.byKey(const Key('homeScreen')));
-    expect(scaffold.backgroundColor, AppColors.pageGrey);
-
-    for (var k = 0; k < 4; k++) {
-      await tester.drag(find.byType(ListView).first, const Offset(0, -2000));
-      await tester.pumpAndSettle();
-    }
-    expect(find.byKey(const Key('nearbyShopsRow')), findsOneWidget);
-    expect(find.text('EXPLORE NOW'), findsOneWidget);
-    expect(find.text('Order Online'), findsOneWidget);
-    final navTop = tester.getTopLeft(find.byType(AppBottomNav)).dy;
-    expect(tester.getBottomLeft(find.byKey(const Key('shopCard_sh1'))).dy, lessThanOrEqualTo(navTop));
-    // No grey band: the shops block (backdrop) ends within one nav height of
-    // the viewport bottom, i.e. it runs behind the nav (old double-count left ~88pt more).
-    final viewBottom = tester.view.physicalSize.height / tester.view.devicePixelRatio;
-    final blockBottom = tester.getBottomLeft(find.byType(NearbyShopsRow)).dy;
-    expect(viewBottom - blockBottom, lessThanOrEqualTo(8));
-  });
-
-  testWidgets('status bar inset: banner paints from top, header not double-inset', (tester) async {
-    Future<void> pumpHome(bool online) async {
-      when(() => mockConnectivity.isOnline()).thenAnswer((_) async => online);
-      when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(testBundle));
-      final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-        ..add(const HomeRequested());
-      final router = GoRouter(
-        initialLocation: '/',
-        routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
       );
-      await tester.pumpWidget(MaterialApp.router(
-        key: UniqueKey(),
-        routerConfig: router,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(padding: const EdgeInsets.only(top: 47)),
-          child: BlocProvider<HomeBloc>.value(value: bloc, child: child!),
+      expect(find.byKey(const Key('bannerCarousel')), findsOneWidget);
+      await tester.pump(const Duration(minutes: 1));
+    },
+  );
+
+  testWidgets(
+    'shops block clears floating nav; grey page; explore + order texts',
+    (tester) async {
+      tester.view.physicalSize = const Size(800, 1600);
+      tester.view.devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
+      when(() => mockGetHome.call())
+          .thenAnswer((_) async => Result.ok(testBundle));
+      final bloc = HomeBloc(
+        getHomeUseCase: mockGetHome,
+        connectivity: mockConnectivity,
+      )..add(const HomeRequested());
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(padding: const EdgeInsets.only(bottom: 34)),
+            child: child!,
+          ),
+          home: BlocProvider<HomeBloc>.value(
+            value: bloc,
+            child: AppShellScreen(
+              homeTab: const HomeScreen(),
+              rewardsTab: (_) => const SizedBox(),
+            ),
+          ),
         ),
-      ));
+      );
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
-    }
 
-    final chip = find.byKey(const Key('memberHeader_pointsChip'));
-    final banner = find.byKey(const Key('homeOfflineBanner'));
+      final scaffold = tester.widget<Scaffold>(
+        find.byKey(const Key('homeScreen')),
+      );
+      expect(scaffold.backgroundColor, AppColors.pageGrey);
 
-    await pumpHome(false); // offline
-    expect(tester.getTopLeft(banner).dy, 0);
-    expect(tester.getTopLeft(find.descendant(of: banner, matching: find.byType(Text))).dy,
-        greaterThanOrEqualTo(47));
-    final offlineGap = tester.getTopLeft(chip).dy - tester.getBottomLeft(banner).dy;
+      for (var k = 0; k < 4; k++) {
+        await tester.drag(find.byType(ListView).first, const Offset(0, -2000));
+        await tester.pumpAndSettle();
+      }
+      expect(find.byKey(const Key('nearbyShopsRow')), findsOneWidget);
+      expect(find.text('EXPLORE NOW'), findsOneWidget);
+      expect(find.text('Order Online'), findsOneWidget);
+      final navTop = tester.getTopLeft(find.byType(AppBottomNav)).dy;
+      expect(
+        tester.getBottomLeft(find.byKey(const Key('shopCard_sh1'))).dy,
+        lessThanOrEqualTo(navTop),
+      );
+      // No grey band: the shops block (backdrop) ends within one nav height of
+      // the viewport bottom, i.e. it runs behind the nav (old double-count left ~88pt more).
+      final viewBottom =
+          tester.view.physicalSize.height / tester.view.devicePixelRatio;
+      final blockBottom = tester.getBottomLeft(find.byType(NearbyShopsRow)).dy;
+      expect(viewBottom - blockBottom, lessThanOrEqualTo(8));
+    },
+  );
 
-    await pumpHome(true);
-    expect(banner, findsNothing);
-    final onlineGap = tester.getTopLeft(chip).dy - 47; // single inset only
-    // Same header-internal offset with or without banner: no extra 47 gap.
-    expect(offlineGap, closeTo(onlineGap, 1));
-  });
+  testWidgets(
+    'status bar inset: banner paints from top, header not double-inset',
+    (tester) async {
+      Future<void> pumpHome(bool online) async {
+        when(() => mockConnectivity.isOnline()).thenAnswer((_) async => online);
+        when(() => mockGetHome.call())
+            .thenAnswer((_) async => Result.ok(testBundle));
+        final bloc = HomeBloc(
+          getHomeUseCase: mockGetHome,
+          connectivity: mockConnectivity,
+        )..add(const HomeRequested());
+        final router = GoRouter(
+          initialLocation: '/',
+          routes: [
+            GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+          ],
+        );
+        await tester.pumpWidget(
+          MaterialApp.router(
+            key: UniqueKey(),
+            routerConfig: router,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(padding: const EdgeInsets.only(top: 47)),
+              child: BlocProvider<HomeBloc>.value(value: bloc, child: child!),
+            ),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 2));
+      }
+
+      final chip = find.byKey(const Key('memberHeader_pointsChip'));
+      final banner = find.byKey(const Key('homeOfflineBanner'));
+
+      await pumpHome(false); // offline
+      expect(tester.getTopLeft(banner).dy, 0);
+      expect(
+        tester
+            .getTopLeft(
+              find.descendant(of: banner, matching: find.byType(Text)),
+            )
+            .dy,
+        greaterThanOrEqualTo(47),
+      );
+      final offlineGap =
+          tester.getTopLeft(chip).dy - tester.getBottomLeft(banner).dy;
+
+      await pumpHome(true);
+      expect(banner, findsNothing);
+      final onlineGap = tester.getTopLeft(chip).dy - 47; // single inset only
+      // Same header-internal offset with or without banner: no extra 47 gap.
+      expect(offlineGap, closeTo(onlineGap, 1));
+    },
+  );
 
   testWidgets('banner clears points chip and aligns with it', (tester) async {
     when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
     final withBanner = HomeBundle(
       member: testBundle.member,
       banners: const [
-        BannerItem(id: 'b1', imageUrl: 'assets/images/seed/banner_seasonal.png', title: 't', deepLinkTarget: ''),
+        BannerItem(
+          id: 'b1',
+          imageUrl: 'assets/images/seed/banner_seasonal.png',
+          title: 't',
+          deepLinkTarget: '',
+        ),
       ],
       sections: testBundle.sections,
       shops: testBundle.shops,
     );
-    when(() => mockGetHome.call()).thenAnswer((_) async => Result.ok(withBanner));
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
+    when(() => mockGetHome.call())
+        .thenAnswer((_) async => Result.ok(withBanner));
+    final bloc = HomeBloc(
+      getHomeUseCase: mockGetHome,
+      connectivity: mockConnectivity,
+    )..add(const HomeRequested());
     final router = GoRouter(
       initialLocation: '/',
-      routes: [GoRoute(path: '/', builder: (context, state) => const HomeScreen())],
+      routes: [
+        GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+      ],
     );
     tester.view.physicalSize = const Size(1080, 2340);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(MaterialApp.router(
-      routerConfig: router,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) =>
-          BlocProvider.value(value: bloc, child: child!),
-    ));
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) =>
+            BlocProvider.value(value: bloc, child: child!),
+      ),
+    );
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
     final chip = find.byKey(const Key('memberHeader_pointsChip'));
     final banner = find.byKey(const Key('bannerCarousel'));
-    expect(tester.getBottomLeft(chip).dy,
-        lessThanOrEqualTo(tester.getTopLeft(banner).dy));
+    expect(
+      tester.getBottomLeft(chip).dy,
+      lessThanOrEqualTo(tester.getTopLeft(banner).dy),
+    );
     expect(
       tester.getTopLeft(chip).dx,
-      tester.getTopLeft(find.descendant(of: banner, matching: find.byType(ClipRRect)).first).dx,
+      tester
+          .getTopLeft(
+            find.descendant(of: banner, matching: find.byType(ClipRRect)).first,
+          )
+          .dx,
     );
   });
 }

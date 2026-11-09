@@ -85,10 +85,7 @@ void main() {
         disableAnimations: true,
       ),
     );
-    expect(
-      t.getSemantics(find.byType(RegistrationProgressRing)).value,
-      '50%',
-    );
+    expect(t.getSemantics(find.byType(RegistrationProgressRing)).value, '50%');
     expect(find.bySemanticsLabel('Registration progress'), findsOneWidget);
     await t.pumpWidget(
       _host(

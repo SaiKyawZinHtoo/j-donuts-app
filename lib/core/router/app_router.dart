@@ -121,7 +121,10 @@ GoRouter createAppRouter() => GoRouter(
         // CupertinoPage (not CustomTransitionPage) keeps the iOS edge-swipe back.
         return CupertinoPage<void>(
           key: state.pageKey,
-          child: ProductDetailScreen(productId: id, heroTag: extra is String ? extra : null),
+          child: ProductDetailScreen(
+            productId: id,
+            heroTag: extra is String ? extra : null,
+          ),
         );
       },
     ),

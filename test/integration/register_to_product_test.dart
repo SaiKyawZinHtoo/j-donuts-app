@@ -40,49 +40,61 @@ void main() {
   const pathProviderChannel = MethodChannel('plugins.flutter.io/path_provider');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
-    pathProviderChannel,
-    (call) async => Directory.systemTemp.createTempSync('j_donuts_test').path,
-  );
+        pathProviderChannel,
+        (call) async =>
+            Directory.systemTemp.createTempSync('j_donuts_test').path,
+      );
 
   // A minimal in-memory fake: real enough for SessionDataSource's
   // read/write/delete round trip across the registration flow.
   final secureStore = <String, String>{};
-  const secureStorageChannel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
+  const secureStorageChannel = MethodChannel(
+    'plugins.it_nomads.com/flutter_secure_storage',
+  );
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(secureStorageChannel, (call) async {
-    final args = (call.arguments as Map?) ?? {};
-    final key = args['key'] as String?;
-    switch (call.method) {
-      case 'read':
-        return secureStore[key];
-      case 'write':
-        secureStore[key!] = args['value'] as String;
-        return null;
-      case 'delete':
-        secureStore.remove(key);
-        return null;
-      case 'readAll':
-        return secureStore;
-      case 'deleteAll':
-        secureStore.clear();
-        return null;
-      case 'containsKey':
-        return secureStore.containsKey(key);
-      default:
-        return null;
-    }
-  });
+        final args = (call.arguments as Map?) ?? {};
+        final key = args['key'] as String?;
+        switch (call.method) {
+          case 'read':
+            return secureStore[key];
+          case 'write':
+            secureStore[key!] = args['value'] as String;
+            return null;
+          case 'delete':
+            secureStore.remove(key);
+            return null;
+          case 'readAll':
+            return secureStore;
+          case 'deleteAll':
+            secureStore.clear();
+            return null;
+          case 'containsKey':
+            return secureStore.containsKey(key);
+          default:
+            return null;
+        }
+      });
 
   // connectivity_plus: report "online" so Home/Rewards don't show the
   // offline banner path.
-  const connectivityChannel = MethodChannel('dev.fluttercommunity.plus/connectivity');
+  const connectivityChannel = MethodChannel(
+    'dev.fluttercommunity.plus/connectivity',
+  );
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(connectivityChannel, (call) async => <String>['wifi']);
-  const connectivityEventChannel = MethodChannel('dev.fluttercommunity.plus/connectivity_status');
+      .setMockMethodCallHandler(
+        connectivityChannel,
+        (call) async => <String>['wifi'],
+      );
+  const connectivityEventChannel = MethodChannel(
+    'dev.fluttercommunity.plus/connectivity_status',
+  );
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(connectivityEventChannel, (call) async => null);
 
-  testWidgets('Register -> Home -> Product detail -> Rewards flow', (tester) async {
+  testWidgets('Register -> Home -> Product detail -> Rewards flow', (
+    tester,
+  ) async {
     await app.main();
     await tester.pump(const Duration(seconds: 3)); // past splash
     await tester.pump(const Duration(seconds: 1));

@@ -29,10 +29,18 @@ Widget makeTestableWidget(Widget child, {AuthBloc? bloc}) {
     initialLocation: '/__test__',
     routes: [
       GoRoute(path: '/__test__', builder: (context, state) => child),
-      for (final path in const ['/phone', '/otp', '/name', '/dob', '/welcome', '/home'])
+      for (final path in const [
+        '/phone',
+        '/otp',
+        '/name',
+        '/dob',
+        '/welcome',
+        '/home',
+      ])
         GoRoute(
           path: path,
-          builder: (context, state) => Scaffold(body: Center(child: Text(path))),
+          builder: (context, state) =>
+              Scaffold(body: Center(child: Text(path))),
         ),
     ],
   );

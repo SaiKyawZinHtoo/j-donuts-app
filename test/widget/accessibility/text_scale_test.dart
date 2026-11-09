@@ -19,17 +19,17 @@ class _MockConnectivityService extends Mock implements ConnectivityService {}
 class _StubProductRepository implements ProductRepository {
   @override
   Future<Result<Product>> getProduct(String id) async => const Result.ok(
-        Product(
-          id: 'p1',
-          code: 'DN-001',
-          name: 'Glazed Donut',
-          priceMmk: 1500,
-          isNew: true,
-          discountPercent: 10,
-          imageUrl: 'https://example.com/img.png',
-          description: 'Classic glazed donut.',
-        ),
-      );
+    Product(
+      id: 'p1',
+      code: 'DN-001',
+      name: 'Glazed Donut',
+      priceMmk: 1500,
+      isNew: true,
+      discountPercent: 10,
+      imageUrl: 'https://example.com/img.png',
+      description: 'Classic glazed donut.',
+    ),
+  );
 }
 
 Widget makeTestableWidget(Widget child) {
@@ -51,10 +51,13 @@ Widget makeTestableWidget(Widget child) {
 }
 
 void main() {
-  testWidgets('HomeScreen renders without overflow at textScaleFactor 1.3', (tester) async {
+  testWidgets('HomeScreen renders without overflow at textScaleFactor 1.3', (
+    tester,
+  ) async {
     final mockGetHome = _MockGetHomeUseCase();
     final mockConnectivity = _MockConnectivityService();
-    when(() => mockConnectivity.onStatusChanged).thenAnswer((_) => const Stream<bool>.empty());
+    when(() => mockConnectivity.onStatusChanged)
+        .thenAnswer((_) => const Stream<bool>.empty());
     when(() => mockConnectivity.isOnline()).thenAnswer((_) async => true);
     when(() => mockGetHome.call()).thenAnswer(
       (_) async => Result.ok(
@@ -70,10 +73,11 @@ void main() {
           ),
           banners: const [
             BannerItem(
-                id: 'b1',
-                title: 'Seasonal',
-                imageUrl: 'https://example.com/banner.png',
-                deepLinkTarget: ''),
+              id: 'b1',
+              title: 'Seasonal',
+              imageUrl: 'https://example.com/banner.png',
+              deepLinkTarget: '',
+            ),
           ],
           sections: const [
             ProductSection(
@@ -105,8 +109,10 @@ void main() {
       ),
     );
 
-    final bloc = HomeBloc(getHomeUseCase: mockGetHome, connectivity: mockConnectivity)
-      ..add(const HomeRequested());
+    final bloc = HomeBloc(
+      getHomeUseCase: mockGetHome,
+      connectivity: mockConnectivity,
+    )..add(const HomeRequested());
 
     await tester.pumpWidget(
       MediaQuery(
@@ -122,27 +128,31 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('ProductDetailScreen renders without overflow at textScaleFactor 1.3',
-      (tester) async {
-    await GetIt.instance.reset();
-    GetIt.instance.registerFactory<ProductDetailBloc>(
-      () => ProductDetailBloc(getProductUseCase: GetProductUseCase(_StubProductRepository())),
-    );
+  testWidgets(
+    'ProductDetailScreen renders without overflow at textScaleFactor 1.3',
+    (tester) async {
+      await GetIt.instance.reset();
+      GetIt.instance.registerFactory<ProductDetailBloc>(
+        () => ProductDetailBloc(
+          getProductUseCase: GetProductUseCase(_StubProductRepository()),
+        ),
+      );
 
-    await tester.pumpWidget(
-      MediaQuery(
-        data: const MediaQueryData(textScaler: TextScaler.linear(1.3)),
-        child: makeTestableWidget(const ProductDetailScreen(productId: 'p1')),
-      ),
-    );
-    await tester.pump();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(textScaler: TextScaler.linear(1.3)),
+          child: makeTestableWidget(const ProductDetailScreen(productId: 'p1')),
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
 
-    expect(tester.takeException(), isNull);
+      expect(tester.takeException(), isNull);
 
-    await GetIt.instance.reset();
-  });
+      await GetIt.instance.reset();
+    },
+  );
 
   for (final entry in <String, Widget>{
     'Phone': const PhoneScreen(),
@@ -150,8 +160,9 @@ void main() {
     'Name': const NameScreen(),
     'DOB': const DobScreen(),
   }.entries) {
-    testWidgets('${entry.key} screen: no overflow at 1.3x with keyboard open',
-        (tester) async {
+    testWidgets('${entry.key} screen: no overflow at 1.3x with keyboard open', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(375, 667);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);

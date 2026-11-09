@@ -4,6 +4,7 @@ class AppOtpBox extends StatefulWidget {
   final int length;
   final ValueChanged<String> onCompleted;
   final String? errorText;
+
   /// Bump this value (e.g. from a parent's error-state listener) to clear
   /// all boxes and refocus the first one.
   final int clearSignal;
@@ -29,8 +30,7 @@ class _AppOtpBoxState extends State<AppOtpBox> {
   @override
   void initState() {
     super.initState();
-    _controllers =
-        List.generate(widget.length, (_) => TextEditingController());
+    _controllers = List.generate(widget.length, (_) => TextEditingController());
     _focusNodes = List.generate(widget.length, (_) => FocusNode());
     _keyListenerNodes = List.generate(
       widget.length,
@@ -104,6 +104,10 @@ class _AppOtpBoxState extends State<AppOtpBox> {
 
   @override
   Widget build(BuildContext context) {
+    final hasError = widget.errorText != null;
+    final fieldDuration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : MotionTokens.kFieldStateDuration;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -123,39 +127,69 @@ class _AppOtpBoxState extends State<AppOtpBox> {
                     _focusNodes[index - 1].requestFocus();
                   }
                 },
-                child: TextField(
-                  controller: _controllers[index],
-                  focusNode: _focusNodes[index],
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  maxLength: widget.length,
-                  style: AppTextStyles.h2,
-                  decoration: InputDecoration(
-                    counterText: '',
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.sm,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.sm),
-                      borderSide: BorderSide(
-                        color: widget.errorText != null
-                            ? AppColors.error
-                            : AppColors.border,
-                      ),
-                    ),
+                child: TweenAnimationBuilder<Color?>(
+                  tween: ColorTween(
+                    end: hasError ? AppColors.error : AppColors.border,
                   ),
-                  onChanged: (value) => _onChanged(index, value),
+                  duration: fieldDuration,
+                  builder: (context, animated, _) {
+                    final borderColor = animated ?? AppColors.border;
+                    return TextField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      maxLength: widget.length,
+                      style: AppTextStyles.h2,
+                      decoration: InputDecoration(
+                        counterText: '',
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.sm,
+                        ),
+                        border: _border(borderColor, AppColors.border),
+                        enabledBorder: _border(borderColor, AppColors.border),
+                        focusedBorder: _border(
+                          hasError ? borderColor : AppColors.accent,
+                          AppColors.accent,
+                        ),
+                      ),
+                      onChanged: (value) => _onChanged(index, value),
+                    );
+                  },
                 ),
               ),
             );
           }),
         ),
-        if (widget.errorText != null) ...[
-          const SizedBox(height: AppSpacing.xs),
-          Text(widget.errorText!,
-              style: AppTextStyles.caption.copyWith(color: AppColors.error)),
-        ],
+        if (fieldDuration == Duration.zero)
+          hasError ? _errorText() : const SizedBox.shrink()
+        else
+          AnimatedSize(
+            duration: fieldDuration,
+            curve: MotionTokens.kEmphasizedCurve,
+            alignment: Alignment.topLeft,
+            child: AnimatedSwitcher(
+              duration: fieldDuration,
+              child: hasError
+                  ? _errorText()
+                  : const SizedBox(width: double.infinity),
+            ),
+          ),
       ],
     );
   }
+
+  OutlineInputBorder _border(Color color, Color _) => OutlineInputBorder(
+    borderRadius: BorderRadius.circular(AppSpacing.sm),
+    borderSide: BorderSide(color: color),
+  );
+
+  Widget _errorText() => Padding(
+    key: ValueKey(widget.errorText),
+    padding: const EdgeInsets.only(top: AppSpacing.xs),
+    child: Text(
+      widget.errorText!,
+      style: AppTextStyles.caption.copyWith(color: AppColors.error),
+    ),
+  );
 }

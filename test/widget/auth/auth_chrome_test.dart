@@ -64,7 +64,10 @@ void main() {
   testWidgets('DobScreen: AuthScaffold + dob ring, check when valid', (
     tester,
   ) async {
-    await pump(tester, DobScreen(pickDate: (_, _) async => DateTime(1990, 1, 15)));
+    await pump(
+      tester,
+      DobScreen(pickDate: (_, _) async => DateTime(1990, 1, 15)),
+    );
     expectChrome(tester, RegistrationStep.dob);
     expect(find.byIcon(Icons.check), findsNothing);
     await tester.tap(find.byKey(const Key('dobMonthField')));
@@ -112,7 +115,10 @@ void main() {
 
   testWidgets('WelcomeScreen: no back button, no legal footer', (tester) async {
     await pump(tester, const WelcomeScreen());
-    expect(tester.widget<AuthScaffold>(find.byType(AuthScaffold)).titleGap, isFalse);
+    expect(
+      tester.widget<AuthScaffold>(find.byType(AuthScaffold)).titleGap,
+      isFalse,
+    );
     expect(find.byType(AuthScaffold), findsOneWidget);
     expect(find.byType(AppBackButton), findsNothing);
     expect(find.byType(AppLegalFooter), findsNothing);

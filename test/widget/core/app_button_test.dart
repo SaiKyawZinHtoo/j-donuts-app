@@ -181,9 +181,13 @@ void main() {
     expect(scale(t), 1.0);
   });
 
-  testWidgets('trailingLabel renders label and total separately', (tester) async {
+  testWidgets('trailingLabel renders label and total separately', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      _app(AppButton(label: 'Add', trailingLabel: '1,500 MMK', onPressed: () {})),
+      _app(
+        AppButton(label: 'Add', trailingLabel: '1,500 MMK', onPressed: () {}),
+      ),
     );
     expect(find.text('ADD'), findsOneWidget);
     expect(find.text('1,500 MMK'), findsOneWidget);
@@ -191,8 +195,9 @@ void main() {
 
   testWidgets('semantics label includes trailingLabel', (tester) async {
     final h = tester.ensureSemantics();
-    await tester.pumpWidget(_app(
-        AppButton(label: 'Add', trailingLabel: '5 MMK', onPressed: () {})));
+    await tester.pumpWidget(
+      _app(AppButton(label: 'Add', trailingLabel: '5 MMK', onPressed: () {})),
+    );
     expect(find.bySemanticsLabel('Add, 5 MMK'), findsOneWidget);
     h.dispose();
   });

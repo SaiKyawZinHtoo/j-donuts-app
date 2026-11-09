@@ -21,9 +21,7 @@ class AppProgressRing extends AnimatedWidget {
         AppSpacing.progressRingSize,
         AppSpacing.progressRingSize,
       ),
-      painter: _ProgressRingPainter(
-        value: controller.value * progress,
-      ),
+      painter: _ProgressRingPainter(value: controller.value * progress),
     );
   }
 }
@@ -36,8 +34,7 @@ class _ProgressRingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
-    final radius =
-        size.shortestSide / 2 - AppSpacing.progressRingInset;
+    final radius = size.shortestSide / 2 - AppSpacing.progressRingInset;
 
     final trackPaint = Paint()
       ..color = AppColors.border

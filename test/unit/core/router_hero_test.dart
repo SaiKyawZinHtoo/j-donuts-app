@@ -57,14 +57,18 @@ void main() {
     GetIt.instance.registerSingleton<GetSessionUseCase>(_Session());
     GetIt.instance.unregister<ProductDetailBloc>();
     GetIt.instance.registerFactory<ProductDetailBloc>(
-      () => ProductDetailBloc(getProductUseCase: GetProductUseCase(_PendingRepo())),
+      () => ProductDetailBloc(
+        getProductUseCase: GetProductUseCase(_PendingRepo()),
+      ),
     );
     final router = createAppRouter();
-    await t.pumpWidget(MaterialApp.router(
-      routerConfig: router,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    ));
+    await t.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+      ),
+    );
     for (var i = 0; i < 200; i++) {
       await t.pump(const Duration(milliseconds: 20));
     }
@@ -82,7 +86,9 @@ void main() {
     expect(heroTag(t), 'product-popular-p1');
   });
 
-  testWidgets('/product/:id builds a CupertinoPage (edge-swipe back)', (t) async {
+  testWidgets('/product/:id builds a CupertinoPage (edge-swipe back)', (
+    t,
+  ) async {
     final router = await boot(t);
     router.push('/product/p1');
     await t.pump();
@@ -91,7 +97,9 @@ void main() {
     expect(route.settings, isA<CupertinoPage<void>>());
   });
 
-  testWidgets('no extra / non-String extra: heroTag null, still renders', (t) async {
+  testWidgets('no extra / non-String extra: heroTag null, still renders', (
+    t,
+  ) async {
     final router = await boot(t);
     router.go('/product/p1');
     await t.pump();

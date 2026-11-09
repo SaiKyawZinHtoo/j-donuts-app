@@ -18,7 +18,8 @@ void main() {
       imageUrl: 'img.png',
       description: 'Classic glazed donut.',
     );
-    when(() => repo.getProduct('p1')).thenAnswer((_) async => const Result.ok(product));
+    when(() => repo.getProduct('p1'))
+        .thenAnswer((_) async => const Result.ok(product));
 
     final result = await GetProductUseCase(repo).call('p1');
 

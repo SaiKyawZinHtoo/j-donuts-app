@@ -77,7 +77,7 @@ Built:
 - Shared-axis step transitions (fade + 30px slide) on `/phone`, `/otp`, `/name`, `/dob`, `/welcome`.
 - Registration progress ring animating 25 -> 50 -> 75 -> 100% and morphing to a check.
 - `AppButton`: press-scale (`Listener`-driven) and Continue -> spinner loading morph.
-- OTP shake on error; Welcome tile stagger.
+- OTP shake on error, with each box's border easing to the error colour and the error text fading/sizing in (`kFieldStateDuration`); text fields use the theme's animated focus/error borders; Welcome tile stagger.
 - Home: staggered section entrance (once, on first load); skeleton shimmer.
 - Product detail: entrance (`kDetailEntrance`), quantity change (`kQtyChange`) and description
   expand/collapse with fade (`kDescriptionExpand`).

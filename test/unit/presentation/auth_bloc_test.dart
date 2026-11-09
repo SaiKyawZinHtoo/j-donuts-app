@@ -26,21 +26,23 @@ void main() {
     registerUseCase = RegisterUseCase(mockAuthRepo);
     getSessionUseCase = GetSessionUseCase(mockAuthRepo);
 
-    when(() => mockAuthRepo.resendOtp(any())).thenAnswer((_) async => const Result.ok(null));
+    when(() => mockAuthRepo.resendOtp(any()))
+        .thenAnswer((_) async => const Result.ok(null));
   });
 
   AuthBloc build() => AuthBloc(
-        loginUseCase: loginUseCase,
-        registerUseCase: registerUseCase,
-        getSessionUseCase: getSessionUseCase,
-        authRepository: mockAuthRepo,
-      );
+    loginUseCase: loginUseCase,
+    registerUseCase: registerUseCase,
+    getSessionUseCase: getSessionUseCase,
+    authRepository: mockAuthRepo,
+  );
 
   group('OTP lockout', () {
     blocTest<AuthBloc, AuthState>(
       'locks after 3 wrong OTP codes',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(true));
       },
       build: build,
       act: (bloc) => bloc
@@ -61,7 +63,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'resend works immediately after lockout',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(true));
       },
       build: build,
       act: (bloc) => bloc
@@ -80,7 +83,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'OtpResendRequested before countdown reaches 0:00 is a no-op',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(true));
       },
       build: build,
       act: (bloc) async {
@@ -119,7 +123,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'rapid double-tap on OtpDigitEntered sends exactly one login request',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(true));
         when(() => mockAuthRepo.login(any())).thenAnswer((_) async {
           await Future<void>.delayed(const Duration(milliseconds: 20));
           return Result.ok(user);
@@ -151,21 +156,26 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'known phone logs in directly after OTP success',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(true));
-        when(() => mockAuthRepo.login(any())).thenAnswer((_) async => Result.ok(user));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(true));
+        when(() => mockAuthRepo.login(any()))
+            .thenAnswer((_) async => Result.ok(user));
       },
       build: build,
       act: (bloc) => bloc
         ..add(const PhoneSubmitted('09123456789'))
         ..add(const OtpDigitEntered(kFakeOtpCode)),
       skip: 2,
-      expect: () => [isA<AuthSuccess>().having((s) => s.isNewUser, 'isNewUser', false)],
+      expect: () => [
+        isA<AuthSuccess>().having((s) => s.isNewUser, 'isNewUser', false),
+      ],
     );
 
     blocTest<AuthBloc, AuthState>(
       'unknown phone proceeds to registration after OTP success',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(false));
       },
       build: build,
       act: (bloc) => bloc
@@ -180,7 +190,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'NameSubmitted valid emits AwaitingDob; invalid emits a name-step RegistrationStepInvalid',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(false));
       },
       build: build,
       act: (bloc) => bloc
@@ -190,7 +201,11 @@ void main() {
         ..add(const NameSubmitted('Shan', 'Lay')), // valid
       skip: 4, // AuthLoading, PhoneNeedsRegistration, OtpAwaiting, AwaitingName
       expect: () => [
-        isA<RegistrationStepInvalid>().having((s) => s.step, 'step', RegistrationStep.name),
+        isA<RegistrationStepInvalid>().having(
+          (s) => s.step,
+          'step',
+          RegistrationStep.name,
+        ),
         isA<AwaitingDob>(),
       ],
     );
@@ -198,7 +213,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'DobSubmitted invalid emits a dob-step RegistrationStepInvalid distinct from the name step',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(false));
       },
       build: build,
       act: (bloc) => bloc
@@ -208,7 +224,11 @@ void main() {
         ..add(DobSubmitted(DateTime.now())), // invalid: today, under min age
       skip: 5, // AuthLoading, PhoneNeedsRegistration, OtpAwaiting, AwaitingName, AwaitingDob
       expect: () => [
-        isA<RegistrationStepInvalid>().having((s) => s.step, 'step', RegistrationStep.dob),
+        isA<RegistrationStepInvalid>().having(
+          (s) => s.step,
+          'step',
+          RegistrationStep.dob,
+        ),
       ],
     );
   });
@@ -217,7 +237,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'BackRequested steps back one registration screen at a time, not to AuthInitial',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(false));
       },
       build: build,
       act: (bloc) => bloc
@@ -240,13 +261,16 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'full registration flow completes with AuthSuccess',
       setUp: () {
-        when(() => mockAuthRepo.checkPhone(any())).thenAnswer((_) async => const Result.ok(false));
-        when(() => mockAuthRepo.completeRegistration(
-              phone: any(named: 'phone'),
-              firstName: any(named: 'firstName'),
-              lastName: any(named: 'lastName'),
-              dob: any(named: 'dob'),
-            )).thenAnswer((_) async => Result.ok(user));
+        when(() => mockAuthRepo.checkPhone(any()))
+            .thenAnswer((_) async => const Result.ok(false));
+        when(
+          () => mockAuthRepo.completeRegistration(
+            phone: any(named: 'phone'),
+            firstName: any(named: 'firstName'),
+            lastName: any(named: 'lastName'),
+            dob: any(named: 'dob'),
+          ),
+        ).thenAnswer((_) async => Result.ok(user));
       },
       build: build,
       act: (bloc) => bloc
@@ -269,7 +293,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'SessionChecked emits AuthSuccess when a session exists',
       setUp: () {
-        when(() => mockAuthRepo.getSession()).thenAnswer((_) async => Result.ok(user));
+        when(() => mockAuthRepo.getSession())
+            .thenAnswer((_) async => Result.ok(user));
       },
       build: build,
       act: (bloc) => bloc.add(const SessionChecked()),
@@ -279,7 +304,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'SessionChecked emits AuthInitial when no session',
       setUp: () {
-        when(() => mockAuthRepo.getSession()).thenAnswer((_) async => const Result.ok(null));
+        when(() => mockAuthRepo.getSession())
+            .thenAnswer((_) async => const Result.ok(null));
       },
       build: build,
       act: (bloc) => bloc.add(const SessionChecked()),
@@ -291,7 +317,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'LogoutRequested emits AuthInitial',
       setUp: () {
-        when(() => mockAuthRepo.logout()).thenAnswer((_) async => const Result.ok(null));
+        when(() => mockAuthRepo.logout())
+            .thenAnswer((_) async => const Result.ok(null));
       },
       build: build,
       act: (bloc) => bloc.add(const LogoutRequested()),

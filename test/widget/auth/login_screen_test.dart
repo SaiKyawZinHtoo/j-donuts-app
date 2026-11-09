@@ -5,7 +5,9 @@ import 'package:j_donuts_app/features/auth/auth_import.dart';
 import 'test_helpers.dart';
 
 void main() {
-  testWidgets('entering a 5-digit phone number keeps Continue disabled', (tester) async {
+  testWidgets('entering a 5-digit phone number keeps Continue disabled', (
+    tester,
+  ) async {
     await tester.pumpWidget(makeTestableWidget(const PhoneScreen()));
     await tester.enterText(find.byType(AppTextField), '0912');
     await tester.pump();

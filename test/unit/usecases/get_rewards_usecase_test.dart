@@ -30,7 +30,8 @@ void main() {
         ),
       ],
     );
-    when(() => repo.getRewards()).thenAnswer((_) async => Result.ok(testBundle));
+    when(() => repo.getRewards())
+        .thenAnswer((_) async => Result.ok(testBundle));
 
     final result = await GetRewardsUseCase(repo).call();
 

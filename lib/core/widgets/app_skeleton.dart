@@ -6,11 +6,7 @@ class AppSkeleton extends StatefulWidget {
   final Widget child;
   final bool isLoading;
 
-  const AppSkeleton({
-    super.key,
-    required this.child,
-    required this.isLoading,
-  });
+  const AppSkeleton({super.key, required this.child, required this.isLoading});
 
   @override
   State<AppSkeleton> createState() => _AppSkeletonState();
@@ -53,7 +49,8 @@ class _AppSkeletonState extends State<AppSkeleton>
       animation: _controller,
       builder: (context, _) {
         return Opacity(
-          opacity: MotionTokens.kShimmerOpacityBase +
+          opacity:
+              MotionTokens.kShimmerOpacityBase +
               MotionTokens.kShimmerOpacityRange * _controller.value,
           child: ColoredBox(
             color: AppColors.border,
