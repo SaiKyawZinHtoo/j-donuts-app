@@ -287,7 +287,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome!'**
+  /// **'Welcome to the world of J\'donuts'**
   String get welcomeTitle;
 
   /// No description provided for @letsExploreButton.

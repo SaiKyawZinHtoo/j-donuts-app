@@ -115,7 +115,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dobYearLabel => 'Year';
 
   @override
-  String get welcomeTitle => 'Welcome!';
+  String get welcomeTitle => 'Welcome to the world of J\'donuts';
 
   @override
   String get letsExploreButton => 'Let\'s explore';

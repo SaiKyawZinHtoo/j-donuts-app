@@ -117,7 +117,7 @@ class AppLocalizationsMy extends AppLocalizations {
   String get dobYearLabel => 'နှစ်';
 
   @override
-  String get welcomeTitle => 'ကြိုဆိုပါတယ်!';
+  String get welcomeTitle => 'J\'donuts ကမ္ဘာကြီးမှ ကြိုဆိုပါတယ်';
 
   @override
   String get letsExploreButton => 'လေ့လာကြည့်ရှုမည်';

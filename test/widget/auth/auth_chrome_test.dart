@@ -142,7 +142,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       final button = tester.getRect(find.byKey(const Key('letsExploreButton')));
-      final title = tester.getRect(find.text('Welcome!'));
+      final title = tester.getRect(find.text("Welcome to the world of J'donuts"));
       expect(button.bottom, greaterThan(0.7 * 667));
       expect(title.bottom, lessThan(button.top));
     });
