@@ -4,8 +4,7 @@ part of '../../product_import.dart';
 class ProductRepositoryImpl implements ProductRepository {
   final drift.ProductDao _productDao;
 
-  const ProductRepositoryImpl({required drift.ProductDao productDao})
-      : _productDao = productDao;
+  const ProductRepositoryImpl({required this._productDao});
 
   @override
   Future<Result<Product>> getProduct(String id) async {
@@ -25,12 +24,12 @@ class ProductRepositoryImpl implements ProductRepository {
 /// `HomeRepositoryImpl` so the home feature can reuse the same mapping for
 /// its section tiles (see `home_repository_impl.dart`).
 Product mapProductRow(drift.Product row) => Product(
-      id: row.id,
-      code: row.code,
-      name: row.name,
-      priceMmk: row.priceMmk,
-      isNew: row.isNew,
-      discountPercent: row.discountPercent,
-      imageUrl: row.imageUrl,
-      description: row.description,
-    );
+  id: row.id,
+  code: row.code,
+  name: row.name,
+  priceMmk: row.priceMmk,
+  isNew: row.isNew,
+  discountPercent: row.discountPercent,
+  imageUrl: row.imageUrl,
+  description: row.description,
+);

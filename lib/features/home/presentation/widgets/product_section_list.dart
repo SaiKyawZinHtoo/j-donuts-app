@@ -6,7 +6,11 @@ class ProductSectionList extends StatelessWidget {
   final ProductSection section;
   final String? errorMessage;
 
-  const ProductSectionList({super.key, required this.section, this.errorMessage});
+  const ProductSectionList({
+    super.key,
+    required this.section,
+    this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +18,9 @@ class ProductSectionList extends StatelessWidget {
       return AppErrorState(message: errorMessage!);
     }
     if (section.products.isEmpty) {
-      return AppEmptyState(message: AppLocalizations.of(context)!.nothingHereYet);
+      return AppEmptyState(
+        message: AppLocalizations.of(context)!.nothingHereYet,
+      );
     }
     final l10n = AppLocalizations.of(context)!;
     final mode = section.id == 'seasonal_specials'
@@ -34,7 +40,8 @@ class ProductSectionList extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             itemCount: section.products.length,
-            separatorBuilder: (context, index) => const SizedBox(width: AppSpacing.sm),
+            separatorBuilder: (context, index) =>
+                const SizedBox(width: AppSpacing.sm),
             itemBuilder: (context, index) {
               final product = section.products[index];
               final tag = heroTagFor(section.id, product.id);
@@ -47,10 +54,11 @@ class ProductSectionList extends StatelessWidget {
                   badgeLabel: product.isNew
                       ? l10n.newBadge
                       : product.discountPercent > 0
-                          ? l10n.discountOff(product.discountPercent)
-                          : null,
+                      ? l10n.discountOff(product.discountPercent)
+                      : null,
                   heroTag: tag,
-                  onTap: () => context.push('/product/${product.id}', extra: tag),
+                  onTap: () =>
+                      context.push('/product/${product.id}', extra: tag),
                 ),
               );
             },

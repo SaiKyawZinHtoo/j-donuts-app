@@ -72,7 +72,9 @@ class NearbyShopsRow extends StatelessWidget {
                 child: ListView.separated(
                   key: const Key('nearbyShopsRow'),
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   itemCount: shops.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(width: AppSpacing.sm),
@@ -84,7 +86,9 @@ class NearbyShopsRow extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
                         color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.cardRadius,
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,14 +105,18 @@ class NearbyShopsRow extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(shop.name,
-                                      style: AppTextStyles.body,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
-                                  Text(shop.address,
-                                      style: AppTextStyles.caption,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis),
+                                  Text(
+                                    shop.name,
+                                    style: AppTextStyles.body,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    shop.address,
+                                    style: AppTextStyles.caption,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   const Spacer(),
                                   Text(
                                     l10n.orderOnline,

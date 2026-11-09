@@ -47,7 +47,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (event is DobSubmitted) {
       if (_dobRequestInFlight) return;
       _dobRequestInFlight = true;
-    } else if (event is OtpDigitEntered && validateOtp(event.code) is ValidationValid) {
+    } else if (event is OtpDigitEntered &&
+        validateOtp(event.code) is ValidationValid) {
       // Only a *correct* code goes on to call the network (login/registration
       // step); a repeated wrong code (e.g. the 3-strike lockout flow) must
       // still be processed every time, so the guard only engages here.
@@ -57,7 +58,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     super.add(event);
   }
 
-  Future<void> _onPhoneSubmitted(PhoneSubmitted event, Emitter<AuthState> emit) async {
+  Future<void> _onPhoneSubmitted(
+    PhoneSubmitted event,
+    Emitter<AuthState> emit,
+  ) async {
     final result = validatePhone(event.raw);
     if (result is ValidationInvalid) {
       _phoneRequestInFlight = false;
@@ -115,7 +119,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(OtpAwaiting(_secondsLeft, draft: _draft));
   }
 
-  Future<void> _onOtpDigitEntered(OtpDigitEntered event, Emitter<AuthState> emit) async {
+  Future<void> _onOtpDigitEntered(
+    OtpDigitEntered event,
+    Emitter<AuthState> emit,
+  ) async {
     final result = validateOtp(event.code);
     if (result is ValidationValid) {
       try {
@@ -125,7 +132,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           if (loginResult is Ok<AuthUser>) {
             emit(AuthSuccess(loginResult.value, false, draft: _draft));
           } else {
-            emit(AuthFailure((loginResult as Err<AuthUser>).message, draft: _draft));
+            emit(
+              AuthFailure(
+                (loginResult as Err<AuthUser>).message,
+                draft: _draft,
+              ),
+            );
           }
         } else {
           _currentStep = RegistrationStep.name;
@@ -148,7 +160,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onOtpResendRequested(OtpResendRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onOtpResendRequested(
+    OtpResendRequested event,
+    Emitter<AuthState> emit,
+  ) async {
     if (_secondsLeft > 0 && _attempts < kOtpMaxAttempts) return;
     _attempts = 0;
     await authRepository.resendOtp(_draft.phone ?? '');
@@ -158,12 +173,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onNameSubmitted(NameSubmitted event, Emitter<AuthState> emit) {
     final firstResult = validateFirstName(event.first);
     if (firstResult is ValidationInvalid) {
-      emit(RegistrationStepInvalid(RegistrationStep.name, firstResult.message, draft: _draft));
+      emit(
+        RegistrationStepInvalid(
+          RegistrationStep.name,
+          firstResult.message,
+          draft: _draft,
+        ),
+      );
       return;
     }
     final lastResult = validateLastName(event.last ?? '');
     if (lastResult is ValidationInvalid) {
-      emit(RegistrationStepInvalid(RegistrationStep.name, lastResult.message, draft: _draft));
+      emit(
+        RegistrationStepInvalid(
+          RegistrationStep.name,
+          lastResult.message,
+          draft: _draft,
+        ),
+      );
       return;
     }
     _draft = _draft.copyWith(firstName: event.first, lastName: event.last);
@@ -171,11 +198,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AwaitingDob(draft: _draft));
   }
 
-  Future<void> _onDobSubmitted(DobSubmitted event, Emitter<AuthState> emit) async {
+  Future<void> _onDobSubmitted(
+    DobSubmitted event,
+    Emitter<AuthState> emit,
+  ) async {
     final result = validateDob(event.dob);
     if (result is ValidationInvalid) {
       _dobRequestInFlight = false;
-      emit(RegistrationStepInvalid(RegistrationStep.dob, result.message, draft: _draft));
+      emit(
+        RegistrationStepInvalid(
+          RegistrationStep.dob,
+          result.message,
+          draft: _draft,
+        ),
+      );
       return;
     }
     _draft = _draft.copyWith(dob: event.dob);
@@ -191,14 +227,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (registerResult is Ok<AuthUser>) {
         emit(AuthSuccess(registerResult.value, true, draft: _draft));
       } else {
-        emit(AuthFailure((registerResult as Err<AuthUser>).message, draft: _draft));
+        emit(
+          AuthFailure((registerResult as Err<AuthUser>).message, draft: _draft),
+        );
       }
     } finally {
       _dobRequestInFlight = false;
     }
   }
 
-  Future<void> _onSessionChecked(SessionChecked event, Emitter<AuthState> emit) async {
+  Future<void> _onSessionChecked(
+    SessionChecked event,
+    Emitter<AuthState> emit,
+  ) async {
     final result = await getSessionUseCase();
     if (result is Ok<AuthUser?> && result.value != null) {
       emit(AuthSuccess(result.value!, false, draft: _draft));
@@ -207,7 +248,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onLogoutRequested(LogoutRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onLogoutRequested(
+    LogoutRequested event,
+    Emitter<AuthState> emit,
+  ) async {
     await authRepository.logout();
     _timer?.cancel();
     _draft = const RegistrationDraft();

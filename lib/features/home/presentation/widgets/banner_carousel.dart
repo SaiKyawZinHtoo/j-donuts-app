@@ -27,7 +27,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
     // dependency change would restart/stop the timer mid-scroll.
     if (_autoplayDecided) return;
     _autoplayDecided = true;
-    if (widget.banners.length > 1 && !MediaQuery.of(context).disableAnimations) {
+    if (widget.banners.length > 1 &&
+        !MediaQuery.of(context).disableAnimations) {
       _timer = Timer.periodic(MotionTokens.kBannerAutoplayInterval, (_) {
         if (!mounted || !_controller.hasClients) return;
         final next = (_controller.page?.round() ?? 0) + 1;
@@ -50,7 +51,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
   @override
   Widget build(BuildContext context) {
     if (widget.banners.isEmpty) {
-      return AppEmptyState(message: AppLocalizations.of(context)!.noBannersRightNow);
+      return AppEmptyState(
+        message: AppLocalizations.of(context)!.noBannersRightNow,
+      );
     }
     return SizedBox(
       key: const Key('bannerCarousel'),
@@ -76,7 +79,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
                     fit: BoxFit.cover,
                     width: double.infinity,
                     placeholder: (context) => const AppSkeleton(
-                        isLoading: true, child: SizedBox.expand()),
+                      isLoading: true,
+                      child: SizedBox.expand(),
+                    ),
                     errorWidget: (context) => Image.asset(
                       'assets/images/seed/banner_seasonal.png',
                       fit: BoxFit.cover,
@@ -95,7 +100,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.h1.copyWith(
-                              color: AppColors.surface, fontSize: 18),
+                            color: AppColors.surface,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
                     ),

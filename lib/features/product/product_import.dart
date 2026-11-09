@@ -1,4 +1,4 @@
-library product;
+library;
 
 import 'dart:async';
 
@@ -20,4 +20,5 @@ part 'presentation/hero_tag.dart';
 part 'presentation/bloc/product_detail_event.dart';
 part 'presentation/bloc/product_detail_state.dart';
 part 'presentation/bloc/product_detail_bloc.dart';
+part 'presentation/widgets/product_detail_parts.dart';
 part 'presentation/screens/product_detail_screen.dart';

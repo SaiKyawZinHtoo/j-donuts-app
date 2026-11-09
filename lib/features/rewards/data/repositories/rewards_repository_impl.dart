@@ -7,10 +7,9 @@ class RewardsRepositoryImpl implements RewardsRepository {
   final drift.MemberDao _memberDao;
 
   const RewardsRepositoryImpl({
-    required drift.RewardsDao rewardsDao,
-    required drift.MemberDao memberDao,
-  }) : _rewardsDao = rewardsDao,
-       _memberDao = memberDao;
+    required this._rewardsDao,
+    required this._memberDao,
+  });
 
   @override
   Future<Result<RewardsBundle>> getRewards() async {

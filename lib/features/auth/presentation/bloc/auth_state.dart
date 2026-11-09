@@ -8,7 +8,12 @@ class RegistrationDraft {
   final String? lastName;
   final DateTime? dob;
 
-  const RegistrationDraft({this.phone, this.firstName, this.lastName, this.dob});
+  const RegistrationDraft({
+    this.phone,
+    this.firstName,
+    this.lastName,
+    this.dob,
+  });
 
   RegistrationDraft copyWith({
     String? phone,

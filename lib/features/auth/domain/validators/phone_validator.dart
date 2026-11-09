@@ -11,11 +11,15 @@ ValidationResult validatePhone(String raw) {
     return const ValidationInvalid('Phone number must contain only digits.');
   }
   if (!digits.startsWith('9')) {
-    return const ValidationInvalid('Phone number must start with 9 after the prefix.');
+    return const ValidationInvalid(
+      'Phone number must start with 9 after the prefix.',
+    );
   }
   final afterNine = digits.length - 1;
   if (afterNine < 7 || afterNine > 9) {
-    return const ValidationInvalid('Phone number must have 7-9 digits after the leading 9.');
+    return const ValidationInvalid(
+      'Phone number must have 7-9 digits after the leading 9.',
+    );
   }
   return const ValidationValid();
 }

@@ -18,8 +18,7 @@ class _DobScreenState extends State<DobScreen> {
   static final _earliest = DateTime(1900);
   DateTime? _dob;
 
-  ValidationResult? get _validation =>
-      _dob == null ? null : validateDob(_dob!);
+  ValidationResult? get _validation => _dob == null ? null : validateDob(_dob!);
   bool get _isValid => _validation is ValidationValid;
 
   DateTime get _initial {
@@ -150,14 +149,23 @@ class _DobScreenState extends State<DobScreen> {
               const SizedBox(height: AppSpacing.lg),
               Row(
                 children: [
-                  _field(const Key('dobMonthField'), l10n.dobMonthLabel,
-                      _dob == null ? null : _monthName(context)),
+                  _field(
+                    const Key('dobMonthField'),
+                    l10n.dobMonthLabel,
+                    _dob == null ? null : _monthName(context),
+                  ),
                   const SizedBox(width: AppSpacing.sm),
-                  _field(const Key('dobDayField'), l10n.dobDayLabel,
-                      _dob?.day.toString()),
+                  _field(
+                    const Key('dobDayField'),
+                    l10n.dobDayLabel,
+                    _dob?.day.toString(),
+                  ),
                   const SizedBox(width: AppSpacing.sm),
-                  _field(const Key('dobYearField'), l10n.dobYearLabel,
-                      _dob?.year.toString()),
+                  _field(
+                    const Key('dobYearField'),
+                    l10n.dobYearLabel,
+                    _dob?.year.toString(),
+                  ),
                 ],
               ),
               if (errorText != null) ...[

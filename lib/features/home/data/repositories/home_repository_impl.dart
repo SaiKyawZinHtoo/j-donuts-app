@@ -9,14 +9,11 @@ class HomeRepositoryImpl implements HomeRepository {
   final Future<({String name, String phone})?> Function() _readProfile;
 
   const HomeRepositoryImpl({
-    required drift.HomeDao homeDao,
-    required drift.MemberDao memberDao,
-    required drift.RewardsDao rewardsDao,
-    required Future<({String name, String phone})?> Function() readProfile,
-  })  : _homeDao = homeDao,
-        _memberDao = memberDao,
-        _rewardsDao = rewardsDao,
-        _readProfile = readProfile;
+    required this._homeDao,
+    required this._memberDao,
+    required this._rewardsDao,
+    required this._readProfile,
+  });
 
   @override
   Future<Result<HomeBundle>> getHome() async {
@@ -56,33 +53,33 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   BannerItem _mapBanner(drift.Banner row) => BannerItem(
-        id: row.id,
-        imageUrl: row.imageUrl,
-        title: row.title,
-        deepLinkTarget: row.deepLinkTarget,
-      );
+    id: row.id,
+    imageUrl: row.imageUrl,
+    title: row.title,
+    deepLinkTarget: row.deepLinkTarget,
+  );
 
   ProductSection _mapSection(drift.SectionWithProducts row) => ProductSection(
-        id: row.section.id,
-        title: row.section.title,
-        products: row.products.map(mapProductRow).toList(),
-      );
+    id: row.section.id,
+    title: row.section.title,
+    products: row.products.map(mapProductRow).toList(),
+  );
 
   Shop _mapShop(drift.Shop row) => Shop(
-        id: row.id,
-        name: row.name,
-        address: row.address,
-        distanceLabel: row.distanceLabel,
-      );
+    id: row.id,
+    name: row.name,
+    address: row.address,
+    distanceLabel: row.distanceLabel,
+  );
 }
 
 /// Shared with [RewardsRepositoryImpl], which also reads [MemberDao] rows.
 Member mapMemberRow(drift.MemberData row) => Member(
-      id: row.id,
-      name: row.name,
-      photoUrl: row.photoUrl,
-      tier: row.tier,
-      points: row.points,
-      nextTierPoints: row.nextTierPoints,
-      totalPoints: row.totalPoints,
-    );
+  id: row.id,
+  name: row.name,
+  photoUrl: row.photoUrl,
+  tier: row.tier,
+  points: row.points,
+  nextTierPoints: row.nextTierPoints,
+  totalPoints: row.totalPoints,
+);

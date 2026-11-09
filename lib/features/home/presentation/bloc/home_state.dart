@@ -17,11 +17,7 @@ final class HomeLoaded extends HomeState {
   /// exists (currently `GetHomeUseCase` loads the whole bundle or nothing).
   final Map<String, String?> sectionErrors;
 
-  const HomeLoaded(
-    this.data,
-    this.isOffline, {
-    this.sectionErrors = const {},
-  });
+  const HomeLoaded(this.data, this.isOffline, {this.sectionErrors = const {}});
 }
 
 final class HomeError extends HomeState {

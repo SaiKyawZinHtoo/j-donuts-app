@@ -4,7 +4,8 @@ part of '../../product_import.dart';
 class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
   final GetProductUseCase getProductUseCase;
 
-  ProductDetailBloc({required this.getProductUseCase}) : super(const ProductLoading()) {
+  ProductDetailBloc({required this.getProductUseCase})
+    : super(const ProductLoading()) {
     on<ProductRequested>(_onRequested);
     on<QuantityIncremented>(_onIncremented);
     on<QuantityDecremented>(_onDecremented);
@@ -25,29 +26,49 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
     }
   }
 
-  void _onIncremented(QuantityIncremented event, Emitter<ProductDetailState> emit) {
+  void _onIncremented(
+    QuantityIncremented event,
+    Emitter<ProductDetailState> emit,
+  ) {
     final current = state;
     if (current is! ProductLoaded) return;
     final quantity = current.quantity + 1;
-    emit(ProductLoaded(current.product, quantity, quantity * current.product.priceMmk));
+    emit(
+      ProductLoaded(
+        current.product,
+        quantity,
+        quantity * current.product.priceMmk,
+      ),
+    );
   }
 
-  void _onDecremented(QuantityDecremented event, Emitter<ProductDetailState> emit) {
+  void _onDecremented(
+    QuantityDecremented event,
+    Emitter<ProductDetailState> emit,
+  ) {
     final current = state;
     if (current is! ProductLoaded) return;
     if (current.quantity <= 1) return; // quantity floor is 1 — no-op
     final quantity = current.quantity - 1;
-    emit(ProductLoaded(current.product, quantity, quantity * current.product.priceMmk));
+    emit(
+      ProductLoaded(
+        current.product,
+        quantity,
+        quantity * current.product.priceMmk,
+      ),
+    );
   }
 
   void _onAddToCart(AddToCartPressed event, Emitter<ProductDetailState> emit) {
     final current = state;
     if (current is! ProductLoaded) return;
-    emit(ProductLoaded(
-      current.product,
-      current.quantity,
-      current.totalMmk,
-      addedToCart: true,
-    ));
+    emit(
+      ProductLoaded(
+        current.product,
+        current.quantity,
+        current.totalMmk,
+        addedToCart: true,
+      ),
+    );
   }
 }

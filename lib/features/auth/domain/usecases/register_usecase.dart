@@ -9,11 +9,10 @@ class RegisterUseCase {
     required String firstName,
     String? lastName,
     required DateTime dob,
-  }) =>
-      _repository.completeRegistration(
-        phone: phone,
-        firstName: firstName,
-        lastName: lastName,
-        dob: dob,
-      );
+  }) => _repository.completeRegistration(
+    phone: phone,
+    firstName: firstName,
+    lastName: lastName,
+    dob: dob,
+  );
 }

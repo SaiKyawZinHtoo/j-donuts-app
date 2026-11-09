@@ -1,4 +1,4 @@
-library rewards;
+library;
 
 import 'dart:math';
 
@@ -23,4 +23,5 @@ part 'presentation/widgets/tier_ladder.dart';
 part 'presentation/widgets/points_donut.dart';
 part 'presentation/widgets/challenge_card.dart';
 part 'presentation/widgets/tab_switcher.dart';
+part 'presentation/widgets/rewards_content.dart';
 part 'presentation/screens/rewards_screen.dart';

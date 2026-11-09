@@ -37,13 +37,13 @@ class Product {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        code,
-        name,
-        priceMmk,
-        isNew,
-        discountPercent,
-        imageUrl,
-        description,
-      );
+    id,
+    code,
+    name,
+    priceMmk,
+    isNew,
+    discountPercent,
+    imageUrl,
+    description,
+  );
 }

@@ -8,15 +8,15 @@ class SessionDataSource {
   const SessionDataSource(this._storage);
 
   Future<void> saveSession(AuthUser user) => _storage.write(
-        key: _key,
-        value: jsonEncode({
-          'id': user.id,
-          'phone': user.phone,
-          'firstName': user.firstName,
-          'lastName': user.lastName,
-          'dob': user.dob.toIso8601String(),
-        }),
-      );
+    key: _key,
+    value: jsonEncode({
+      'id': user.id,
+      'phone': user.phone,
+      'firstName': user.firstName,
+      'lastName': user.lastName,
+      'dob': user.dob.toIso8601String(),
+    }),
+  );
 
   Future<AuthUser?> readSession() async {
     final raw = await _storage.read(key: _key);

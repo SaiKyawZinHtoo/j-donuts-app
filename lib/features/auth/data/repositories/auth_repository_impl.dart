@@ -9,10 +9,9 @@ class FakeAuthRepositoryImpl implements AuthRepository {
   final SessionDataSource _sessionDataSource;
 
   const FakeAuthRepositoryImpl({
-    required AuthLocalDataSource localDataSource,
-    required SessionDataSource sessionDataSource,
-  })  : _localDataSource = localDataSource,
-        _sessionDataSource = sessionDataSource;
+    required this._localDataSource,
+    required this._sessionDataSource,
+  });
 
   @override
   Future<Result<bool>> checkPhone(String phone) async {

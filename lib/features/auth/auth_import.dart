@@ -1,10 +1,15 @@
-library auth;
+library;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart' show CupertinoButton, CupertinoDatePicker, CupertinoDatePickerMode, showCupertinoModalPopup;
+import 'package:flutter/cupertino.dart'
+    show
+        CupertinoButton,
+        CupertinoDatePicker,
+        CupertinoDatePickerMode,
+        showCupertinoModalPopup;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -34,6 +39,8 @@ part 'presentation/bloc/auth_state.dart';
 part 'presentation/bloc/auth_bloc.dart';
 part 'presentation/widgets/registration_progress_ring.dart';
 part 'presentation/widgets/donut_tile.dart';
+part 'presentation/widgets/onboarding_tiles.dart';
+part 'presentation/widgets/onboarding_art.dart';
 part 'presentation/screens/onboarding_screen.dart';
 part 'presentation/screens/phone_screen.dart';
 part 'presentation/screens/otp_screen.dart';

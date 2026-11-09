@@ -12,7 +12,8 @@ ValidationResult validateDob(DateTime value) {
   }
 
   var age = today.year - dob.year;
-  final hadBirthdayThisYear = (today.month > dob.month) ||
+  final hadBirthdayThisYear =
+      (today.month > dob.month) ||
       (today.month == dob.month && today.day >= dob.day);
   if (!hadBirthdayThisYear) {
     age -= 1;

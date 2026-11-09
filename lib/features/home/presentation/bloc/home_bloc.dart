@@ -10,7 +10,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   bool _isOffline = false;
 
   HomeBloc({required this.getHomeUseCase, required this.connectivity})
-      : super(const HomeLoading()) {
+    : super(const HomeLoading()) {
     on<HomeRequested>(_onRequested);
     on<HomeRefreshRequested>(_onRequested);
     on<ConnectivityChanged>(_onConnectivityChanged);
@@ -31,11 +31,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  void _onConnectivityChanged(ConnectivityChanged event, Emitter<HomeState> emit) {
+  void _onConnectivityChanged(
+    ConnectivityChanged event,
+    Emitter<HomeState> emit,
+  ) {
     _isOffline = !event.isOnline;
     final current = state;
     if (current is HomeLoaded) {
-      emit(HomeLoaded(current.data, _isOffline, sectionErrors: current.sectionErrors));
+      emit(
+        HomeLoaded(
+          current.data,
+          _isOffline,
+          sectionErrors: current.sectionErrors,
+        ),
+      );
     }
   }
 

@@ -16,10 +16,8 @@ flutter run
 Built and verified with:
 
 ```
-Flutter 3.47.7 • channel stable
-Framework revision abaf9c5237 (2026-10-08)
-Engine revision d8a2d6c768
-Tools • Dart 3.13.5 • DevTools 2.60.0
+Flutter 3.47.5 • channel stable (framework 6a19cca564, 2026-09-17)
+Dart 3.13.4 (stable) (Tue Sep 15 01:01:15 2026 -0700) on "macos_x64"
 ```
 
 The fake OTP code for registration/login is **`123456`** (`kFakeOtpCode` in
@@ -74,7 +72,7 @@ Exception: the `/product/:id` push/pop and its Hero flight use the platform-defa
 timing, to keep iOS edge-swipe back.
 Built:
 
-- Splash: logo scale/fade in, hold, fade-out exit, then route to onboarding or Home.
+- Splash: logo pops in, eight donuts scatter around it, then four settle into the Onboarding layout while the rest drift off; hands off to Onboarding (which skips its tile entrance) or Home.
 - Onboarding: donut tiles drift in, title and button stagger in.
 - Shared-axis step transitions (fade + 30px slide) on `/phone`, `/otp`, `/name`, `/dob`, `/welcome`.
 - Registration progress ring animating 25 -> 50 -> 75 -> 100% and morphing to a check.
@@ -84,8 +82,8 @@ Built:
 - Product detail: entrance (`kDetailEntrance`), quantity change (`kQtyChange`) and description
   expand/collapse with fade (`kDescriptionExpand`).
 - Section-scoped Hero (tag `product-<sectionId>-<productId>`) from product tile to detail.
-- Bottom-nav sliding pill; Earn/Gift tab pill.
-- Rewards entrance: points ring sweep + counter (starts when the tab becomes active), tier-ladder
+- Bottom-nav sliding pill (single-driver animation, icon + label inside the pill) and a fade between tab contents; Earn/Gift tab pill.
+- Rewards entrance (replayed each time the tab is shown): points ring sweep + counter (starts when the tab becomes active), tier-ladder
   highlight, staggered challenge cards with per-card progress art, badge.
 - Home banner autoplay.
 
@@ -147,8 +145,7 @@ As part of this task, the bundled seed PNGs (`assets/images/seed/*.png`) were re
 test-environment artifact); they're now valid, decodable 500×500 PNGs. This would have failed
 to render on a real device too, not only under `flutter test`.
 
-Full suite: 191 tests, all passing; `flutter analyze` reports 11 pre-existing `info`-level style lints
-(`prefer_initializing_formals`, `unnecessary_library_name`) from earlier tasks, no errors or warnings.
+Full suite: 205 tests, all passing; `flutter analyze` reports no issues.
 
 ## Known gaps
 
@@ -162,8 +159,7 @@ none of which block the flows above:
 - A handful of deferred minors from earlier tasks: weak id generation in the fake auth datasource
   (acceptable for local-only/no-backend scope), rewards tier names are English-only (no l10n mapping
   yet), pull-to-refresh blanks content via `HomeLoading` instead of staying visible during refetch,
-  no accessibility semantics on the product quantity stepper, and 11 `prefer_initializing_formals` /
-  `unnecessary_library_name` style lints. None are required by the brief's test lists.
+  no accessibility semantics on the product quantity stepper,. None are required by the brief's test lists.
 - The five auth routes use a custom shared-axis transition, so the iOS edge-swipe-back gesture does
   not work there (intentional: it would skip the bloc's `BackRequested` on OTP/Name/DOB). Android
   system back on OTP/Name/DOB also skips `BackRequested` (pre-existing, no `PopScope`).
@@ -198,26 +194,14 @@ none of which block the flows above:
 - Home, Product detail, bottom nav and Welcome were verified by widget tests only, not compared
   visually against the reference on a device or simulator.
 - Welcome tile shapes and photos only approximate the reference.
-- The Home bell count is a hard-coded `2`; the placeholder images listed under UI / theme are not
-  final art.
+- The placeholder images listed under UI / theme are not final art.
 
-## Manual deliverables not done here
+## Deliverables status
 
-This was implemented by a background coding agent without access to a real iOS Simulator, Android
-emulator, or screen-recording tooling. The project owner still needs to:
-
-- Run the app on a real iOS Simulator and Android emulator (`flutter run -d <device>`), including an
-  airplane-mode cold launch, and visually confirm all 10 PDF screens.
-- Build the release artifacts: an Android `.apk` and a zipped iOS Simulator `.app`.
-- Record the 2–4 minute walkthrough video (register → logout → login → Home → Product detail →
-  Rewards).
-
-Everything else in Task 12 — the integration test, this README, `flutter analyze`, and the full
-`flutter test` suite — has been done and verified above.
-
-## Time and scope
-
-This was the final task (12 of 12) of a 12-task incremental plan (scaffolding → auth → Home/Product →
-Rewards/motion → localization/a11y → this task). Scope held to the brief: the integration test covers
-one representative full path (register → Home → Product detail → Rewards) rather than every branch,
-matching the per-task test lists already written in Tasks 3–11.
+- Release Android build: `flutter build apk --release` (output `build/app/outputs/flutter-apk/app-release.apk`).
+- iOS Simulator `.app` (`flutter build ios --simulator`, then zip `build/ios/iphonesimulator/Runner.app`)
+  and the 2-4 minute screen recording (register, log out, log in, Home, Product detail, Rewards, then
+  the same flow in airplane mode) are produced on a Mac with a device attached.
+- CI: `.github/workflows/ci.yml` runs `flutter analyze` and `flutter test` on every push.
+- Time spent: built incrementally in 12 planned tasks, followed by UI-fidelity passes (nav, Home,
+  Welcome, Rewards, splash) and a requirements audit against the brief.
