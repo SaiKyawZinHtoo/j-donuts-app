@@ -13,6 +13,8 @@ dart run build_runner build   # generates lib/data/local/database.g.dart (Drift)
 flutter run
 ```
 
+To try the optional mock server and background sync, see [Trying the mock server](#trying-the-mock-server).
+
 Built and verified with:
 
 ```
@@ -66,21 +68,9 @@ detail, Rewards — goes through a DAO, never JSON or network directly. `connect
 online/offline for the Home offline banner. When `API_BASE_URL` is set, `HomeBloc` also refreshes the
 database in the background (see **Mock server and sync**); without it the app is local-only.
 
-**Mock server and sync**: `tool/mock_server/` is a small `shelf` server for the brief's optional
-mock API (`GET /v1/products|banners|sections|shops`, `{data, error, meta}` envelope, ETag/304).
-
-```bash
-dart run tool/mock_server/bin/server.dart [--port 8080] [--delay 500] [--fail-rate 0.3]
-flutter run --dart-define=API_BASE_URL=http://localhost:8080
-```
-
-`API_BASE_URL` per target: Android emulator `http://10.0.2.2:8080`, iOS Simulator
-`http://localhost:8080`, physical device `http://<LAN-IP>:8080` (device and computer on the same
-network; cleartext HTTP may need to be allowed for debug builds). The sync runs on launch, on
-pull-to-refresh and when the network returns. Responses are validated, written in one Drift
-transaction (rolled back on any failure) and never blank the screen: on failure the old data stays.
-ETags and the last sync time live in the `Meta` table; Home's offline banner shows "Updated N min
-ago".
+**Mock server and sync**: an optional `shelf` server (`tool/mock_server/`) serves the public data
+(`/v1/products|banners|sections|shops`). The app refreshes its local database from it in the
+background; see [Trying the mock server](#trying-the-mock-server).
 
 **Animations**: every duration/curve is a named constant in `lib/core/theme/motion_tokens.dart`, and
 every animation honors Reduce Motion (`MediaQuery.disableAnimationsOf`) by jumping to its end state.
@@ -102,6 +92,85 @@ Built:
 - Rewards entrance (replayed each time the tab is shown): points ring sweep + counter (starts when the tab becomes active), tier-ladder
   highlight, staggered challenge cards with per-card progress art, badge.
 - Home banner autoplay.
+
+## Trying the mock server
+
+The app works fully **without** the server (offline-first, data from the bundled seed). The server is
+the brief's optional mock API: when the app is started with `API_BASE_URL`, it refreshes the local
+database from it on launch, on pull-to-refresh and when the network comes back. Pick the path that
+fits your machine.
+
+### A. Nothing to install (1 minute): run the tests
+
+```bash
+flutter test test/unit/data/sync_repository_impl_test.dart test/unit/data/remote_data_source_test.dart test/mock_server
+```
+
+These prove the sync rules without a device: a refresh replaces the local data in one transaction
+and rolls back on failure, an unchanged server answers `304` and writes nothing, concurrent refreshes
+share one request set, invalid records are skipped, and the client parses exactly what the server
+returns.
+
+### B. Emulator or Simulator (5 minutes)
+
+Terminal 1, start the server (keep it open; stop it with `Ctrl-C`, not `Ctrl-Z`):
+
+```bash
+dart run tool/mock_server/bin/server.dart --port 8080
+```
+
+Terminal 2, run the app with the server address:
+
+| Target | Command |
+| --- | --- |
+| Android emulator | `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8080` |
+| iOS Simulator | `flutter run --dart-define=API_BASE_URL=http://localhost:8080` |
+
+### C. A real phone (10 minutes)
+
+The phone and the computer must be on the same Wi-Fi. `localhost` does not work on a phone.
+
+1. Start the server as in B.
+2. Find the computer's address: `ipconfig getifaddr en0` (macOS; on Windows/Linux use `ipconfig` /
+   `ip addr`). Below it is written as `<IP>`.
+3. On the phone's browser open `http://<IP>:8080/v1/shops`. JSON means the phone can reach the server.
+   If it does not load, fix the network or firewall first.
+4. Run the app: `flutter run --dart-define=API_BASE_URL=http://<IP>:8080`
+
+### What to check
+
+Register or log in (OTP `123456`) and open Home. In the `flutter run` console the requests appear as
+`[http-request] [GET] .../v1/products` and `[http-response] ... Status: 200`.
+
+1. **Sync works**: all four resources (`products`, `banners`, `sections`, `shops`) return
+   `Status: 200` with `"error": null`, and Home shows the products.
+2. **Changed data arrives**: edit a product `name` in `assets/seed/products.json`, restart the
+   server (it reads the file at start), then pull Home down to refresh. The new name appears and the
+   skeleton does not come back. Undo with `git checkout assets/seed/products.json`.
+3. **A dead server loses nothing**: stop the server and pull to refresh. After the ~5 s timeout and
+   2 retries the old data is still on screen and no error is shown.
+4. **Offline banner**: turn the network off. The red banner reads "You're offline. Updated N min ago."
+   Turn it on (with the server running) and the data refreshes in the background.
+5. **Failure and slowness**: start the server with `--fail-rate 1` (every call answers 503) or
+   `--delay 800` (slow answers). The app stays usable and keeps its data.
+
+### Troubleshooting
+
+| Symptom | Cause and fix |
+| --- | --- |
+| `Address already in use (errno = 48)` | An old server still holds port 8080 (often one stopped with `Ctrl-Z`). Find it with `lsof -nP -iTCP:8080 -sTCP:LISTEN`, `kill` that PID, or start with another `--port` and use the same port in `API_BASE_URL`. |
+| `[http-error] ... receiveTimeout` | The server does not answer: it is not running, suspended, the IP is wrong, or the phone is on another network. Re-check step 3 of C. |
+| Works in the phone browser but not in the app | The app was started without `--dart-define=API_BASE_URL=...`; restart it with the flag (a hot reload does not change it). |
+| Nothing is requested at all | `API_BASE_URL` is empty, so the app runs local-only by design. |
+
+### How it behaves
+
+Reads always come from the local Drift database; the server only refreshes it. A refresh validates
+each record (invalid ones are skipped and logged; a resource whose records are all invalid is
+rejected), writes everything in one transaction, and stores each resource's ETag and the last sync
+time in the `Meta` table, so a failed or partial refresh never leaves half-updated data. Requests use
+a 5 s timeout and retry network errors and 5xx responses twice. Server flags:
+`--port`, `--delay <ms>`, `--fail-rate <0..1>`.
 
 ## UI / theme
 
@@ -213,6 +282,7 @@ none of which block the flows above:
 
 ## Deliverables status
 
+- Mock server (optional bonus): included in `tool/mock_server/` with step-by-step checks in [Trying the mock server](#trying-the-mock-server); verified end to end on a physical Android device.
 - Release Android build: `flutter build apk --release` (output `build/app/outputs/flutter-apk/app-release.apk`).
 - iOS Simulator `.app` (`flutter build ios --simulator`, then zip `build/ios/iphonesimulator/Runner.app`)
   and the 2-4 minute screen recording (register, log out, log in, Home, Product detail, Rewards, then
