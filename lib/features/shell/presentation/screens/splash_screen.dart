@@ -1,5 +1,102 @@
 part of '../../shell_import.dart';
 
+/// One scattered donut of the splash burst. Fractions are of screen width/height
+/// ([size] of width). The first four share an index with [kOnboardingTiles] and
+/// settle into it; the rest drift off-screen during the rise.
+class _Scatter {
+  const _Scatter(
+    this.asset,
+    this.color,
+    this.x,
+    this.y,
+    this.size,
+    this.rot,
+    this.delayMs,
+  );
+  final String asset;
+  final Color color;
+  final double x;
+  final double y;
+  final double size;
+  final double rot;
+  final int delayMs;
+}
+
+const _scatter = [
+  _Scatter(
+    'assets/images/seed/tile_1.png',
+    AppColors.tileCyan,
+    0.18,
+    0.20,
+    0.34,
+    -0.35,
+    0,
+  ),
+  _Scatter(
+    'assets/images/seed/tile_2.png',
+    AppColors.tileBlue,
+    0.84,
+    0.26,
+    0.28,
+    0.40,
+    240,
+  ),
+  _Scatter(
+    'assets/images/seed/tile_3.png',
+    AppColors.tilePurple,
+    0.22,
+    0.76,
+    0.30,
+    0.30,
+    100,
+  ),
+  _Scatter(
+    'assets/images/seed/donut_strawberry.png',
+    AppColors.tileBeige,
+    0.72,
+    0.70,
+    0.38,
+    -0.25,
+    360,
+  ),
+  _Scatter(
+    'assets/images/seed/donut_chocolate.png',
+    AppColors.tileBeige,
+    0.62,
+    0.11,
+    0.22,
+    0.55,
+    180,
+  ),
+  _Scatter(
+    'assets/images/seed/donut_coconut.png',
+    AppColors.tileCyan,
+    0.09,
+    0.48,
+    0.24,
+    -0.50,
+    420,
+  ),
+  _Scatter(
+    'assets/images/seed/tile_2.png',
+    AppColors.tilePurple,
+    0.90,
+    0.50,
+    0.20,
+    0.35,
+    60,
+  ),
+  _Scatter(
+    'assets/images/seed/tile_1.png',
+    AppColors.tileBeige,
+    0.42,
+    0.90,
+    0.26,
+    -0.40,
+    300,
+  ),
+];
+
 /// Brand splash: the logo pops in, donuts burst out around it, hold, then the
 /// whole cluster rises into the Onboarding layout and hands off to `/`.
 class SplashScreen extends StatefulWidget {
@@ -17,7 +114,7 @@ class _SplashScreenState extends State<SplashScreen>
   static const _rise = MotionTokens.kSplashRiseDuration;
   static final _riseStart =
       _tilesStart +
-      MotionTokens.kStaggerStep * (kOnboardingTiles.length - 1) +
+      const Duration(milliseconds: 420) +
       _tileDur +
       MotionTokens.kSplashHoldDuration;
   static final _total = _riseStart + _rise;
@@ -91,46 +188,60 @@ class _SplashScreenState extends State<SplashScreen>
     final rise = _t(_riseStart, _rise, MotionTokens.kEmphasizedCurve);
     final logoIn = _t(Duration.zero, _logoIn, Curves.easeOutBack);
     const logoSize = AppSpacing.logoCircleSize;
-    final ringR = math.min(w, h) * 0.30;
-    final ringSize = w * 0.30;
-    const angles = [-2.35, -0.78, 2.35, 0.78]; // diagonal burst around logo
-    final bob = rise == 0 ? math.sin(_c.value * 14) * 3 : 0.0;
+    final bob = rise == 0 ? 1.0 : 0.0;
     final logoCy = lerpDouble(h / 2, clusterH, rise)!;
+    final far = math.max(w, h);
 
     final tiles = <Widget>[];
-    for (var i = 0; i < kOnboardingTiles.length; i++) {
-      final spec = kOnboardingTiles[i];
+    for (var i = 0; i < _scatter.length; i++) {
+      final sp = _scatter[i];
       final appear = _t(
-        _tilesStart + MotionTokens.kStaggerStep * i,
+        _tilesStart + Duration(milliseconds: sp.delayMs),
         _tileDur,
         Curves.easeOutBack,
       );
-      final ringCx = w / 2 + ringR * math.cos(angles[i]);
-      final ringCy = h / 2 + ringR * math.sin(angles[i]);
-      final cx = lerpDouble(ringCx, spec.cx * w, rise)!;
-      final cy =
-          lerpDouble(ringCy, spec.cy * clusterH, rise)! +
-          bob * (i.isEven ? 1 : -1);
-      final size = lerpDouble(ringSize, spec.size * unit, rise)!;
+      var cx = sp.x * w;
+      var cy = sp.y * h;
+      var size = sp.size * w;
+      var rot = sp.rot;
+      var fade = 1.0;
+      if (i < kOnboardingTiles.length) {
+        final spec = kOnboardingTiles[i];
+        cx = lerpDouble(cx, spec.cx * w, rise)!;
+        cy = lerpDouble(cy, spec.cy * clusterH, rise)!;
+        size = lerpDouble(size, spec.size * unit, rise)!;
+        rot = sp.rot * (1 - rise);
+      } else {
+        // Extras leave outward from the screen centre.
+        final dx = cx - w / 2;
+        final dy = cy - h / 2;
+        final len = math.sqrt(dx * dx + dy * dy);
+        cx += dx / len * far * rise;
+        cy += dy / len * far * rise;
+        fade = 1 - rise;
+      }
+      // Each donut drifts on its own phase/speed so nothing moves in lockstep.
+      cx += bob * math.sin(_c.value * (11 + i) + i) * 4;
+      cy += bob * math.cos(_c.value * (9 + i * 1.3) + i * 2) * 4;
       tiles.add(
         Positioned(
           left: cx - size / 2,
           top: cy - size / 2,
           child: Opacity(
-            opacity: appear.clamp(0.0, 1.0),
+            opacity: (appear * fade).clamp(0.0, 1.0),
             child: Transform.rotate(
-              angle: (1 - appear) * -0.26,
+              angle: rot + (1 - appear) * -0.26,
               child: Transform.scale(
-                scale: appear,
+                scale: appear.clamp(0.0, 1.2),
                 child: Container(
                   width: size,
                   height: size,
                   decoration: BoxDecoration(
-                    color: spec.color,
+                    color: sp.color,
                     shape: BoxShape.circle,
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: Image.asset(spec.asset, fit: BoxFit.cover),
+                  child: Image.asset(sp.asset, fit: BoxFit.cover),
                 ),
               ),
             ),

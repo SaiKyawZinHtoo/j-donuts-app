@@ -54,19 +54,20 @@ void main() {
     expect(landings, 1);
   });
 
-  testWidgets('animated: four donut tiles burst around the logo, then handoff flag set', (
-    t,
-  ) async {
-    await t.pumpWidget(_app(reduce: false));
-    await t.pump(const Duration(milliseconds: 1500));
-    expect(find.byType(Image), findsNWidgets(5)); // 4 tiles + logo
-    expect(t.takeException(), isNull);
-    await t.pump(const Duration(seconds: 3));
-    await t.pumpAndSettle();
-    expect(find.text('landed'), findsOneWidget);
-    expect(OnboardingScreen.skipTileEntrance, isTrue);
-    OnboardingScreen.skipTileEntrance = false;
-  });
+  testWidgets(
+    'animated: eight donuts burst around the logo, then handoff flag set',
+    (t) async {
+      await t.pumpWidget(_app(reduce: false));
+      await t.pump(const Duration(milliseconds: 1500));
+      expect(find.byType(Image), findsNWidgets(9)); // 8 donuts + logo
+      expect(t.takeException(), isNull);
+      await t.pump(const Duration(seconds: 3));
+      await t.pumpAndSettle();
+      expect(find.text('landed'), findsOneWidget);
+      expect(OnboardingScreen.skipTileEntrance, isTrue);
+      OnboardingScreen.skipTileEntrance = false;
+    },
+  );
 
   group('sharedAxisX', () {
     Future<Widget> build(WidgetTester t, {required bool reduce}) async {
