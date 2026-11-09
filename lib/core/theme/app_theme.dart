@@ -6,6 +6,14 @@ class AppTheme {
   static final ThemeData light = ThemeData(
     useMaterial3: true,
     fontFamily: AppFonts.body,
+    // Cupertino widgets (date picker) ignore fontFamily and use the system face.
+    cupertinoOverrideTheme: const CupertinoThemeData(
+      textTheme: CupertinoTextThemeData(
+        textStyle: AppTextStyles.body,
+        dateTimePickerTextStyle: AppTextStyles.body,
+        actionTextStyle: AppTextStyles.body,
+      ),
+    ),
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.accent,
@@ -28,7 +36,7 @@ class AppTheme {
       errorBorder: _fieldBorder(AppColors.error),
       focusedErrorBorder: _fieldBorder(AppColors.error),
       labelStyle: AppTextStyles.body.copyWith(color: AppColors.hint),
-      floatingLabelStyle: const TextStyle(color: AppColors.accent),
+      floatingLabelStyle: AppTextStyles.body.copyWith(color: AppColors.accent),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(foregroundColor: AppColors.accent),

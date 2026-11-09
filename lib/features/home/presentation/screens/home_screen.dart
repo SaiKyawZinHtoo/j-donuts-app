@@ -138,7 +138,7 @@ class _HomeContent extends StatelessWidget {
             ),
             child: Text(
               _offlineText(context, state.lastSyncedAt),
-              style: const TextStyle(color: AppColors.surface),
+              style: AppTextStyles.body.copyWith(color: AppColors.surface),
               textAlign: TextAlign.center,
             ),
           ),
