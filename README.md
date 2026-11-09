@@ -399,6 +399,49 @@ Install and launch on a booted simulator with `xcrun simctl install booted Runne
 `xcrun simctl launch booted com.example.jDonutsApp` (the iOS bundle id). For the Android emulator or a
 phone, `adb install -r app-release.apk`. Both builds were checked from a fresh clone of this repository.
 
+### Install and test the two builds (reviewer guide)
+
+**Android `.apk`** (phone or emulator):
+
+```bash
+adb install -r J-Donuts-release.apk      # or drag the file onto an emulator
+adb shell am start -n com.example.j_donuts_app/.MainActivity
+```
+
+On a phone you can also copy the file over and open it (allow "install unknown apps"). The release build is
+signed with the standard Android debug key, which is fine for testing. Android 13+ asks once for the
+notification permission (it only shows the demo OTP; "Don't allow" changes nothing, just type `123456`).
+**Reset to a fresh install** (logs you out, clears local data): `adb shell pm clear com.example.j_donuts_app`.
+
+**iOS Simulator `.app`** (macOS + Xcode; the zip is a simulator build, it will not run on a real iPhone):
+
+```bash
+unzip J-Donuts-ios-simulator.zip
+xcrun simctl boot "iPhone 16"             # or open any simulator in Xcode / Simulator.app
+xcrun simctl install booted Runner.app
+xcrun simctl launch booted com.example.jDonutsApp
+```
+
+Or drag `Runner.app` onto an open Simulator window. **The iOS bundle id is `com.example.jDonutsApp`** (the
+Android id is `com.example.j_donuts_app`), so use that one with `simctl launch`.
+**Reset to a fresh install on iOS:** the session is stored with `flutter_secure_storage`, which lives in the
+Keychain and survives deleting the app, so a re-installed app can open already logged in. If that
+happens, either use **Settings -> Log out** in the app, or reset the simulator Keychain and reinstall:
+
+```bash
+xcrun simctl uninstall booted com.example.jDonutsApp
+xcrun simctl keychain booted reset
+xcrun simctl install booted Runner.app
+```
+
+A first install on a simulator that never ran the app always starts at Onboarding.
+
+**Suggested check order (about 3 minutes):** Onboarding -> Let's get started -> phone `912345678` ->
+OTP `123456` -> name -> date of birth -> Welcome -> Home -> open a product -> Rewards -> Settings ->
+Log out -> Log In with the same number -> Home. Then switch on **airplane mode** and repeat Home, Product detail
+and Rewards (they work offline; Home shows the offline banner). Relaunch the app while logged in (opens Home)
+and after logging out (opens Onboarding). More detail in [section 2](#2-try-the-app-demo-script).
+
 | Deliverable | Status |
 | --- | --- |
 | Public Git repository with readable commits | this repository |
@@ -447,6 +490,8 @@ Stated plainly so nobody has to find them:
   fingerprint button on login shows a "not implemented" snackbar.
 - The five auth routes use a custom shared-axis transition, so the iOS edge-swipe-back gesture is off there
   on purpose (it would skip the bloc's `BackRequested`). Android system back on OTP/Name/DOB also skips it.
+- **iOS Keychain**: the stored session survives uninstalling the app on a simulator (see the reviewer guide in
+  section 12 for the reset). A first install on a clean simulator or device is not affected.
 - Translations cover the strings in the screens; a full copy audit of every string was not done.
 - Domain purity (no Flutter/Drift imports in `domain/`) is a convention checked by `grep`, not enforced by a tool.
 
