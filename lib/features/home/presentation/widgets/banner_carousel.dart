@@ -81,67 +81,73 @@ class _BannerCarouselState extends State<BannerCarousel> {
                 decoration: BoxDecoration(
                   color: _cardColors[index % _cardColors.length],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.sm),
-                  child: Column(
-                    children: [
-                      if (banner.badge != null) AppBadge(label: banner.badge!),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
-                        ),
-                        child: Text(
-                          banner.title,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bannerTitle,
-                        ),
-                      ),
-                      // Framed picture at the bottom, cut by the header curve.
-                      Expanded(
-                        child: Padding(
+                child: CustomPaint(
+                  painter: _SticksPainter(index),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
+                    child: Column(
+                      children: [
+                        if (banner.badge != null)
+                          AppBadge(label: banner.badge!),
+                        Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xl + AppSpacing.md,
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
                           ),
-                          child: DecoratedBox(
-                            // Foreground: the picture must not paint over the border.
-                            position: DecorationPosition.foreground,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(AppSpacing.md),
-                              ),
-                              border: Border.all(
-                                color: AppColors.surface,
-                                width: AppSpacing.badgeBorder,
-                              ),
+                          child: Text(
+                            banner.title,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.bannerTitle.copyWith(
+                              fontSize: 22,
                             ),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(AppSpacing.md),
+                          ),
+                        ),
+                        // Framed picture at the bottom, cut by the header curve.
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xl + AppSpacing.md,
+                            ),
+                            child: DecoratedBox(
+                              // Foreground: the picture must not paint over the border.
+                              position: DecorationPosition.foreground,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(AppSpacing.md),
+                                ),
+                                border: Border.all(
+                                  color: AppColors.surface,
+                                  width: AppSpacing.badgeBorder,
+                                ),
                               ),
-                              child: SizedBox.expand(
-                                child: AppSmartImage(
-                                  url: banner.imageUrl,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  placeholder: (context) => const AppSkeleton(
-                                    isLoading: true,
-                                    child: SizedBox.expand(),
-                                  ),
-                                  errorWidget: (context) => Image.asset(
-                                    'assets/images/seed/banner_seasonal.png',
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(AppSpacing.md),
+                                ),
+                                child: SizedBox.expand(
+                                  child: AppSmartImage(
+                                    url: banner.imageUrl,
                                     fit: BoxFit.cover,
                                     width: double.infinity,
+                                    placeholder: (context) => const AppSkeleton(
+                                      isLoading: true,
+                                      child: SizedBox.expand(),
+                                    ),
+                                    errorWidget: (context) => Image.asset(
+                                      'assets/images/seed/banner_seasonal.png',
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -151,4 +157,31 @@ class _BannerCarouselState extends State<BannerCarousel> {
       ),
     );
   }
+}
+
+/// Faint rounded "sprinkle" bars on the card, stable per banner.
+class _SticksPainter extends CustomPainter {
+  final int seed;
+  const _SticksPainter(this.seed);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rnd = math.Random(seed + 11);
+    final paint = Paint()
+      ..color = AppColors.surface.withValues(alpha: 0.2)
+      ..strokeWidth = 7
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 14; i++) {
+      final c = Offset(
+        rnd.nextDouble() * size.width,
+        rnd.nextDouble() * size.height,
+      );
+      final a = rnd.nextDouble() * math.pi;
+      final d = Offset(math.cos(a), math.sin(a)) * (10 + rnd.nextDouble() * 8);
+      canvas.drawLine(c - d, c + d, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SticksPainter old) => old.seed != seed;
 }
