@@ -84,7 +84,7 @@ class _ChallengeCardState extends State<ChallengeCard> {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       '${challenge.current}/${challenge.target}',
-                      style: AppTextStyles.body,
+                      style: AppTextStyles.bodyBold,
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Row(
@@ -117,7 +117,7 @@ class _ChallengeCardState extends State<ChallengeCard> {
                         Flexible(
                           child: Text(
                             l10n.pointsShort(challenge.rewardPts),
-                            style: AppTextStyles.body,
+                            style: AppTextStyles.bodyBold,
                           ),
                         ),
                       ],
