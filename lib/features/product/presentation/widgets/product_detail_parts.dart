@@ -67,7 +67,7 @@ extension _ProductDetailParts on _ProductDetailScreenState {
     String description,
     bool reduce,
   ) {
-    const maxLines = 4;
+    const maxLines = 5;
     // Perf: no IntrinsicHeight (double layout) and no ShaderMask (a saveLayer
     // plus an on-demand Impeller pipeline compile, ~40ms on the first frame).
     // The divider is the text column's left border; the fade is a plain
@@ -101,7 +101,9 @@ extension _ProductDetailParts on _ProductDetailScreenState {
                   alignment: Alignment.topCenter,
                   child: DecoratedBox(
                     decoration: const BoxDecoration(
-                      border: Border(left: BorderSide(color: AppColors.border)),
+                      border: Border(
+                        left: BorderSide(color: AppColors.surface, width: 3),
+                      ),
                     ),
                     child: Stack(
                       children: [
@@ -124,9 +126,12 @@ extension _ProductDetailParts on _ProductDetailScreenState {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       AppColors.pageGrey.withValues(alpha: 0),
-                                      AppColors.pageGrey,
+                                      AppColors.pageGrey.withValues(
+                                        alpha: 0.92,
+                                      ),
                                     ],
-                                    stops: const [0.55, 1],
+                                    // Each line a little fainter than the last.
+                                    stops: const [0.3, 1],
                                   ),
                                 ),
                               ),

@@ -7,7 +7,7 @@
     "isNew": true,
     "discountPercent": 0,
     "imageUrl": "assets/images/seed/donut_coconut.png",
-    "description": "Soft glazed donut rolled in toasted coconut flakes."
+    "description": "Soft, pillowy dough dipped in a sweet glaze and rolled in toasted coconut flakes. Light, fragrant and gently crunchy in every bite. Perfect with a hot coffee, or on its own whenever a little treat is calling your name."
   },
   {
     "id": "p_choco",
@@ -17,7 +17,7 @@
     "isNew": false,
     "discountPercent": 10,
     "imageUrl": "assets/images/seed/donut_chocolate.png",
-    "description": "Rich chocolate glaze over a fluffy ring donut."
+    "description": "Enjoy our rich chocolate donut: a fluffy ring of freshly fried dough under a smooth, glossy chocolate glaze. Deep, sweet and satisfying in every bite. Made fresh each morning for chocolate lovers of all ages."
   },
   {
     "id": "p_strawberry",
@@ -27,7 +27,7 @@
     "isNew": false,
     "discountPercent": 0,
     "imageUrl": "assets/images/seed/donut_strawberry.png",
-    "description": "Pink strawberry glaze with a fruity finish."
+    "description": "A fluffy ring donut covered in pink strawberry glaze with a bright, fruity finish. Soft, sweet and just a little tangy. Dive into pure happiness, whether it is breakfast, an afternoon snack or a gift for someone special."
   },
   {
     "id": "p_matcha",
@@ -37,7 +37,7 @@
     "isNew": true,
     "discountPercent": 0,
     "imageUrl": "assets/images/seed/donut_matcha.png",
-    "description": "Japanese matcha glaze with a hint of white chocolate."
+    "description": "Light, airy dough topped with a smooth Japanese matcha glaze and a hint of white chocolate. Earthy, creamy and gently sweet. A calm, refreshing treat for anyone who loves green tea flavours."
   },
   {
     "id": "p_americano",
@@ -47,7 +47,7 @@
     "isNew": false,
     "discountPercent": 0,
     "imageUrl": "assets/images/seed/coffee_americano.png",
-    "description": "Classic black coffee, brewed fresh."
+    "description": "Classic black coffee brewed fresh from carefully roasted beans. Bold, smooth and clean, with a rich aroma that wakes you up. Enjoy it hot or over ice, on its own or alongside your favourite donut."
   },
   {
     "id": "p_latte",
@@ -57,7 +57,7 @@
     "isNew": false,
     "discountPercent": 0,
     "imageUrl": "assets/images/seed/coffee_latte.png",
-    "description": "Espresso with steamed milk."
+    "description": "Smooth espresso blended with silky steamed milk and finished with a light layer of foam. Creamy, warm and comforting. A gentle, balanced cup that pairs beautifully with something sweet from our donut counter."
   },
   {
     "id": "p_box_romance",
@@ -67,7 +67,7 @@
     "isNew": false,
     "discountPercent": 50,
     "imageUrl": "assets/images/seed/seasonal_1.png",
-    "description": "Limited-time festive box."
+    "description": "Our limited-time festive box, filled with hand-finished donuts in pink, red and white. Sweet, charming and made for sharing. A lovely gift for someone special, or a treat for yourself this holiday season."
   },
   {
     "id": "p_box_family",
@@ -77,6 +77,6 @@
     "isNew": false,
     "discountPercent": 50,
     "imageUrl": "assets/images/seed/seasonal_2.png",
-    "description": "Limited-time festive box."
+    "description": "Our limited-time festive family box, packed with a cheerful mix of classic glazed, rich chocolate and fun sprinkles. Plenty for everyone around the table. Bring home the joy of the season, one bite at a time."
   }
 ]
